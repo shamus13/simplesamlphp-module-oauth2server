@@ -23,7 +23,9 @@ if (isset($_REQUEST['state'])) {
 }
 
 if (is_string($error)) {
-    $stateId = SimpleSAML_Auth_State::saveState(array('error' => $error), 'oauth2server:error');
+    $state = array('error' => $error);
+
+    $stateId = SimpleSAML_Auth_State::saveState($state, 'oauth2server:error');
 
     $parameters['stateId'] = $stateId;
 
