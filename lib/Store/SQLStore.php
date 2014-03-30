@@ -26,7 +26,7 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
     }
 
     public function getAuthorizationCode($codeId) {
-        $query = 'SELECT id, code from authorization_code where id = :id';
+        $query = 'select id, code, expire from AuthorizationCode where id = :id';
 
         $query = $this->pdo->prepare($query);
         $query->execute(array(':id' => $codeId));
@@ -41,7 +41,8 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
             $value = urldecode($value);
             $value = unserialize($value);
 
-            $value['id'] = $codeId;
+            $value['id'] = $row['id'];
+            $value['expire'] = $row['expire'];
 
             return $value;
         } else {
@@ -49,18 +50,21 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         }
     }
 
-    public function createAuthorizationCode($code) {
-        $insertStatement = "insert into authorization_code values(:id,:code)";
+    public function addAuthorizationCode($code) {
+        $insertStatement = "insert into AuthorizationCode values(:id, :code, :expire)";
 
         $preparedInsertStatement = $this->pdo->prepare($insertStatement);
 
-        $preparedInsertStatement->execute(array(':id' => $code['id'], ':code' => rawurlencode(serialize($code))));
+        $preparedInsertStatement->execute(array(':id' => $code['id'],
+            ':code' => rawurlencode(serialize($code)),
+            ':expire' => $code['expire']
+        ));
 
         return $code['id'];
     }
 
     public function removeAuthorizationCode($codeId) {
-        $deleteStatement = "delete from authorization_code where id = :id";
+        $deleteStatement = "delete from AuthorizationCode where id = :id";
 
         $preparedDeleteStatement = $this->pdo->prepare($deleteStatement);
 
