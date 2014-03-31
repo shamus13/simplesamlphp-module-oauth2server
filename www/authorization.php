@@ -7,6 +7,8 @@ $storeConfig = $config->getValue('store');
 $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
 $store = new $storeClass($storeConfig);
 
+$authorizationCodeFactory = new AuthorizationCodeFactory($config->getValue('authorization_code_time_to_live', 300));
+
 //request parameters
 $response_type = 0;
 $client_id = 0;

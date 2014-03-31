@@ -15,4 +15,7 @@ $config = array(
         'username' => 'user',
         'password' => 'password'
     ),
+
+    //authorization code properties
+    'authorization_code_time_to_live' => 300, // default life span of 300 seconds
 );
