@@ -9,11 +9,9 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
     {
         parent::__construct($config);
 
-        $storeConfig = $config->getValue('store');
-
-        $dsn = $storeConfig['dsn'];
-        $username = $storeConfig['username'];
-        $password = $storeConfig['password'];
+        $dsn = $config['dsn'];
+        $username = $config['username'];
+        $password = $config['password'];
 
         $this->pdo = new PDO($dsn, $username, $password);
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

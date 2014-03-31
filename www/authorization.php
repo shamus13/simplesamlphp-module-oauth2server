@@ -1,5 +1,12 @@
 <?php
 
+$config = SimpleSAML_Configuration::getConfig('module_oauth2server.php');
+
+$storeConfig = $config->getValue('store');
+
+$storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
+$store = new $storeClass($storeConfig);
+
 //request parameters
 $response_type = 0;
 $client_id = 0;
