@@ -16,6 +16,14 @@ $config = array(
         'password' => 'password'
     ),
 
-    //authorization code properties
+    'clients' => array(
+        'client_id' => array(
+            'secret' => 'some secret thing', // Used for resource server token validation.
+            'redirect_uri' => array('uri1', 'uri2'), // Registered redirection end points. Allow any query parameters.
+            'scopes' => array('scope1', 'scope2'), // Available scopes for this client. No default scope exists.
+        ),
+    ),
+
+    //Authorization code properties.
     'authorization_code_time_to_live' => 300, // default life span of 300 seconds
 );
