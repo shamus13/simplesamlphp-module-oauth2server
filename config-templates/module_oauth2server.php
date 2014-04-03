@@ -18,9 +18,8 @@ $config = array(
 
     'clients' => array(
         'client_id' => array(
-            'secret' => 'some secret thing', // Used for resource server token validation.
             'redirect_uri' => array('uri1', 'uri2'), // Registered redirection end points. Allow any query parameters.
-            'scopes' => array('scope1', 'scope2'), // Available scopes for this client. No default scope exists.
+            'scope' => array('scope1', 'scope2'), // Available scopes for this client. No default scope exists.
         ),
     ),
 
