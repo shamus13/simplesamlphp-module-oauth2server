@@ -16,7 +16,8 @@ $storeConfig = $config->getValue('store');
 $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
 $store = new $storeClass($storeConfig);
 
-$authorizationCodeFactory = new AuthorizationCodeFactory($config->getValue('authorization_code_time_to_live', 300));
+$authorizationCodeFactory =
+    new sspmod_oauth2server_OAuth2_AuthorizationCodeFactory($config->getValue('authorization_code_time_to_live', 300));
 
 $clients = $config->getValue('clients', array());
 
@@ -37,7 +38,7 @@ if (isset($_GET['client_id']) && array_key_exists($_GET['client_id'], $clients))
 
         $legalRedirectUri = false; //TODO: we also need to verify, that there is no fragment part in the uri but how?
 
-        foreach ($client['redirection_uri'] as $uri) {
+        foreach ($client['redirect_uri'] as $uri) {
             $legalRedirectUri |= strpos($redirect_uri, $uri) === 0;
         }
 

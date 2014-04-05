@@ -1,6 +1,6 @@
 <?php
 
-class AuthorizationCodeFactory
+class sspmod_oauth2server_OAuth2_AuthorizationCodeFactory
 {
     private $timeToLive;
 
@@ -15,6 +15,6 @@ class AuthorizationCodeFactory
             'id' => SimpleSAML_Utilities::generateID(),
             'clientId' => $clientId,
             'scopes' => $scopes,
-            'expires' => time() + $this->timeToLive);
+            'expire' => time() + $this->timeToLive);
     }
 }
