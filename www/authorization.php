@@ -20,6 +20,12 @@ $authorizationCodeFactory = new AuthorizationCodeFactory($config->getValue('auth
 
 $clients = $config->getValue('clients', array());
 
+$responseParameters = array();
+
+if (isset($_REQUEST['state'])) {
+    $responseParameters['state'] = $_REQUEST['state'];
+}
+
 if (isset($_GET['client_id']) && array_key_exists($_GET['client_id'], $clients)) {
     $client = $clients[$_GET['client_id']];
 
@@ -42,10 +48,21 @@ if (isset($_GET['client_id']) && array_key_exists($_GET['client_id'], $clients))
             $invalidScopes = array_diff($requestedScopes, $definedScopes);
 
             if (count($invalidScopes) == 0) {
-                if (!isset($_GET['response_type'])) {
+                if (isset($_GET['response_type']) && $_GET['response_type'] === 'code') {
+                    //everything is good, so we create a grant and redirect
+                    $codeEntry = $authorizationCodeFactory->createCode($_GET['client_id'], $requestedScopes);
+
+                    $store->addAuthorizationCode($codeEntry);
+
+                    $responseParameters['code'] = $codeEntry['id'];
+
+                    SimpleSAML_Utilities::redirect(SimpleSAML_Utilities::addURLparameter($redirect_uri,
+                        $responseParameters));
+
+                } else if (!isset($_GET['response_type'])) {
                     $error = 'invalid_request';
                     $error_description = 'missing response type';
-                } else if ($_GET['response_type'] != 'code') {
+                } else {
                     $error = 'unsupported_response_type';
                     $error_description = 'unsupported response type: ' . $_GET['response_type'];
                 }
@@ -54,6 +71,19 @@ if (isset($_GET['client_id']) && array_key_exists($_GET['client_id'], $clients))
                 $error_description = 'invalid scope: ' . $invalidScopes[0];
             }
 
+            //something went wrong, but we do have a valid uri to redirect to.
+
+            $responseParameters['error'] = $error;
+            $responseParameters['error_description'] = $error_description;
+
+            $stateId = SimpleSAML_Auth_State::saveState($responseParameters, 'oauth2server:error');
+
+            $error_uri = SimpleSAML_Utilities::addURLparameter(SimpleSAML_Module::getModuleURL('oauth2server/error.php'),
+                array('stateId' => $stateId));
+
+            $responseParameters['error_uri'] = $error_uri;
+
+            SimpleSAML_Utilities::redirect(SimpleSAML_Utilities::addURLparameter($redirect_uri, $responseParameters));
         } else {
             $error = 'invalid_redirect_uri'; // this is not a proper error code used only internally
             $error_description = 'illegal redirect_uri: ' . $redirect_uri;
@@ -70,35 +100,14 @@ if (isset($_GET['client_id']) && array_key_exists($_GET['client_id'], $clients))
     $error_description = 'missing client id';
 }
 
-$parameters = array();
+//something went wrong, and we do not have a valid uri to redirect to.
 
-if (isset($_REQUEST['state'])) {
-    $parameters['state'] = $_REQUEST['state'];
-}
+$responseParameters['error'] = $error;
+$responseParameters['error_description'] = $error_description;
 
-if (!is_string($error)) { // do all provided parameters check out?
-    $parameters['code'] = $code; // do some stuff to create and return a grant
+$stateId = SimpleSAML_Auth_State::saveState($responseParameters, 'oauth2server:error');
 
-    $uri = $redirect_uri;
-} else { // nope, we have a problem
-    $parameters['error'] = $error;
-    $parameters['error_description'] = $error_description;
+$error_uri = SimpleSAML_Utilities::addURLparameter(SimpleSAML_Module::getModuleURL('oauth2server/error.php'),
+    array('stateId' => $stateId));
 
-    $stateId = SimpleSAML_Auth_State::saveState($parameters, 'oauth2server:error');
-
-    $error_uri = SimpleSAML_Utilities::addURLparameter(SimpleSAML_Module::getModuleURL('oauth2server/error.php'),
-        array('stateId' => $stateId));
-
-    //We have nowhere to redirect the user agent to so send the user agent to an error page
-    if ($error === 'missing_client' || $error === 'unauthorized_client' ||
-        $error === 'invalid_redirect_uri' || $error === 'server_error'
-    ) {
-        $uri = $error_uri;
-    } else { // we have a valid uri to pass an error code to
-        $parameters['error_uri'] = $error_uri;
-
-        $uri = SimpleSAML_Utilities::addURLparameter($redirect_uri, $parameters);
-    }
-}
-
-SimpleSAML_Utilities::redirect($uri);
+SimpleSAML_Utilities::redirect($error_uri);
