@@ -24,13 +24,13 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
     }
 
     public function getAuthorizationCode($codeId) {
-        $query = 'select id, code, expire from AuthorizationCode where id = :id';
+        $query = 'select id, value, expire from AuthorizationCode where id = :id';
 
         $query = $this->pdo->prepare($query);
         $query->execute(array(':id' => $codeId));
 
         if (($row = $query->fetch(PDO::FETCH_ASSOC)) != FALSE) {
-            $value = $row['code'];
+            $value = $row['value'];
 
             if (is_resource($value)) {
                 $value = stream_get_contents($value);
@@ -49,12 +49,12 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
     }
 
     public function addAuthorizationCode($code) {
-        $insertStatement = "insert into AuthorizationCode values(:id, :code, :expire)";
+        $insertStatement = "insert into AuthorizationCode values(:id, :value, :expire)";
 
         $preparedInsertStatement = $this->pdo->prepare($insertStatement);
 
         $preparedInsertStatement->execute(array(':id' => $code['id'],
-            ':code' => rawurlencode(serialize($code)),
+            ':value' => rawurlencode(serialize($code)),
             ':expire' => $code['expire']
         ));
 
