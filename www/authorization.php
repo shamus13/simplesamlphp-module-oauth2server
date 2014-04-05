@@ -51,7 +51,8 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
             if (count($invalidScopes) == 0) {
                 if (isset($_REQUEST['response_type']) && $_REQUEST['response_type'] === 'code') {
                     //everything is good, so we create a grant and redirect
-                    $codeEntry = $authorizationCodeFactory->createCode($_REQUEST['client_id'], $requestedScopes);
+                    $codeEntry = $authorizationCodeFactory->createCode($_REQUEST['client_id'],
+                        $redirect_uri, $requestedScopes);
 
                     $store->addAuthorizationCode($codeEntry);
 
