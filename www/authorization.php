@@ -27,14 +27,14 @@ if (isset($_REQUEST['state'])) {
     $responseParameters['state'] = $_REQUEST['state'];
 }
 
-if (isset($_GET['client_id']) && array_key_exists($_GET['client_id'], $clients)) {
-    $client = $clients[$_GET['client_id']];
+if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $clients)) {
+    $client = $clients[$_REQUEST['client_id']];
 
     if (array_key_exists('redirect_uri', $client) &&
         is_array($client['redirect_uri']) &&
         count($client['redirect_uri']) > 0
     ) {
-        $redirect_uri = (isset($_GET['redirect_uri'])) ? $_GET['redirect_uri'] : $client['redirect_uri'][0];
+        $redirect_uri = (isset($_REQUEST['redirect_uri'])) ? $_REQUEST['redirect_uri'] : $client['redirect_uri'][0];
 
         $legalRedirectUri = false; //TODO: we also need to verify, that there is no fragment part in the uri but how?
 
@@ -43,15 +43,15 @@ if (isset($_GET['client_id']) && array_key_exists($_GET['client_id'], $clients))
         }
 
         if ($legalRedirectUri) {
-            $requestedScopes = (isset($_GET['scope'])) ? $_GET['scope'] : array();
-            $definedScopes = (isset($_GET['scope'])) ? $_GET['scope'] : array();
+            $requestedScopes = (isset($_REQUEST['scope'])) ? $_REQUEST['scope'] : array();
+            $definedScopes = (isset($_REQUEST['scope'])) ? $_REQUEST['scope'] : array();
 
             $invalidScopes = array_diff($requestedScopes, $definedScopes);
 
             if (count($invalidScopes) == 0) {
-                if (isset($_GET['response_type']) && $_GET['response_type'] === 'code') {
+                if (isset($_REQUEST['response_type']) && $_REQUEST['response_type'] === 'code') {
                     //everything is good, so we create a grant and redirect
-                    $codeEntry = $authorizationCodeFactory->createCode($_GET['client_id'], $requestedScopes);
+                    $codeEntry = $authorizationCodeFactory->createCode($_REQUEST['client_id'], $requestedScopes);
 
                     $store->addAuthorizationCode($codeEntry);
 
@@ -60,12 +60,12 @@ if (isset($_GET['client_id']) && array_key_exists($_GET['client_id'], $clients))
                     SimpleSAML_Utilities::redirect(SimpleSAML_Utilities::addURLparameter($redirect_uri,
                         $responseParameters));
 
-                } else if (!isset($_GET['response_type'])) {
+                } else if (!isset($_REQUEST['response_type'])) {
                     $error = 'invalid_request';
                     $error_description = 'missing response type';
                 } else {
                     $error = 'unsupported_response_type';
-                    $error_description = 'unsupported response type: ' . $_GET['response_type'];
+                    $error_description = 'unsupported response type: ' . $_REQUEST['response_type'];
                 }
             } else {
                 $error = 'invalid_scope';
@@ -93,9 +93,9 @@ if (isset($_GET['client_id']) && array_key_exists($_GET['client_id'], $clients))
         $error = 'server_error';
         $error_description = 'no redirection uri associated with client id';
     }
-} else if (isset($_GET['client_id'])) {
+} else if (isset($_REQUEST['client_id'])) {
     $error = 'unauthorized_client';
-    $error_description = 'unauthorized_client: ' . $_GET['client_id'];
+    $error_description = 'unauthorized_client: ' . $_REQUEST['client_id'];
 } else {
     $error = 'missing_client';
     $error_description = 'missing client id';
