@@ -11,10 +11,9 @@
 
 $config = SimpleSAML_Configuration::getConfig('module_oauth2server.php');
 
-$storeConfig = $config->getValue('store');
+$as = new SimpleSAML_Auth_Simple($config->getValue('authsource'));
 
-$storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
-$store = new $storeClass($storeConfig);
+$as->requireAuth();
 
 $authorizationCodeFactory =
     new sspmod_oauth2server_OAuth2_AuthorizationCodeFactory($config->getValue('authorization_code_time_to_live', 300));
@@ -52,7 +51,11 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
                 if (isset($_REQUEST['response_type']) && $_REQUEST['response_type'] === 'code') {
                     //everything is good, so we create a grant and redirect
                     $codeEntry = $authorizationCodeFactory->createCode($_REQUEST['client_id'],
-                        $redirect_uri, $requestedScopes);
+                        $redirect_uri, $requestedScopes, $as->getAttributes());
+
+                    $storeConfig = $config->getValue('store');
+                    $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
+                    $store = new $storeClass($storeConfig);
 
                     $store->addAuthorizationCode($codeEntry);
 
