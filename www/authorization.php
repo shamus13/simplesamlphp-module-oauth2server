@@ -42,13 +42,15 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
         }
 
         if ($legalRedirectUri) {
-            $requestedScopes = (isset($_REQUEST['scope'])) ? $_REQUEST['scope'] : array();
+            $requestedScopes = (isset($_REQUEST['scope'])) ? explode(' ', $_REQUEST['scope']) : array();
             $definedScopes = (isset($_REQUEST['scope'])) ? $_REQUEST['scope'] : array();
 
             $invalidScopes = array_diff($requestedScopes, $definedScopes);
 
             if (count($invalidScopes) == 0) {
                 if (isset($_REQUEST['response_type']) && $_REQUEST['response_type'] === 'code') {
+                    //TODO: we need to ask the user to authorize the the grant and possibly prune the scopes
+
                     //everything is good, so we create a grant and redirect
                     $codeEntry = $authorizationCodeFactory->createCode($_REQUEST['client_id'],
                         $redirect_uri, $requestedScopes, $as->getAttributes());
