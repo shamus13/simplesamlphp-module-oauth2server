@@ -8,15 +8,13 @@
  * scope         - optional configured scope strings agreed upon by any given client and authorization server
  * state         - optional string which clients can use to maintain state during authentication and authorization flows.
  */
+session_cache_limiter('nocache');
 
 $config = SimpleSAML_Configuration::getConfig('module_oauth2server.php');
 
 $as = new SimpleSAML_Auth_Simple($config->getValue('authsource'));
 
 $as->requireAuth();
-
-$authorizationCodeFactory =
-    new sspmod_oauth2server_OAuth2_AuthorizationCodeFactory($config->getValue('authorization_code_time_to_live', 300));
 
 $clients = $config->getValue('clients', array());
 
@@ -43,7 +41,7 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
 
         if ($legalRedirectUri) {
             $requestedScopes = (isset($_REQUEST['scope'])) ? explode(' ', $_REQUEST['scope']) : array();
-            $definedScopes = (isset($_REQUEST['scope'])) ? $_REQUEST['scope'] : array();
+            $definedScopes = (isset($client['scope'])) ? $client['scope'] : array();
 
             $invalidScopes = array_diff($requestedScopes, $definedScopes);
 
@@ -51,20 +49,19 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
                 if (isset($_REQUEST['response_type']) && $_REQUEST['response_type'] === 'code') {
                     //TODO: we need to ask the user to authorize the the grant and possibly prune the scopes
 
-                    //everything is good, so we create a grant and redirect
-                    $codeEntry = $authorizationCodeFactory->createCode($_REQUEST['client_id'],
-                        $redirect_uri, $requestedScopes, $as->getAttributes());
+                    $state = array('clientId' => $_REQUEST['client_id'],
+                        'redirectUri' => $redirect_uri, 'requestedScopes' => $requestedScopes);
 
-                    $storeConfig = $config->getValue('store');
-                    $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
-                    $store = new $storeClass($storeConfig);
+                    if(array_key_exists('state', $_REQUEST)) {
+                        $state['state'] = $_REQUEST['state'];
+                    }
 
-                    $store->addAuthorizationCode($codeEntry);
+                    $stateId = SimpleSAML_Auth_State::saveState($state, 'oauth2server:consent');
 
-                    $responseParameters['code'] = $codeEntry['id'];
+                    $consentUri = SimpleSAML_Utilities::addURLparameter(SimpleSAML_Module::getModuleURL('oauth2server/consent.php'),
+                        array('stateId' => $stateId));
 
-                    SimpleSAML_Utilities::redirect(SimpleSAML_Utilities::addURLparameter($redirect_uri,
-                        $responseParameters));
+                    SimpleSAML_Utilities::redirect($consentUri);
 
                 } else if (!isset($_REQUEST['response_type'])) {
                     $error = 'invalid_request';
