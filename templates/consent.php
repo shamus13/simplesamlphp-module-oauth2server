@@ -22,9 +22,9 @@ $this->includeAtTemplateBase('includes/header.php');
             ?>
         </table>
 
-        <input id="deny" name="consent" type="submit"
+        <input id="deny" name="deny" type="submit"
                value="<?php echo $this->t('{oauth2server:oauth2server:deny_consent_description}'); ?>"/>
-        <input id="grant" name="consent" type="submit"
+        <input id="grant" name="grant" type="submit"
                value="<?php echo $this->t('{oauth2server:oauth2server:grant_consent_description}'); ?>"/>
     </form>
 

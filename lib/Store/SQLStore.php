@@ -23,7 +23,8 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         }
     }
 
-    public function getAuthorizationCode($codeId) {
+    public function getAuthorizationCode($codeId)
+    {
         $query = 'select id, value, expire from AuthorizationCode where id = :id';
 
         $query = $this->pdo->prepare($query);
@@ -48,7 +49,8 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         }
     }
 
-    public function addAuthorizationCode($code) {
+    public function addAuthorizationCode($code)
+    {
         $insertStatement = "insert into AuthorizationCode values(:id, :value, :expire)";
 
         $preparedInsertStatement = $this->pdo->prepare($insertStatement);
@@ -61,7 +63,8 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         return $code['id'];
     }
 
-    public function removeAuthorizationCode($codeId) {
+    public function removeAuthorizationCode($codeId)
+    {
         $deleteStatement = "delete from AuthorizationCode where id = :id";
 
         $preparedDeleteStatement = $this->pdo->prepare($deleteStatement);

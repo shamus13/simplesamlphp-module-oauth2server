@@ -52,7 +52,7 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
                     $state = array('clientId' => $_REQUEST['client_id'],
                         'redirectUri' => $redirect_uri, 'requestedScopes' => $requestedScopes);
 
-                    if(array_key_exists('state', $_REQUEST)) {
+                    if (array_key_exists('state', $_REQUEST)) {
                         $state['state'] = $_REQUEST['state'];
                     }
 
