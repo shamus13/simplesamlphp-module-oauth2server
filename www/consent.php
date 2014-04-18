@@ -13,7 +13,7 @@ $state = SimpleSAML_Auth_State::loadState($_REQUEST['stateId'], 'oauth2server:co
 $globalConfig = SimpleSAML_Configuration::getInstance();
 
 $authorizationCodeFactory =
-    new sspmod_oauth2server_OAuth2_AuthorizationCodeFactory($config->getValue('authorization_code_time_to_live', 300));
+    new sspmod_oauth2server_OAuth2_TokenFactory($config->getValue('authorization_code_time_to_live', 300));
 
 $codeEntry = $authorizationCodeFactory->createCode($state['clientId'],
     $state['redirectUri'], array(), $as->getAttributes());

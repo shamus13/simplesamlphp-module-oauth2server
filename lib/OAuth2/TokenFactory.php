@@ -1,6 +1,6 @@
 <?php
 
-class sspmod_oauth2server_OAuth2_AuthorizationCodeFactory
+class sspmod_oauth2server_OAuth2_TokenFactory
 {
     private $timeToLive;
 

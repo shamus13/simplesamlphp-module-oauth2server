@@ -47,7 +47,6 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
 
             if (count($invalidScopes) == 0) {
                 if (isset($_REQUEST['response_type']) && $_REQUEST['response_type'] === 'code') {
-                    //TODO: we need to ask the user to authorize the the grant and possibly prune the scopes
 
                     $state = array('clientId' => $_REQUEST['client_id'],
                         'redirectUri' => (isset($_REQUEST['redirect_uri'])) ? $_REQUEST['redirect_uri'] : null,
