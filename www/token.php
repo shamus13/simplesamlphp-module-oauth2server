@@ -9,6 +9,8 @@
  */
 session_cache_limiter('nocache');
 
+header('Content-Type: application/json; charset=utf-8');
+
 $config = SimpleSAML_Configuration::getConfig('module_oauth2server.php');
 
 $clients = $config->getValue('clients', array());
@@ -28,13 +30,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $authorizationCodeEntry = $store->getAuthorizationCode($_POST['code']);
 
                         if (!is_null($authorizationCodeEntry)) {
-                            if ($_POST['client_id'] === $authorizationCodeEntry['client_id']) {
+                            if ($_POST['client_id'] == $authorizationCodeEntry['clientId']) {
                                 $redirectUri = array_key_exists('redirect_uri', $_POST) ? $_POST['redirect_uri'] : null;
 
-                                if ($authorizationCodeEntry['redirect_uri'] == $redirectUri) {
+                                if ($authorizationCodeEntry['redirectUri'] == $redirectUri) {
                                     $store->removeAuthorizationCode($_POST['code']);
 
-                                    //TODO: issue and store access token
+                                    $tokenFactory =
+                                        new sspmod_oauth2server_OAuth2_TokenFactory(
+                                            $config->getValue('authorization_code_time_to_live', 300),
+                                            $config->getValue('access_token_time_to_live', 300)
+                                        );
+
+                                    $accessToken =
+                                        $tokenFactory->createBearerAccessToken($authorizationCodeEntry['clientId'],
+                                            $authorizationCodeEntry['scopes'], $authorizationCodeEntry['attributes']);
+
+                                    $store->addAccessToken($accessToken);
+
+                                    $response = array('access_token' => $accessToken['id'],
+                                        'token_type' => $accessToken['type'],
+                                        'expires_in' => ($accessToken['expire'] - time()));
                                 } else {
                                     $response = array('error' => 'invalid_grant',
                                         'error_description' => 'mismatching redirection uri, expected: ' .
@@ -74,4 +90,4 @@ if (array_key_exists('error', $response)) {
     header('X-PHP-Response-Code: 400', true, 400);
 }
 
-//TODO: return access token or error as json
+echo json_encode($response);
