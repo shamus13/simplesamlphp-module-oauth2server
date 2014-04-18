@@ -31,26 +31,34 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         $query->execute(array(':id' => $codeId));
 
         if (($row = $query->fetch(PDO::FETCH_ASSOC)) != FALSE) {
-            $value = $row['value'];
+            if ($row['expire'] > time()) {
+                $value = $row['value'];
 
-            if (is_resource($value)) {
-                $value = stream_get_contents($value);
+                if (is_resource($value)) {
+                    $value = stream_get_contents($value);
+                }
+
+                $value = urldecode($value);
+                $value = unserialize($value);
+
+                $value['id'] = $row['id'];
+                $value['expire'] = $row['expire'];
+
+                return $value;
             }
-
-            $value = urldecode($value);
-            $value = unserialize($value);
-
-            $value['id'] = $row['id'];
-            $value['expire'] = $row['expire'];
-
-            return $value;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     public function addAuthorizationCode($code)
     {
+        $cleanUpStatement = "delete from AuthorizationCode where expire < :expire";
+
+        $preparedCleanUpStatement = $this->pdo->prepare($cleanUpStatement);
+
+        $preparedCleanUpStatement->execute(array(':expire' => time()));
+
         $insertStatement = "insert into AuthorizationCode values(:id, :value, :expire)";
 
         $preparedInsertStatement = $this->pdo->prepare($insertStatement);
