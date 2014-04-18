@@ -25,4 +25,5 @@ $config = array(
 
     //Authorization code properties.
     'authorization_code_time_to_live' => 300, // default life span of 300 seconds
+    'access_token_time_to_live' => 300, // default life span of 300 seconds
 );

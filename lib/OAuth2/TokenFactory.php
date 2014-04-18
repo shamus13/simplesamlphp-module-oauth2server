@@ -2,11 +2,13 @@
 
 class sspmod_oauth2server_OAuth2_TokenFactory
 {
-    private $timeToLive;
+    private $authorizationCodeTimeToLive;
+    private $accessTimeToLive;
 
-    public function __construct($timeToLive)
+    public function __construct($authorizationCodeTimeToLive, $accessTokenTimeToLive)
     {
-        $this->timeToLive = $timeToLive;
+        $this->authorizationCodeTimeToLive = $authorizationCodeTimeToLive;
+        $this->accessTimeToLive = $accessTokenTimeToLive;
     }
 
     public function createCode($clientId, $redirectUri, $scopes, $attributes)
@@ -16,7 +18,17 @@ class sspmod_oauth2server_OAuth2_TokenFactory
             'clientId' => $clientId,
             'redirectUri' => $redirectUri,
             'scopes' => $scopes,
-            'expire' => time() + $this->timeToLive,
+            'expire' => time() + $this->authorizationCodeTimeToLive,
+            'attributes' => $attributes);
+    }
+
+    public function createBearerAccessToken($clientId, $scopes, $attributes) {
+        return array(
+            'id' => SimpleSAML_Utilities::generateID(),
+            'type' => 'Bearer',
+            'clientId' => $clientId,
+            'scopes' => $scopes,
+            'expire' => time() + $this->accessTimeToLive,
             'attributes' => $attributes);
     }
 }
