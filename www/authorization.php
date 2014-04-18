@@ -50,7 +50,8 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
                     //TODO: we need to ask the user to authorize the the grant and possibly prune the scopes
 
                     $state = array('clientId' => $_REQUEST['client_id'],
-                        'redirectUri' => $redirect_uri, 'requestedScopes' => $requestedScopes);
+                        'redirectUri' => (isset($_REQUEST['redirect_uri'])) ? $_REQUEST['redirect_uri'] : null,
+                        'requestedScopes' => $requestedScopes);
 
                     if (array_key_exists('state', $_REQUEST)) {
                         $state['state'] = $_REQUEST['state'];
