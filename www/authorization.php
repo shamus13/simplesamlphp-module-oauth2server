@@ -31,12 +31,12 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
         is_array($client['redirect_uri']) &&
         count($client['redirect_uri']) > 0
     ) {
-        $redirect_uri = (isset($_REQUEST['redirect_uri'])) ? $_REQUEST['redirect_uri'] : $client['redirect_uri'][0];
+        $returnUri = (isset($_REQUEST['redirect_uri'])) ? $_REQUEST['redirect_uri'] : $client['redirect_uri'][0];
 
         $legalRedirectUri = false; //TODO: we also need to verify, that there is no fragment part in the uri but how?
 
         foreach ($client['redirect_uri'] as $uri) {
-            $legalRedirectUri |= strpos($redirect_uri, $uri) === 0;
+            $legalRedirectUri |= strpos($returnUri, $uri) === 0;
         }
 
         if ($legalRedirectUri) {
@@ -50,7 +50,8 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
 
                     $state = array('clientId' => $_REQUEST['client_id'],
                         'redirectUri' => (isset($_REQUEST['redirect_uri'])) ? $_REQUEST['redirect_uri'] : null,
-                        'requestedScopes' => $requestedScopes);
+                        'requestedScopes' => $requestedScopes,
+                        'returnUri' => $returnUri);
 
                     if (array_key_exists('state', $_REQUEST)) {
                         $state['state'] = $_REQUEST['state'];
@@ -87,10 +88,10 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
 
             $responseParameters['error_uri'] = $error_uri;
 
-            SimpleSAML_Utilities::redirect(SimpleSAML_Utilities::addURLparameter($redirect_uri, $responseParameters));
+            SimpleSAML_Utilities::redirect(SimpleSAML_Utilities::addURLparameter($returnUri, $responseParameters));
         } else {
             $error = 'invalid_redirect_uri'; // this is not a proper error code used only internally
-            $error_description = 'illegal redirect_uri: ' . $redirect_uri;
+            $error_description = 'illegal redirect_uri: ' . $returnUri;
         }
     } else {
         $error = 'server_error';

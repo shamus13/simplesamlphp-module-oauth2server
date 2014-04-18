@@ -36,7 +36,7 @@ if (array_key_exists('grant', $_REQUEST)) {
         $response['state'] = $state['state'];
     }
 
-    SimpleSAML_Utilities::redirect(SimpleSAML_Utilities::addURLparameter($state['redirectUri'], $response));
+    SimpleSAML_Utilities::redirect(SimpleSAML_Utilities::addURLparameter($state['returnUri'], $response));
 } else if (array_key_exists('deny', $_REQUEST)) {
 
     $errorState = array('error' => 'access_denied',
@@ -47,7 +47,7 @@ if (array_key_exists('grant', $_REQUEST)) {
     $error_uri = SimpleSAML_Utilities::addURLparameter(SimpleSAML_Module::getModuleURL('oauth2server/error.php'),
         array('stateId' => $stateId));
 
-    SimpleSAML_Utilities::redirect(SimpleSAML_Utilities::addURLparameter($state['redirectUri'],
+    SimpleSAML_Utilities::redirect(SimpleSAML_Utilities::addURLparameter($state['returnUri'],
         array('error' => $errorState['error'], 'error_description' => $errorState['error_description'],
             'error_uri' => $error_uri)));
 }
