@@ -79,4 +79,61 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
 
         $preparedDeleteStatement->execute(array(':id' => $codeId));
     }
+
+    public function getAccessToken($tokenId)
+    {
+        $query = 'select id, value, expire from AccessToken where id = :id';
+
+        $query = $this->pdo->prepare($query);
+        $query->execute(array(':id' => $tokenId));
+
+        if (($row = $query->fetch(PDO::FETCH_ASSOC)) != FALSE) {
+            if ($row['expire'] > time()) {
+                $value = $row['value'];
+
+                if (is_resource($value)) {
+                    $value = stream_get_contents($value);
+                }
+
+                $value = urldecode($value);
+                $value = unserialize($value);
+
+                $value['id'] = $row['id'];
+                $value['expire'] = $row['expire'];
+
+                return $value;
+            }
+        }
+
+        return null;
+    }
+
+    public function addAccessToken($token)
+    {
+        $cleanUpStatement = "delete from AccessToken where expire < :expire";
+
+        $preparedCleanUpStatement = $this->pdo->prepare($cleanUpStatement);
+
+        $preparedCleanUpStatement->execute(array(':expire' => time()));
+
+        $insertStatement = "insert into AccessToken values(:id, :value, :expire)";
+
+        $preparedInsertStatement = $this->pdo->prepare($insertStatement);
+
+        $preparedInsertStatement->execute(array(':id' => $token['id'],
+            ':value' => rawurlencode(serialize($token)),
+            ':expire' => $token['expire']
+        ));
+
+        return $token['id'];
+    }
+
+    public function removeAccessToken($tokenId)
+    {
+        $deleteStatement = "delete from AccessToken where id = :id";
+
+        $preparedDeleteStatement = $this->pdo->prepare($deleteStatement);
+
+        $preparedDeleteStatement->execute(array(':id' => $tokenId));
+    }
 }

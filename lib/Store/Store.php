@@ -11,4 +11,10 @@ abstract class sspmod_oauth2server_Store_Store
     public abstract function addAuthorizationCode($code);
 
     public abstract function removeAuthorizationCode($codeId);
+
+    public abstract function getAccessToken($tokenId);
+
+    public abstract function addAccessToken($token);
+
+    public abstract function removeAccessToken($tokenId);
 }
