@@ -20,6 +20,7 @@ $config = array(
         'client_id' => array(
             'redirect_uri' => array('uri1', 'uri2'), // Registered redirection end points. Allow any query parameters.
             'scope' => array('scope1', 'scope2'), // Available scopes for this client. No default scope exists.
+            'password' => 'password' // Optional password to be used for basic authentication of clients.
         ),
     ),
 
