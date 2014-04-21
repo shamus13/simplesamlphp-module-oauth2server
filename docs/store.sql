@@ -9,3 +9,9 @@ create table AccessToken (
   value string not null,
   expire int not null
 );
+
+create table RefreshToken (
+  id string primary key,
+  value string not null,
+  expire int not null
+);
