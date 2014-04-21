@@ -3,12 +3,14 @@
 class sspmod_oauth2server_OAuth2_TokenFactory
 {
     private $authorizationCodeTimeToLive;
-    private $accessTimeToLive;
+    private $accessTokenTimeToLive;
+    private $refreshTokenTimeToLive;
 
-    public function __construct($authorizationCodeTimeToLive, $accessTokenTimeToLive)
+    public function __construct($authorizationCodeTimeToLive, $accessTokenTimeToLive, $refreshTokenTimeToLive)
     {
         $this->authorizationCodeTimeToLive = $authorizationCodeTimeToLive;
-        $this->accessTimeToLive = $accessTokenTimeToLive;
+        $this->accessTokenTimeToLive = $accessTokenTimeToLive;
+        $this->refreshTokenTimeToLive = $refreshTokenTimeToLive;
     }
 
     public function createCode($clientId, $redirectUri, $scopes, $attributes)
@@ -31,7 +33,7 @@ class sspmod_oauth2server_OAuth2_TokenFactory
             'clientId' => $clientId,
             'redirectUri' => $redirectUri,
             'scopes' => $scopes,
-            'expire' => time() + $this->authorizationCodeTimeToLive,
+            'expire' => time() + $this->refreshTokenTimeToLive,
             'attributes' => $attributes);
     }
 
@@ -41,7 +43,7 @@ class sspmod_oauth2server_OAuth2_TokenFactory
             'type' => 'Bearer',
             'clientId' => $clientId,
             'scopes' => $scopes,
-            'expire' => time() + $this->accessTimeToLive,
+            'expire' => time() + $this->accessTokenTimeToLive,
             'attributes' => $attributes);
     }
 }
