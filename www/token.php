@@ -23,7 +23,7 @@ $errorCode = 200;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (array_key_exists('grant_type', $_POST)) {
-        if ($_POST['grant_type'] === 'authorization_code') {
+        if ($_POST['grant_type'] === 'authorization_code' || $_POST['grant_type'] === 'refresh_token') {
             $clientId = null;
             $password = null;
 
@@ -37,68 +37,99 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!is_null($clientId)) {
                 if (array_key_exists($clientId, $clients)) {
                     if ((!isset($clients[$clientId]['password']) && is_null($password)) ||
-                        $password === $clients[$clientId]['password']) {
-                        if (array_key_exists('code', $_POST)) {
-                            $storeConfig = $config->getValue('store');
-                            $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
-                            $store = new $storeClass($storeConfig);
+                        $password === $clients[$clientId]['password']
+                    ) {
 
-                            $authorizationCodeEntry = $store->getAuthorizationCode($_POST['code']);
+                        $storeConfig = $config->getValue('store');
+                        $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
+                        $store = new $storeClass($storeConfig);
 
-                            if (!is_null($authorizationCodeEntry)) {
-                                if ($clientId == $authorizationCodeEntry['clientId']) {
-                                    $redirectUri = array_key_exists('redirect_uri', $_POST) ? $_POST['redirect_uri'] : null;
+                        $authorizationTokenId = null;
+                        $authorizationToken = null;
 
-                                    if ($authorizationCodeEntry['redirectUri'] == $redirectUri) {
-                                        $store->removeAuthorizationCode($_POST['code']);
+                        if ($_POST['grant_type'] === 'authorization_code' && array_key_exists('code', $_POST)) {
+                            $authorizationTokenId = $_POST['code'];
+                            $authorizationToken = $store->getAuthorizationCode($authorizationTokenId);
+                        } elseif ($_POST['grant_type'] === 'refresh_token' && array_key_exists('refresh_token', $_POST)) {
+                            $authorizationTokenId = $_POST['refresh_token'];
+                            $authorizationToken = $store->getRefreshToken($authorizationTokenId);
+                        }
 
-                                        $tokenFactory =
-                                            new sspmod_oauth2server_OAuth2_TokenFactory(
-                                                $config->getValue('authorization_code_time_to_live', 300),
-                                                $config->getValue('access_token_time_to_live', 300),
-                                                $config->getValue('refresh_token_time_to_live', 3600)
-                                            );
+                        if (!is_null($authorizationTokenId) && !is_null($authorizationToken)) {
+                            if ($clientId == $authorizationToken['clientId']) {
+                                $redirectUri = array_key_exists('redirect_uri', $_POST) ? $_POST['redirect_uri'] : null;
 
-                                        $accessToken =
-                                            $tokenFactory->createBearerAccessToken($authorizationCodeEntry['clientId'],
-                                                $authorizationCodeEntry['scopes'], $authorizationCodeEntry['attributes']);
+                                if ($authorizationToken['redirectUri'] == $redirectUri) {
+                                    $store->removeAuthorizationCode($_POST['code']);
 
-                                        $refreshToken =
-                                            $tokenFactory->createRefreshToken($authorizationCodeEntry['clientId'],
-                                                $authorizationCodeEntry['redirectUri'],
-                                                $authorizationCodeEntry['scopes'],
-                                                $authorizationCodeEntry['attributes']);
-
-                                        $store->addAccessToken($accessToken);
-                                        $store->addRefreshToken($refreshToken);
-
-                                        $response = array('access_token' => $accessToken['id'],
-                                            'token_type' => $accessToken['type'],
-                                            'expires_in' => ($accessToken['expire'] - time()),
-                                            'refresh_token' => $refreshToken['id']
+                                    $tokenFactory =
+                                        new sspmod_oauth2server_OAuth2_TokenFactory(
+                                            $config->getValue('authorization_code_time_to_live', 300),
+                                            $config->getValue('access_token_time_to_live', 300),
+                                            $config->getValue('refresh_token_time_to_live', 3600)
                                         );
-                                    } else {
-                                        $response = array('error' => 'invalid_grant',
-                                            'error_description' => 'mismatching redirection uri, expected: ' .
-                                            $authorizationCodeEntry['redirect_uri'] . ' got: ' . $redirectUri);
 
-                                        $errorCode = 400;
+                                    $accessToken =
+                                        $tokenFactory->createBearerAccessToken($authorizationToken['clientId'],
+                                            $authorizationToken['scopes'], $authorizationToken['attributes']);
+
+                                    if ($_POST['grant_type'] === 'authorization_code') {
+                                        $refreshToken =
+                                            $tokenFactory->createRefreshToken($authorizationToken['clientId'],
+                                                $authorizationToken['redirectUri'],
+                                                $authorizationToken['scopes'],
+                                                $authorizationToken['attributes']);
+
+                                        $store->addRefreshToken($refreshToken);
+                                    } else {
+                                        $refreshToken = $authorizationToken;
                                     }
+
+                                    $store->addAccessToken($accessToken);
+
+                                    $response = array('access_token' => $accessToken['id'],
+                                        'token_type' => $accessToken['type'],
+                                        'expires_in' => ($accessToken['expire'] - time()),
+                                        'refresh_token' => $refreshToken['id']
+                                    );
                                 } else {
                                     $response = array('error' => 'invalid_grant',
-                                        'error_description' => 'authorization code grant was not issued for client id: ' .
-                                        $clientId);
+                                        'error_description' => 'mismatching redirection uri, expected: ' .
+                                        $authorizationToken['redirect_uri'] . ' got: ' . $redirectUri);
 
                                     $errorCode = 400;
                                 }
                             } else {
-                                $response = array('error' => 'invalid_grant',
-                                    'error_description' => 'unknown authorization code grant: ' . $_POST['code']);
+                                if ($_POST['grant_type'] === 'authorization_code') {
+                                    $response = array('error' => 'invalid_grant',
+                                        'error_description' => 'authorization code grant was not issued for client id: ' .
+                                        $clientId);
+                                } else {
+                                    $response = array('error' => 'invalid_grant',
+                                        'error_description' => 'refresh token was not issued for client id: ' .
+                                        $clientId);
+                                }
 
                                 $errorCode = 400;
                             }
+                        } else if (is_null($authorizationTokenId)) {
+                            if ($_POST['grant_type'] === 'authorization_code') {
+                                $response = array('error' => 'invalid_request',
+                                    'error_description' => 'missing authorization code');
+                            } else {
+                                $response = array('error' => 'invalid_request',
+                                    'error_description' => 'missing refresh token');
+                            }
+
+                            $errorCode = 400;
                         } else {
-                            $response = array('error' => 'invalid_request', 'error_description' => 'missing code');
+                            if ($_POST['grant_type'] === 'authorization_code') {
+                                $response = array('error' => 'invalid_grant',
+                                    'error_description' => 'unknown authorization code grant: ' . $authorizationTokenId);
+                            } else {
+                                $response = array('error' => 'invalid_grant',
+                                    'error_description' => 'unknown refresh token: ' . $authorizationTokenId);
+                            }
 
                             $errorCode = 400;
                         }
