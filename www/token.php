@@ -55,18 +55,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         $tokenFactory =
                                             new sspmod_oauth2server_OAuth2_TokenFactory(
                                                 $config->getValue('authorization_code_time_to_live', 300),
-                                                $config->getValue('access_token_time_to_live', 300)
+                                                $config->getValue('access_token_time_to_live', 300),
+                                                $config->getValue('refresh_token_time_to_live', 3600)
                                             );
 
                                         $accessToken =
                                             $tokenFactory->createBearerAccessToken($authorizationCodeEntry['clientId'],
                                                 $authorizationCodeEntry['scopes'], $authorizationCodeEntry['attributes']);
 
+                                        $refreshToken =
+                                            $tokenFactory->createRefreshToken($authorizationCodeEntry['clientId'],
+                                                $authorizationCodeEntry['redirectUri'],
+                                                $authorizationCodeEntry['scopes'],
+                                                $authorizationCodeEntry['attributes']);
+
                                         $store->addAccessToken($accessToken);
+                                        $store->addRefreshToken($refreshToken);
 
                                         $response = array('access_token' => $accessToken['id'],
                                             'token_type' => $accessToken['type'],
-                                            'expires_in' => ($accessToken['expire'] - time()));
+                                            'expires_in' => ($accessToken['expire'] - time()),
+                                            'refresh_token' => $refreshToken['id']
+                                        );
                                     } else {
                                         $response = array('error' => 'invalid_grant',
                                             'error_description' => 'mismatching redirection uri, expected: ' .
@@ -133,3 +143,5 @@ if ($errorCode === 401) {
 }
 
 echo json_encode($response);
+
+//TODO: add error uri to error responses

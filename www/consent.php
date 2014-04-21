@@ -15,7 +15,8 @@ $globalConfig = SimpleSAML_Configuration::getInstance();
 $authorizationCodeFactory =
     new sspmod_oauth2server_OAuth2_TokenFactory(
         $config->getValue('authorization_code_time_to_live', 300),
-        $config->getValue('access_token_time_to_live', 300)
+        $config->getValue('access_token_time_to_live', 300),
+        $config->getValue('refresh_token_time_to_live', 3600)
     );
 
 $codeEntry = $authorizationCodeFactory->createCode($state['clientId'],
@@ -61,3 +62,7 @@ $t->data['id'] = $codeEntry['id'];
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/consent.php');
 
 $t->show();
+
+
+//TODO: add support for warning about non https redirection end points
+//TODO: add support for choosing refresh token time to live
