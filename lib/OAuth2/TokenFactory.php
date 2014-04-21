@@ -15,6 +15,19 @@ class sspmod_oauth2server_OAuth2_TokenFactory
     {
         return array(
             'id' => SimpleSAML_Utilities::generateID(),
+            'type' => 'AccessToken',
+            'clientId' => $clientId,
+            'redirectUri' => $redirectUri,
+            'scopes' => $scopes,
+            'expire' => time() + $this->authorizationCodeTimeToLive,
+            'attributes' => $attributes);
+    }
+
+    public function createRefreshToken($clientId, $redirectUri, $scopes, $attributes)
+    {
+        return array(
+            'id' => SimpleSAML_Utilities::generateID(),
+            'type' => 'RefreshToken',
             'clientId' => $clientId,
             'redirectUri' => $redirectUri,
             'scopes' => $scopes,
