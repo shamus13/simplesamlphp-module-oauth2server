@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 } else {
                                     $response = array('error' => 'invalid_grant',
                                         'error_description' => 'mismatching redirection uri, expected: ' .
-                                        $authorizationToken['redirect_uri'] . ' got: ' . $redirectUri);
+                                        $authorizationToken['redirectUri'] . ' got: ' . $redirectUri);
 
                                     $errorCode = 400;
                                 }
