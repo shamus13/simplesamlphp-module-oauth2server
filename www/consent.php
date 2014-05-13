@@ -48,9 +48,14 @@ if (array_key_exists('grant', $_REQUEST)) {
     $error_uri = SimpleSAML_Utilities::addURLparameter(SimpleSAML_Module::getModuleURL('oauth2server/error.php'),
         array('stateId' => $stateId));
 
-    SimpleSAML_Utilities::redirect(SimpleSAML_Utilities::addURLparameter($state['returnUri'],
-        array('error' => $errorState['error'], 'error_description' => $errorState['error_description'],
-            'error_uri' => $error_uri)));
+    $response = array('error' => $errorState['error'], 'error_description' => $errorState['error_description'],
+        'error_uri' => $error_uri);
+
+    if (array_key_exists('state', $state)) {
+        $response['state'] = $state['state'];
+    }
+
+    SimpleSAML_Utilities::redirect(SimpleSAML_Utilities::addURLparameter($state['returnUri'], $response));
 }
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:consent.php');
