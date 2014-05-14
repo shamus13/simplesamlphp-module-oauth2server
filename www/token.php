@@ -60,7 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 $redirectUri = array_key_exists('redirect_uri', $_POST) ? $_POST['redirect_uri'] : null;
 
                                 if ($authorizationToken['redirectUri'] == $redirectUri) {
-                                    $store->removeAuthorizationCode($_POST['code']);
+                                    if($_POST['grant_type'] === 'authorization_code') {
+                                        $store->removeAuthorizationCode($_POST['code']);
+                                    }
 
                                     $tokenFactory =
                                         new sspmod_oauth2server_OAuth2_TokenFactory(
