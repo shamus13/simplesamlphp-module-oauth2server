@@ -92,7 +92,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     $response = array('access_token' => $accessToken['id'],
                                         'token_type' => $accessToken['type'],
                                         'expires_in' => ($accessToken['expire'] - time()),
-                                        'refresh_token' => $refreshToken['id']
+                                        'refresh_token' => $refreshToken['id'],
+                                        'scope' => trim(implode(' ', $accessToken['scopes']))
                                     );
                                 } else {
                                     $response = array('error' => 'invalid_grant',
