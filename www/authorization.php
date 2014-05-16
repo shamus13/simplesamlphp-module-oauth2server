@@ -81,10 +81,8 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
             $responseParameters['error'] = $error;
             $responseParameters['error_description'] = $error_description;
 
-            $stateId = SimpleSAML_Auth_State::saveState($responseParameters, 'oauth2server:error');
-
             $error_uri = SimpleSAML_Utilities::addURLparameter(SimpleSAML_Module::getModuleURL('oauth2server/error.php'),
-                array('stateId' => $stateId));
+                $responseParameters);
 
             $responseParameters['error_uri'] = $error_uri;
 
@@ -110,9 +108,7 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
 $responseParameters['error'] = $error;
 $responseParameters['error_description'] = $error_description;
 
-$stateId = SimpleSAML_Auth_State::saveState($responseParameters, 'oauth2server:error');
-
 $error_uri = SimpleSAML_Utilities::addURLparameter(SimpleSAML_Module::getModuleURL('oauth2server/error.php'),
-    array('stateId' => $stateId));
+    $responseParameters);
 
 SimpleSAML_Utilities::redirect($error_uri);

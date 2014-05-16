@@ -43,10 +43,8 @@ if (array_key_exists('grant', $_REQUEST)) {
     $errorState = array('error' => 'access_denied',
         'error_description' => 'request denied by resource owner');
 
-    $stateId = SimpleSAML_Auth_State::saveState($errorState, 'oauth2server:error');
-
     $error_uri = SimpleSAML_Utilities::addURLparameter(SimpleSAML_Module::getModuleURL('oauth2server/error.php'),
-        array('stateId' => $stateId));
+        $errorState);
 
     $response = array('error' => $errorState['error'], 'error_description' => $errorState['error_description'],
         'error_uri' => $error_uri);

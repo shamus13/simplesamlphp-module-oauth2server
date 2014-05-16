@@ -6,12 +6,15 @@ $globalConfig = SimpleSAML_Configuration::getInstance();
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:error.php');
 
-if (array_key_exists('stateId', $_REQUEST)) {
-    $state = SimpleSAML_Auth_State::loadState($_REQUEST['stateId'], 'oauth2server:error');
+$t->data['error'] = 'server_error';
+$t->data['errorDescription'] = 'no description';
 
-    $t->data['error'] = $state['error'];
-} else {
-    $t->data['error'] = 'server_error';
+if (array_key_exists('error', $_REQUEST)) {
+    $t->data['error'] = $_REQUEST['error'];
+}
+
+if (array_key_exists('errorDescription', $_REQUEST)) {
+    $t->data['errorDescription'] = $_REQUEST['errorDescription'];
 }
 
 $t->show();
