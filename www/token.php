@@ -176,6 +176,11 @@ if ($errorCode === 401) {
     header("WWW-Authenticate: Basic realm=\"OAuth 2.0\"");
 }
 
-echo json_encode($response);
+if(array_key_exists('error', $response)) {
+    $error_uri = SimpleSAML_Utilities::addURLparameter(SimpleSAML_Module::getModuleURL('oauth2server/error.php'),
+        $response);
 
-//TODO: add error uri to error responses
+    $response['error_uri'] = $error_uri;
+}
+
+echo json_encode($response);
