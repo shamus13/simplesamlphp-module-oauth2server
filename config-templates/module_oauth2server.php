@@ -24,8 +24,19 @@ $config = array(
         ),
     ),
 
-    //Authorization code properties.
+    'user_id_attribute' => 'eduPersonPrincipalName',
+
+    //Token properties.
     'authorization_code_time_to_live' => 300, // default life span of 300 seconds
     'refresh_token_time_to_live' => 3600, // default life span of 3600 seconds
     'access_token_time_to_live' => 300, // default life span of 300 seconds
+
+    //resourceOwner properties.
+    'enable_resource_owner_service' => false, // allow clients to retrieve attributes, defaults to false
+    'resource_owner_service_attribute_scopes' => array(
+        'USER_ID' => array('eduPersonPrincipalName'), // single named attribute
+        'USER_NAME' => array('cn', 'gn', 'sn'), // multiple named attributes
+        'USER_AFFILIATION' => array('eduPersonScopeAffiliation'),
+        'FULL_ACCESS' => null, // all attributes
+    ),
 );
