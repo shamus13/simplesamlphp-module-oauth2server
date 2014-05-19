@@ -57,9 +57,11 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
                         $state['state'] = $_REQUEST['state'];
                     }
 
-                    $stateId = SimpleSAML_Auth_State::saveState($state, 'oauth2server:consent');
+                    $stateId = SimpleSAML_Auth_State::saveState($state, 'oauth2server:authorization/consent');
 
-                    $consentUri = SimpleSAML_Utilities::addURLparameter(SimpleSAML_Module::getModuleURL('oauth2server/consent.php'),
+                    $consentUri =
+                        SimpleSAML_Utilities::addURLparameter(
+                            SimpleSAML_Module::getModuleURL('oauth2server/authorization/consent.php'),
                         array('stateId' => $stateId));
 
                     SimpleSAML_Utilities::redirect($consentUri);
@@ -81,7 +83,9 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
             $responseParameters['error'] = $error;
             $responseParameters['error_description'] = $error_description;
 
-            $error_uri = SimpleSAML_Utilities::addURLparameter(SimpleSAML_Module::getModuleURL('oauth2server/error.php'),
+            $error_uri =
+                SimpleSAML_Utilities::addURLparameter(
+                    SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'),
                 $responseParameters);
 
             $responseParameters['error_uri'] = $error_uri;
@@ -108,7 +112,7 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
 $responseParameters['error'] = $error;
 $responseParameters['error_description'] = $error_description;
 
-$error_uri = SimpleSAML_Utilities::addURLparameter(SimpleSAML_Module::getModuleURL('oauth2server/error.php'),
-    $responseParameters);
+$error_uri = SimpleSAML_Utilities::addURLparameter(
+    SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $responseParameters);
 
 SimpleSAML_Utilities::redirect($error_uri);

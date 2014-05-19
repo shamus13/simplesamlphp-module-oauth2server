@@ -177,8 +177,8 @@ if ($errorCode === 401) {
 }
 
 if(array_key_exists('error', $response)) {
-    $error_uri = SimpleSAML_Utilities::addURLparameter(SimpleSAML_Module::getModuleURL('oauth2server/error.php'),
-        $response);
+    $error_uri = SimpleSAML_Utilities::addURLparameter(
+        SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $response);
 
     $response['error_uri'] = $error_uri;
 }

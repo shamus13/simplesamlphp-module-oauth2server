@@ -96,8 +96,8 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 }
 
 if ($errorCode !== 200 && !is_null($response)) {
-    $error_uri = SimpleSAML_Utilities::addURLparameter(SimpleSAML_Module::getModuleURL('oauth2server/error.php'),
-        $response);
+    $error_uri = SimpleSAML_Utilities::addURLparameter(
+        SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $response);
 
     $response['error_uri'] = $error_uri;
 }
