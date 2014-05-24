@@ -14,7 +14,7 @@ $errorCode = 200;
 $response = null;
 
 if ($config->getValue('enable_resource_owner_service', false)) {
-    if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW'])) {
+    if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW'])) { //todo: this is broken, bearer tokens dont parse like this
         $tokenType = $_SERVER['PHP_AUTH_USER'];
         $accessTokenId = $_SERVER['PHP_AUTH_PW'];
 
@@ -68,16 +68,12 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                 // no such token, token expired or revoked
                 $errorCode = 401;
 
-                header("WWW-Authenticate: Bearer error=\"invalid_token\", error_description=\"No such token\"");
-
                 $response = array('error' => 'invalid_token',
                     'error_description' => 'The token does not exist. It may have been revoked or expired.');
             }
         } else {
             // wrong token type
             $errorCode = 401;
-
-            header("WWW-Authenticate: Bearer error=\"invalid_token\", error_description=\"Only Bearer tokens are supported\"");
 
             $response = array('error' => 'invalid_token',
                 'error_description' => 'Only Bearer tokens are supported');
@@ -86,22 +82,29 @@ if ($config->getValue('enable_resource_owner_service', false)) {
         // error missing token
         $errorCode = 401;
 
-        header("WWW-Authenticate: Bearer");
+        $response = array();
     }
 } else {
     $errorCode = 403;
 
     $response = array('error' => 'invalid_request',
-        'error_description' => 'resourceOwner end point not enabled');
-}
-
-if ($errorCode !== 200 && !is_null($response)) {
-    $error_uri = SimpleSAML_Utilities::addURLparameter(
-        SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $response);
-
-    $response['error_uri'] = $error_uri;
+        'error_description' => 'resource owner end point not enabled');
 }
 
 header('X-PHP-Response-Code: ' . $errorCode, true, $errorCode);
 
-echo json_encode($response);
+if ($errorCode !== 200) {
+    $authHeader = "WWW-Authenticate: Bearer ";
+
+    if(array_key_exists('error', $response)) {
+        $authHeader .= 'error=\"'.$response['error'].'",error_description="'.$response['error_description'].'"';
+
+        if(array_key_exists('scope', $response)) {
+            $authHeader .= ',scope="'.$response['scope'].'"';
+        }
+    }
+
+    header($authHeader);
+} else {
+    echo json_encode($response);
+}
