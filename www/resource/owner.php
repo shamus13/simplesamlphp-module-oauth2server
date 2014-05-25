@@ -102,7 +102,7 @@ if ($errorCode !== 200) {
     $authHeader = "WWW-Authenticate: Bearer ";
 
     if(array_key_exists('error', $response)) {
-        $authHeader .= 'error=\"'.$response['error'].'",error_description="'.$response['error_description'].'"';
+        $authHeader .= 'error="'.$response['error'].'",error_description="'.$response['error_description'].'"';
 
         if(array_key_exists('scope', $response)) {
             $authHeader .= ',scope="'.$response['scope'].'"';
