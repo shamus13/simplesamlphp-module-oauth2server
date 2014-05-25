@@ -14,10 +14,15 @@ $errorCode = 200;
 $response = null;
 
 if ($config->getValue('enable_resource_owner_service', false)) {
-    if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW'])) { //todo: this is broken, bearer tokens dont parse like this
-        $tokenType = $_SERVER['PHP_AUTH_USER'];
-        $accessTokenId = $_SERVER['PHP_AUTH_PW'];
 
+    foreach(getallheaders() as $name => $value) {
+        if($name === 'Authorization' && strpos($value, 'Bearer ') === 0) {
+            $tokenType = 'Bearer';
+            $accessTokenId = base64_decode(trim(substr($value, 7)));
+        }
+    }
+
+    if (isset($accessTokenId)) {
         if ('Bearer' === $tokenType) {
             $storeConfig = $config->getValue('store');
             $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');

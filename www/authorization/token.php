@@ -17,8 +17,6 @@ $clients = $config->getValue('clients', array());
 
 $response = null;
 
-SimpleSAML_Logger::debug('token:' . var_export($_SERVER, true));
-
 $errorCode = 200;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
