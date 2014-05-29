@@ -23,12 +23,20 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         }
     }
 
-    public function getAuthorizationCode($codeId)
+    private function removeExpiredObjects() {
+        $cleanUpStatement = "delete from OAuth where expire < :expire";
+
+        $preparedCleanUpStatement = $this->pdo->prepare($cleanUpStatement);
+
+        $preparedCleanUpStatement->execute(array(':expire' => time()));
+    }
+
+    private function getObject($id)
     {
-        $query = 'select id, value, expire from AuthorizationCode where id = :id';
+        $query = 'select id, value, expire from OAuth2 where id = :id';
 
         $query = $this->pdo->prepare($query);
-        $query->execute(array(':id' => $codeId));
+        $query->execute(array(':id' => $id));
 
         if (($row = $query->fetch(PDO::FETCH_ASSOC)) != FALSE) {
             if ($row['expire'] > time()) {
@@ -49,148 +57,80 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         }
 
         return null;
+    }
+
+    private function addObject($object)
+    {
+        $insertStatement = "insert into OAuth2 values(:id, :value, :expire)";
+
+        $preparedInsertStatement = $this->pdo->prepare($insertStatement);
+
+        $preparedInsertStatement->execute(array(':id' => $object['id'],
+            ':value' => rawurlencode(serialize($object)),
+            ':expire' => $object['expire']
+        ));
+
+        return $object['id'];
+    }
+
+    private function removeObject($id)
+    {
+        $deleteStatement = "delete from OAuth2 where id = :id";
+
+        $preparedDeleteStatement = $this->pdo->prepare($deleteStatement);
+
+        $preparedDeleteStatement->execute(array(':id' => $id));
+    }
+
+
+    public function getAuthorizationCode($codeId)
+    {
+        return $this->getObject($codeId);
     }
 
     public function addAuthorizationCode($code)
     {
-        $cleanUpStatement = "delete from AuthorizationCode where expire < :expire";
+        $this->removeExpiredObjects();
 
-        $preparedCleanUpStatement = $this->pdo->prepare($cleanUpStatement);
-
-        $preparedCleanUpStatement->execute(array(':expire' => time()));
-
-        $insertStatement = "insert into AuthorizationCode values(:id, :value, :expire)";
-
-        $preparedInsertStatement = $this->pdo->prepare($insertStatement);
-
-        $preparedInsertStatement->execute(array(':id' => $code['id'],
-            ':value' => rawurlencode(serialize($code)),
-            ':expire' => $code['expire']
-        ));
-
-        return $code['id'];
+        return $this->addObject($code);
     }
 
     public function removeAuthorizationCode($codeId)
     {
-        $deleteStatement = "delete from AuthorizationCode where id = :id";
-
-        $preparedDeleteStatement = $this->pdo->prepare($deleteStatement);
-
-        $preparedDeleteStatement->execute(array(':id' => $codeId));
+        $this->removeObject($codeId);
     }
 
     public function getRefreshToken($tokenId)
     {
-        $query = 'select id, value, expire from RefreshToken where id = :id';
-
-        $query = $this->pdo->prepare($query);
-        $query->execute(array(':id' => $tokenId));
-
-        if (($row = $query->fetch(PDO::FETCH_ASSOC)) != FALSE) {
-            if ($row['expire'] > time()) {
-                $value = $row['value'];
-
-                if (is_resource($value)) {
-                    $value = stream_get_contents($value);
-                }
-
-                $value = urldecode($value);
-                $value = unserialize($value);
-
-                $value['id'] = $row['id'];
-                $value['expire'] = $row['expire'];
-
-                return $value;
-            }
-        }
-
-        return null;
+        return $this->getObject($tokenId);
     }
 
     public function addRefreshToken($token)
     {
-        $cleanUpStatement = "delete from RefreshToken where expire < :expire";
+        $this->removeExpiredObjects();
 
-        $preparedCleanUpStatement = $this->pdo->prepare($cleanUpStatement);
-
-        $preparedCleanUpStatement->execute(array(':expire' => time()));
-
-        $insertStatement = "insert into RefreshToken values(:id, :value, :expire)";
-
-        $preparedInsertStatement = $this->pdo->prepare($insertStatement);
-
-        $preparedInsertStatement->execute(array(':id' => $token['id'],
-            ':value' => rawurlencode(serialize($token)),
-            ':expire' => $token['expire']
-        ));
-
-        return $token['id'];
+        return $this->addObject($token);
     }
 
     public function removeRefreshToken($tokenId)
     {
-        $deleteStatement = "delete from RefreshToken where id = :id";
-
-        $preparedDeleteStatement = $this->pdo->prepare($deleteStatement);
-
-        $preparedDeleteStatement->execute(array(':id' => $tokenId));
+        $this->removeObject($tokenId);
     }
 
     public function getAccessToken($tokenId)
     {
-        $query = 'select id, value, expire from AccessToken where id = :id';
-
-        $query = $this->pdo->prepare($query);
-        $query->execute(array(':id' => $tokenId));
-
-        if (($row = $query->fetch(PDO::FETCH_ASSOC)) != FALSE) {
-            if ($row['expire'] > time()) {
-                $value = $row['value'];
-
-                if (is_resource($value)) {
-                    $value = stream_get_contents($value);
-                }
-
-                $value = urldecode($value);
-                $value = unserialize($value);
-
-                $value['id'] = $row['id'];
-                $value['expire'] = $row['expire'];
-
-                return $value;
-            }
-        }
-
-        return null;
+        return $this->getObject($tokenId);
     }
 
     public function addAccessToken($token)
     {
-        $cleanUpStatement = "delete from AccessToken where expire < :expire";
+        $this->removeExpiredObjects();
 
-        $preparedCleanUpStatement = $this->pdo->prepare($cleanUpStatement);
-
-        $preparedCleanUpStatement->execute(array(':expire' => time()));
-
-        $insertStatement = "insert into AccessToken values(:id, :value, :expire)";
-
-        $preparedInsertStatement = $this->pdo->prepare($insertStatement);
-
-        $preparedInsertStatement->execute(array(':id' => $token['id'],
-            ':value' => rawurlencode(serialize($token)),
-            ':expire' => $token['expire']
-        ));
-
-        return $token['id'];
+        return $this->addObject($token);
     }
 
     public function removeAccessToken($tokenId)
     {
-        $deleteStatement = "delete from AccessToken where id = :id";
-
-        $preparedDeleteStatement = $this->pdo->prepare($deleteStatement);
-
-        $preparedDeleteStatement->execute(array(':id' => $tokenId));
+        $this->removeObject($tokenId);
     }
 }
