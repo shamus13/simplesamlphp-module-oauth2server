@@ -24,4 +24,12 @@ abstract class sspmod_oauth2server_Store_Store
 
     public abstract function removeAccessToken($tokenId);
 
+    public abstract function getUser($userId);
+
+    public abstract function addUser($user);
+
+    public abstract function updateUser($user);
+
+    public abstract function removeUser($userId);
+
 }

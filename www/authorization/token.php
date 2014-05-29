@@ -44,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         $authorizationTokenId = null;
                         $authorizationToken = null;
+                        $user = null;
 
                         if ($_POST['grant_type'] === 'authorization_code' && array_key_exists('code', $_POST)) {
                             $authorizationTokenId = $_POST['code'];
@@ -53,12 +54,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $authorizationToken = $store->getRefreshToken($authorizationTokenId);
                         }
 
-                        if (!is_null($authorizationTokenId) && !is_null($authorizationToken)) {
+                        if (!is_null($authorizationToken)) {
+                            $user = $store->getUser($authorizationToken['userId']);
+                        }
+
+                        if (!is_null($user)) {
                             if ($clientId == $authorizationToken['clientId']) {
                                 $redirectUri = array_key_exists('redirect_uri', $_POST) ? $_POST['redirect_uri'] : null;
 
                                 if ($authorizationToken['redirectUri'] == $redirectUri) {
-                                    if($_POST['grant_type'] === 'authorization_code') {
+                                    if ($_POST['grant_type'] === 'authorization_code') {
                                         $store->removeAuthorizationCode($_POST['code']);
                                     }
 
@@ -71,18 +76,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                     $accessToken =
                                         $tokenFactory->createBearerAccessToken($authorizationToken['clientId'],
-                                            $authorizationToken['scopes'], $authorizationToken['attributes']);
+                                            $authorizationToken['scopes'], $authorizationToken['userId']);
 
                                     if ($_POST['grant_type'] === 'authorization_code') {
                                         $refreshToken =
                                             $tokenFactory->createRefreshToken($authorizationToken['clientId'],
                                                 $authorizationToken['redirectUri'],
                                                 $authorizationToken['scopes'],
-                                                $authorizationToken['attributes']);
+                                                $authorizationToken['userId']);
 
                                         $store->addRefreshToken($refreshToken);
+
+                                        if ($refreshToken['expire'] > $user['expire']) {
+                                            $user['expire'] = $refreshToken['expire'];
+                                        }
+
+                                        $store->updateUser($user);
+
                                     } else {
                                         $refreshToken = $authorizationToken;
+                                    }
+
+                                    if ($accessToken['expire'] > $refreshToken['expire']) {
+                                        $accessToken['expire'] = $refreshToken['expire'];
                                     }
 
                                     $store->addAccessToken($accessToken);
@@ -174,7 +190,7 @@ if ($errorCode === 401) {
     header("WWW-Authenticate: Basic realm=\"OAuth 2.0\"");
 }
 
-if(array_key_exists('error', $response)) {
+if (array_key_exists('error', $response)) {
     $error_uri = SimpleSAML_Utilities::addURLparameter(
         SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $response);
 

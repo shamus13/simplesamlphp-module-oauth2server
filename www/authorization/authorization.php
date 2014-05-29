@@ -62,7 +62,7 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
                     $consentUri =
                         SimpleSAML_Utilities::addURLparameter(
                             SimpleSAML_Module::getModuleURL('oauth2server/authorization/consent.php'),
-                        array('stateId' => $stateId));
+                            array('stateId' => $stateId));
 
                     SimpleSAML_Utilities::redirect($consentUri);
 
@@ -86,7 +86,7 @@ if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $c
             $error_uri =
                 SimpleSAML_Utilities::addURLparameter(
                     SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'),
-                $responseParameters);
+                    $responseParameters);
 
             $responseParameters['error_uri'] = $error_uri;
 

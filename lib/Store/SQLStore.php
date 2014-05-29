@@ -23,8 +23,9 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         }
     }
 
-    private function removeExpiredObjects() {
-        $cleanUpStatement = "delete from OAuth where expire < :expire";
+    private function removeExpiredObjects()
+    {
+        $cleanUpStatement = "delete from OAuth2 where expire < :expire";
 
         $preparedCleanUpStatement = $this->pdo->prepare($cleanUpStatement);
 
@@ -73,6 +74,20 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         return $object['id'];
     }
 
+    private function updateObject($object)
+    {
+        $updateStatement = "update OAuth2 set value = :value, expire = :expire where id = :id";
+
+        $preparedUpdateStatement = $this->pdo->prepare($updateStatement);
+
+        $preparedUpdateStatement->execute(array(':id' => $object['id'],
+            ':value' => rawurlencode(serialize($object)),
+            ':expire' => $object['expire']
+        ));
+
+        return $object['id'];
+    }
+
     private function removeObject($id)
     {
         $deleteStatement = "delete from OAuth2 where id = :id";
@@ -81,7 +96,6 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
 
         $preparedDeleteStatement->execute(array(':id' => $id));
     }
-
 
     public function getAuthorizationCode($codeId)
     {
@@ -132,5 +146,27 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
     public function removeAccessToken($tokenId)
     {
         $this->removeObject($tokenId);
+    }
+
+    public function getUser($userId)
+    {
+        return $this->getObject($userId);
+    }
+
+    public function addUser($user)
+    {
+        $this->removeExpiredObjects();
+
+        return $this->addObject($user);
+    }
+
+    public function updateUser($user)
+    {
+        $this->updateObject($user);
+    }
+
+    public function removeUser($userId)
+    {
+        $this->removeObject($userId);
     }
 }

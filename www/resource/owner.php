@@ -15,8 +15,8 @@ $response = null;
 
 if ($config->getValue('enable_resource_owner_service', false)) {
 
-    foreach(getallheaders() as $name => $value) {
-        if($name === 'Authorization' && strpos($value, 'Bearer ') === 0) {
+    foreach (getallheaders() as $name => $value) {
+        if ($name === 'Authorization' && strpos($value, 'Bearer ') === 0) {
             $tokenType = 'Bearer';
             $accessTokenId = base64_decode(trim(substr($value, 7)));
         }
@@ -31,6 +31,10 @@ if ($config->getValue('enable_resource_owner_service', false)) {
             $accessToken = $store->getAccessToken($accessTokenId);
 
             if ($accessToken != null) {
+                $user = $store->getUser($accessToken['userId']);
+            }
+
+            if (isset($user) && $user != null) {
                 $configuredAttributeScopes = $config->getValue('resource_owner_service_attribute_scopes', array());
 
                 $attributeScopes = array_intersect($accessToken['scopes'], array_keys($configuredAttributeScopes));
@@ -40,8 +44,8 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
                     $attributeNames = array(); // null means grab all attributes
 
-                    foreach($attributeScopes as $scope) {
-                        if(is_array($attributeNames) && is_array($configuredAttributeScopes[$scope])) {
+                    foreach ($attributeScopes as $scope) {
+                        if (is_array($attributeNames) && is_array($configuredAttributeScopes[$scope])) {
                             $attributeNames = array_merge($attributeNames, $configuredAttributeScopes[$scope]);
                         } else {
                             $attributeNames = null;
@@ -50,16 +54,16 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                         }
                     }
 
-                    if(is_array($attributeNames)) {
+                    if (is_array($attributeNames)) {
                         $response = array();
 
-                        foreach(array_unique($attributeNames) as $attributeName) {
-                            if(array_key_exists($attributeName, $accessToken['attributes'])) {
-                                $response[$attributeName] = $accessToken['attributes'][$attributeName];
+                        foreach (array_unique($attributeNames) as $attributeName) {
+                            if (array_key_exists($attributeName, $user['attributes'])) {
+                                $response[$attributeName] = $user['attributes'][$attributeName];
                             }
                         }
                     } else {
-                        $response = $accessToken['attributes'];
+                        $response = $user['attributes'];
                     }
                 } else {
                     $errorCode = 403;
@@ -101,11 +105,11 @@ header('X-PHP-Response-Code: ' . $errorCode, true, $errorCode);
 if ($errorCode !== 200) {
     $authHeader = "WWW-Authenticate: Bearer ";
 
-    if(array_key_exists('error', $response)) {
-        $authHeader .= 'error="'.$response['error'].'",error_description="'.$response['error_description'].'"';
+    if (array_key_exists('error', $response)) {
+        $authHeader .= 'error="' . $response['error'] . '",error_description="' . $response['error_description'] . '"';
 
-        if(array_key_exists('scope', $response)) {
-            $authHeader .= ',scope="'.$response['scope'].'"';
+        if (array_key_exists('scope', $response)) {
+            $authHeader .= ',scope="' . $response['scope'] . '"';
         }
     }
 

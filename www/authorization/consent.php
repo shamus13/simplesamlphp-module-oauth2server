@@ -19,8 +19,10 @@ $authorizationCodeFactory =
         $config->getValue('refresh_token_time_to_live', 3600)
     );
 
+$idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
+
 $codeEntry = $authorizationCodeFactory->createCode($state['clientId'],
-    $state['redirectUri'], array(), $as->getAttributes());
+    $state['redirectUri'], array(), $as->getAttributes()[$idAttribute][0]);
 
 if (array_key_exists('grant', $_REQUEST)) {
     $codeEntry['scopes'] = array_intersect($state['requestedScopes'], $_REQUEST['grantedScopes']);
@@ -30,6 +32,21 @@ if (array_key_exists('grant', $_REQUEST)) {
     $store = new $storeClass($storeConfig);
 
     $store->addAuthorizationCode($codeEntry);
+
+    $user = $store->getUser($codeEntry['userId']);
+
+    if (is_array($user)) {
+        $user['attributes'] = $as->getAttributes();
+
+        if ($codeEntry['expire'] > $user['expire']) {
+            $user['expire'] = $codeEntry['expire'];
+        }
+
+        $store->updateUser($user);
+    } else {
+        $store->addUser(array('id' => $codeEntry['userId'], 'attributes' => $as->getAttributes(),
+            'expire' => $codeEntry['expire']));
+    }
 
     $response = array('code' => $codeEntry['id']);
 

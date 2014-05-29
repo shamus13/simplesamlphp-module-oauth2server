@@ -13,7 +13,7 @@ class sspmod_oauth2server_OAuth2_TokenFactory
         $this->refreshTokenTimeToLive = $refreshTokenTimeToLive;
     }
 
-    public function createCode($clientId, $redirectUri, $scopes, $attributes)
+    public function createCode($clientId, $redirectUri, $scopes, $userId)
     {
         return array(
             'id' => SimpleSAML_Utilities::generateID(),
@@ -22,10 +22,10 @@ class sspmod_oauth2server_OAuth2_TokenFactory
             'redirectUri' => $redirectUri,
             'scopes' => $scopes,
             'expire' => time() + $this->authorizationCodeTimeToLive,
-            'attributes' => $attributes);
+            'userId' => $userId);
     }
 
-    public function createRefreshToken($clientId, $redirectUri, $scopes, $attributes)
+    public function createRefreshToken($clientId, $redirectUri, $scopes, $userId)
     {
         return array(
             'id' => SimpleSAML_Utilities::generateID(),
@@ -34,16 +34,17 @@ class sspmod_oauth2server_OAuth2_TokenFactory
             'redirectUri' => $redirectUri,
             'scopes' => $scopes,
             'expire' => time() + $this->refreshTokenTimeToLive,
-            'attributes' => $attributes);
+            'userId' => $userId);
     }
 
-    public function createBearerAccessToken($clientId, $scopes, $attributes) {
+    public function createBearerAccessToken($clientId, $scopes, $userId)
+    {
         return array(
             'id' => SimpleSAML_Utilities::generateID(),
             'type' => 'Bearer',
             'clientId' => $clientId,
             'scopes' => $scopes,
             'expire' => time() + $this->accessTokenTimeToLive,
-            'attributes' => $attributes);
+            'userId' => $userId);
     }
 }
