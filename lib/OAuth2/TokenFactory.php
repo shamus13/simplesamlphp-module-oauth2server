@@ -17,7 +17,7 @@ class sspmod_oauth2server_OAuth2_TokenFactory
     {
         return array(
             'id' => SimpleSAML_Utilities::generateID(),
-            'type' => 'AccessToken',
+            'type' => 'AuthorizationCode',
             'clientId' => $clientId,
             'redirectUri' => $redirectUri,
             'scopes' => $scopes,
