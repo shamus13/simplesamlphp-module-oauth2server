@@ -1,12 +1,34 @@
-<?php
 /*
- *
- *
- * grant_type    - only 'code' corresponding to the authorization code grant flow is supported
- * code          - authorization code
- * client_id     - a configured id string agreed upon by any given client and authorization server
- * redirect_uri  - same redirect_uri as used for the authorization code grant request
- */
+*    simpleSAMLphp-oauth2server is an OAuth 2.0 authorization and resource server in the form of a simpleSAMLphp module
+*
+*    Copyright (C) 2014  Bjorn R. Jensen
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*
+*    grant_type    - 'code' corresponding to the authorization code grant flow
+*    code          - authorization code issued by authorization end point during authorization code grant flow.
+*
+*       or
+*
+*    grant_type    - 'refresh_token' corresponding to the refresh flow.
+*    refresh_token - refresh token previously issued by this token end point.
+*
+*    client_id     - a configured id string agreed upon by any given client and authorization server
+*    redirect_uri  - same redirect_uri as used for the authorization code grant request
+*/
+<?php
 session_cache_limiter('nocache');
 
 header('Content-Type: application/json; charset=utf-8');
