@@ -38,7 +38,7 @@ if (array_key_exists('grant', $_REQUEST)) {
     if (is_array($user)) {
         $user['attributes'] = $as->getAttributes();
 
-        $liveTokens = array();
+        $liveTokens = array($codeEntry['id']);
 
         foreach($user['authorizationCodes'] as $tokenId) {
             if(!is_null($store->getAuthorizationCode($tokenId))) {
@@ -48,8 +48,6 @@ if (array_key_exists('grant', $_REQUEST)) {
 
         $user['authorizationCodes'] = $liveTokens;
 
-        array_push($user['authorizationCodes'], $codeEntry['id']);
-
         if ($codeEntry['expire'] > $user['expire']) {
             $user['expire'] = $codeEntry['expire'];
         }
@@ -57,7 +55,8 @@ if (array_key_exists('grant', $_REQUEST)) {
         $store->updateUser($user);
     } else {
         $store->addUser(array('id' => $codeEntry['userId'], 'attributes' => $as->getAttributes(),
-            'authorizationCodes' => array($codeEntry['id']), 'expire' => $codeEntry['expire']));
+            'authorizationCodes' => array($codeEntry['id']), 'refreshTokens' => array(), 'accessTokens' => array(),
+            'expire' => $codeEntry['expire']));
     }
 
     $response = array('code' => $codeEntry['id']);

@@ -84,6 +84,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                         $store->addRefreshToken($refreshToken);
 
+                                        $liveRefreshTokens = array($refreshToken['id']);
+
+                                        foreach($user['refreshTokens'] as $tokenId) {
+                                            if(!is_null($store->getRefreshToken($tokenId))) {
+                                                array_push($liveRefreshTokens, $tokenId);
+                                            }
+                                        }
+
+                                        $user['refreshTokens'] = $liveRefreshTokens;
+
                                         if ($refreshToken['expire'] > $user['expire']) {
                                             $user['expire'] = $refreshToken['expire'];
                                         }
@@ -101,6 +111,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     }
 
                                     $store->addAccessToken($accessToken);
+
+                                    $liveAccessTokens = array($accessToken['id']);
+
+                                    foreach($user['accessTokens'] as $tokenId) {
+                                        if(!is_null($store->getAccessToken($tokenId))) {
+                                            array_push($liveAccessTokens, $tokenId);
+                                        }
+                                    }
+
+                                    $user['accessTokens'] = $liveRefreshTokens;
 
                                     $response = array('access_token' => $accessToken['id'],
                                         'token_type' => $accessToken['type'],
