@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         if ($_POST['grant_type'] === 'authorization_code' && array_key_exists('code', $_POST)) {
                             $authorizationTokenId = $_POST['code'];
                             $authorizationToken = $store->getAuthorizationCode($authorizationTokenId);
+                            $store->removeAuthorizationCode($_POST['code']);
                         } elseif ($_POST['grant_type'] === 'refresh_token' && array_key_exists('refresh_token', $_POST)) {
                             $authorizationTokenId = $_POST['refresh_token'];
                             $authorizationToken = $store->getRefreshToken($authorizationTokenId);
@@ -63,10 +64,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 $redirectUri = array_key_exists('redirect_uri', $_POST) ? $_POST['redirect_uri'] : null;
 
                                 if ($authorizationToken['redirectUri'] == $redirectUri) {
-                                    if ($_POST['grant_type'] === 'authorization_code') {
-                                        $store->removeAuthorizationCode($_POST['code']);
-                                    }
-
                                     $tokenFactory =
                                         new sspmod_oauth2server_OAuth2_TokenFactory(
                                             $config->getValue('authorization_code_time_to_live', 300),
@@ -91,7 +88,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             $user['expire'] = $refreshToken['expire'];
                                         }
 
-                                        $store->updateUser($user);
+                                        if(($index = array_search($authorizationTokenId, $user['authorizationCodes'])) !== false) {
+                                            unset($user['authorizationCodes'][$index]);
+                                        }
 
                                     } else {
                                         $refreshToken = $authorizationToken;
@@ -129,6 +128,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 $errorCode = 400;
                             }
+
+                            $store->updateUser($user);
+
                         } else if (is_null($authorizationTokenId)) {
                             if ($_POST['grant_type'] === 'authorization_code') {
                                 $response = array('error' => 'invalid_request',
