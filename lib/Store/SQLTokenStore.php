@@ -20,7 +20,7 @@
 */
 <?php
 
-class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
+class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_TokenStore
 {
     public $pdo;
     public $driver;

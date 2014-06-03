@@ -20,7 +20,7 @@
 */
 <?php
 
-abstract class sspmod_oauth2server_Store_Store
+abstract class sspmod_oauth2server_Store_TokenStore
 {
     public function __construct($config)
     {
