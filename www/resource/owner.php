@@ -1,3 +1,4 @@
+<?php
 /*
 *    simpleSAMLphp-oauth2server is an OAuth 2.0 authorization and resource server in the form of a simpleSAMLphp module
 *
@@ -19,7 +20,7 @@
 *
 *    OAuth2 resource end point for accessing attributes associated with the resource owner
 */
-<?php
+
 session_cache_limiter('nocache');
 
 header('Content-Type: application/json; charset=utf-8');

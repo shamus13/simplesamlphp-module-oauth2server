@@ -1,3 +1,4 @@
+<?php
 /*
 *    simpleSAMLphp-oauth2server is an OAuth 2.0 authorization and resource server in the form of a simpleSAMLphp module
 *
@@ -18,7 +19,6 @@
 *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 *
 */
-<?php
 
 class sspmod_oauth2server_OAuth2_TokenFactory
 {

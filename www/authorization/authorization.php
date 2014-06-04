@@ -1,3 +1,4 @@
+<?php
 /*
 *    simpleSAMLphp-oauth2server is an OAuth 2.0 authorization and resource server in the form of a simpleSAMLphp module
 *
@@ -23,7 +24,7 @@
 *    scope         - optional configured scope strings agreed upon by any given client and authorization server
 *    state         - optional string which clients can use to maintain state during authentication and authorization flows.
 */
-<?php
+
 session_cache_limiter('nocache');
 
 $config = SimpleSAML_Configuration::getConfig('module_oauth2server.php');

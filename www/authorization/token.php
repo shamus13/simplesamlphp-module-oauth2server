@@ -1,3 +1,4 @@
+<?php
 /*
 *    simpleSAMLphp-oauth2server is an OAuth 2.0 authorization and resource server in the form of a simpleSAMLphp module
 *
@@ -28,7 +29,7 @@
 *    client_id     - a configured id string agreed upon by any given client and authorization server
 *    redirect_uri  - same redirect_uri as used for the authorization code grant request
 */
-<?php
+
 session_cache_limiter('nocache');
 
 header('Content-Type: application/json; charset=utf-8');
