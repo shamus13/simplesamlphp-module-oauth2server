@@ -36,7 +36,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 $config = SimpleSAML_Configuration::getConfig('module_oauth2server.php');
 
-$clients = $config->getValue('clients', array());
+$clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
 
 $response = null;
 
@@ -56,10 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if (!is_null($clientId)) {
-                if (array_key_exists($clientId, $clients)) {
-                    if ((!isset($clients[$clientId]['password']) && is_null($password)) ||
-                        $password === $clients[$clientId]['password']
-                    ) {
+                $client = $clientStore->getClient($clientId);
+
+                if (!is_null($client)) {
+                    if ((!isset($client['password']) && is_null($password)) || $password === $client['password']) {
 
                         $storeConfig = $config->getValue('store');
                         $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');

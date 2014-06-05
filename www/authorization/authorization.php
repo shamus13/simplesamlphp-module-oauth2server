@@ -33,7 +33,7 @@ $as = new SimpleSAML_Auth_Simple($config->getValue('authsource'));
 
 $as->requireAuth();
 
-$clients = $config->getValue('clients', array());
+$clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
 
 $responseParameters = array();
 
@@ -41,9 +41,11 @@ if (isset($_REQUEST['state'])) {
     $responseParameters['state'] = $_REQUEST['state'];
 }
 
-if (isset($_REQUEST['client_id']) && array_key_exists($_REQUEST['client_id'], $clients)) {
-    $client = $clients[$_REQUEST['client_id']];
+if(isset($_REQUEST['client_id'])) {
+    $client = $clientStore->getClient($_REQUEST['client_id']);
+}
 
+if (isset($client)) {
     if (array_key_exists('redirect_uri', $client) &&
         is_array($client['redirect_uri']) &&
         count($client['redirect_uri']) > 0
