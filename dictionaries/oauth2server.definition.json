@@ -22,5 +22,35 @@
     },
     "authorization_error_temporarily_unavailable": {
         "en": "Server temporarily unavailable"
+    },
+    "consent_header":{
+        "en": "Token Consent"
+    },
+    "consent_deny_description":{
+        "en": "Refuse"
+    },
+    "consent_grant_description":{
+        "en": "Consent"
+    },
+    "consent_scope_name_header" : {
+        "en": "Requested Scope"
+    },
+    "consent_scope_grant_header": {
+        "en": "Grant consent"
+    },
+    "status_header": {
+        "en": "Live tokens"
+    },
+    "status_token_id_header": {
+        "en": "Token id"
+    },
+    "status_token_type_header": {
+        "en": "Token type"
+    },
+    "status_token_client_id_header": {
+        "en": "Client Id"
+    },
+    "status_token_expire_time_header": {
+        "en": "Expires"
     }
 }

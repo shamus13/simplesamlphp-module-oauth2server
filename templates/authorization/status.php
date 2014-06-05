@@ -27,10 +27,10 @@ $this->includeAtTemplateBase('includes/header.php');
     <form action="<?php echo htmlspecialchars($this->data['form']); ?>" method="post">
         <table>
             <tr>
-                <th><?php echo $this->t('oauth2server:oauth2server:status_token_id_header'); ?></th>
-                <th><?php echo $this->t('oauth2server:oauth2server:status_token_type_header'); ?></th>
-                <th><?php echo $this->t('oauth2server:oauth2server:status_token_client_id_header'); ?></th>
-                <th><?php echo $this->t('oauth2server:oauth2server:status_token_expire_time_header'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_id_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_type_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_client_id_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_expire_time_header}'); ?></th>
             </tr>
 
             <?php
