@@ -20,7 +20,7 @@
 *
 */
 
-class sspmod_oauth2server_Store_TokenStore
+class sspmod_oauth2server_OAuth2_TokenStore
 {
     private $store;
 
