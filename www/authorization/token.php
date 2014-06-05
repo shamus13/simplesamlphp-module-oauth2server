@@ -143,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         }
                                     }
 
-                                    $user['accessTokens'] = $liveRefreshTokens;
+                                    $user['accessTokens'] = $liveAccessTokens;
 
                                     $response = array('access_token' => $accessToken['id'],
                                         'token_type' => $accessToken['type'],
