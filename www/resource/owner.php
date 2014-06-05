@@ -43,7 +43,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
         if ('Bearer' === $tokenType) {
             $storeConfig = $config->getValue('store');
             $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
-            $tokenStore = new TokenStore(new $storeClass($storeConfig));
+            $tokenStore = new sspmod_oauth2server_Store_TokenStore(new $storeClass($storeConfig));
 
             $accessToken = $tokenStore->getAccessToken($accessTokenId);
 
