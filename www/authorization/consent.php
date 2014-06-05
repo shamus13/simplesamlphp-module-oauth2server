@@ -49,11 +49,11 @@ if (array_key_exists('grant', $_REQUEST)) {
 
     $storeConfig = $config->getValue('store');
     $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
-    $store = new $storeClass($storeConfig);
+    $tokenStore = new TokenStore(new $storeClass($storeConfig));
 
-    $store->addAuthorizationCode($codeEntry);
+    $tokenStore->addAuthorizationCode($codeEntry);
 
-    $user = $store->getUser($codeEntry['userId']);
+    $user = $tokenStore->getUser($codeEntry['userId']);
 
     if (is_array($user)) {
         $user['attributes'] = $as->getAttributes();
@@ -61,7 +61,7 @@ if (array_key_exists('grant', $_REQUEST)) {
         $liveTokens = array($codeEntry['id']);
 
         foreach($user['authorizationCodes'] as $tokenId) {
-            if(!is_null($store->getAuthorizationCode($tokenId))) {
+            if(!is_null($tokenStore->getAuthorizationCode($tokenId))) {
                 array_push($liveTokens, $tokenId);
             }
         }
@@ -72,9 +72,9 @@ if (array_key_exists('grant', $_REQUEST)) {
             $user['expire'] = $codeEntry['expire'];
         }
 
-        $store->updateUser($user);
+        $tokenStore->updateUser($user);
     } else {
-        $store->addUser(array('id' => $codeEntry['userId'], 'attributes' => $as->getAttributes(),
+        $tokenStore->addUser(array('id' => $codeEntry['userId'], 'attributes' => $as->getAttributes(),
             'authorizationCodes' => array($codeEntry['id']), 'refreshTokens' => array(), 'accessTokens' => array(),
             'expire' => $codeEntry['expire']));
     }

@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         $storeConfig = $config->getValue('store');
                         $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
-                        $store = new $storeClass($storeConfig);
+                        $tokenStore = new TokenStore(new $storeClass($storeConfig));
 
                         $authorizationTokenId = null;
                         $authorizationToken = null;
@@ -71,15 +71,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         if ($_POST['grant_type'] === 'authorization_code' && array_key_exists('code', $_POST)) {
                             $authorizationTokenId = $_POST['code'];
-                            $authorizationToken = $store->getAuthorizationCode($authorizationTokenId);
-                            $store->removeAuthorizationCode($_POST['code']);
+                            $authorizationToken = $tokenStore->getAuthorizationCode($authorizationTokenId);
+                            $tokenStore->removeAuthorizationCode($_POST['code']);
                         } elseif ($_POST['grant_type'] === 'refresh_token' && array_key_exists('refresh_token', $_POST)) {
                             $authorizationTokenId = $_POST['refresh_token'];
-                            $authorizationToken = $store->getRefreshToken($authorizationTokenId);
+                            $authorizationToken = $tokenStore->getRefreshToken($authorizationTokenId);
                         }
 
                         if (!is_null($authorizationToken)) {
-                            $user = $store->getUser($authorizationToken['userId']);
+                            $user = $tokenStore->getUser($authorizationToken['userId']);
                         }
 
                         if (!is_null($user)) {
@@ -105,12 +105,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 $authorizationToken['scopes'],
                                                 $authorizationToken['userId']);
 
-                                        $store->addRefreshToken($refreshToken);
+                                        $tokenStore->addRefreshToken($refreshToken);
 
                                         $liveRefreshTokens = array($refreshToken['id']);
 
                                         foreach($user['refreshTokens'] as $tokenId) {
-                                            if(!is_null($store->getRefreshToken($tokenId))) {
+                                            if(!is_null($tokenStore->getRefreshToken($tokenId))) {
                                                 array_push($liveRefreshTokens, $tokenId);
                                             }
                                         }
@@ -133,12 +133,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         $accessToken['expire'] = $refreshToken['expire'];
                                     }
 
-                                    $store->addAccessToken($accessToken);
+                                    $tokenStore->addAccessToken($accessToken);
 
                                     $liveAccessTokens = array($accessToken['id']);
 
                                     foreach($user['accessTokens'] as $tokenId) {
-                                        if(!is_null($store->getAccessToken($tokenId))) {
+                                        if(!is_null($tokenStore->getAccessToken($tokenId))) {
                                             array_push($liveAccessTokens, $tokenId);
                                         }
                                     }
@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 $errorCode = 400;
                             }
 
-                            $store->updateUser($user);
+                            $tokenStore->updateUser($user);
 
                         } else if (is_null($authorizationTokenId)) {
                             if ($_POST['grant_type'] === 'authorization_code') {

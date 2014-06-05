@@ -43,12 +43,12 @@ if ($config->getValue('enable_resource_owner_service', false)) {
         if ('Bearer' === $tokenType) {
             $storeConfig = $config->getValue('store');
             $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
-            $store = new $storeClass($storeConfig);
+            $tokenStore = new TokenStore(new $storeClass($storeConfig));
 
-            $accessToken = $store->getAccessToken($accessTokenId);
+            $accessToken = $tokenStore->getAccessToken($accessTokenId);
 
             if ($accessToken != null) {
-                $user = $store->getUser($accessToken['userId']);
+                $user = $tokenStore->getUser($accessToken['userId']);
             }
 
             if (isset($user) && $user != null) {

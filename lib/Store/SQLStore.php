@@ -20,15 +20,13 @@
 *
 */
 
-class sspmod_oauth2server_Store_SQLTokenStore extends sspmod_oauth2server_Store_TokenStore
+class sspmod_oauth2server_Store_SQLTokenStore extends sspmod_oauth2server_Store_Store
 {
     public $pdo;
     public $driver;
 
     public function __construct($config)
     {
-        parent::__construct($config);
-
         $dsn = $config['dsn'];
         $username = $config['username'];
         $password = $config['password'];
@@ -43,7 +41,7 @@ class sspmod_oauth2server_Store_SQLTokenStore extends sspmod_oauth2server_Store_
         }
     }
 
-    private function removeExpiredObjects()
+    public function removeExpiredObjects()
     {
         $cleanUpStatement = "delete from OAuth2 where expire < :expire";
 
@@ -52,7 +50,7 @@ class sspmod_oauth2server_Store_SQLTokenStore extends sspmod_oauth2server_Store_
         $preparedCleanUpStatement->execute(array(':expire' => time()));
     }
 
-    private function getObject($id)   //TODO: add object type check
+    public function getObject($id)   //TODO: add object type check
     {
         $query = 'select id, value, expire from OAuth2 where id = :id';
 
@@ -80,7 +78,7 @@ class sspmod_oauth2server_Store_SQLTokenStore extends sspmod_oauth2server_Store_
         return null;
     }
 
-    private function addObject($object)  //TODO: add object type check
+    public function addObject($object)  //TODO: add object type check
     {
         $insertStatement = "insert into OAuth2 values(:id, :value, :expire)";
 
@@ -94,7 +92,7 @@ class sspmod_oauth2server_Store_SQLTokenStore extends sspmod_oauth2server_Store_
         return $object['id'];
     }
 
-    private function updateObject($object)  //TODO: add object type check
+    public function updateObject($object)  //TODO: add object type check
     {
         $updateStatement = "update OAuth2 set value = :value, expire = :expire where id = :id";
 
@@ -108,85 +106,12 @@ class sspmod_oauth2server_Store_SQLTokenStore extends sspmod_oauth2server_Store_
         return $object['id'];
     }
 
-    private function removeObject($id)
+    public function removeObject($id)
     {
         $deleteStatement = "delete from OAuth2 where id = :id";
 
         $preparedDeleteStatement = $this->pdo->prepare($deleteStatement);
 
         $preparedDeleteStatement->execute(array(':id' => $id));
-    }
-
-    public function getAuthorizationCode($codeId)
-    {
-        return $this->getObject($codeId);
-    }
-
-    public function addAuthorizationCode($code)
-    {
-        $this->removeExpiredObjects();
-
-        return $this->addObject($code);
-    }
-
-    public function removeAuthorizationCode($codeId)
-    {
-        $this->removeObject($codeId);
-    }
-
-    public function getRefreshToken($tokenId)
-    {
-        return $this->getObject($tokenId);
-    }
-
-    public function addRefreshToken($token)
-    {
-        $this->removeExpiredObjects();
-
-        return $this->addObject($token);
-    }
-
-    public function removeRefreshToken($tokenId)
-    {
-        $this->removeObject($tokenId);
-    }
-
-    public function getAccessToken($tokenId)
-    {
-        return $this->getObject($tokenId);
-    }
-
-    public function addAccessToken($token)
-    {
-        $this->removeExpiredObjects();
-
-        return $this->addObject($token);
-    }
-
-    public function removeAccessToken($tokenId)
-    {
-        $this->removeObject($tokenId);
-    }
-
-    public function getUser($userId)
-    {
-        return $this->getObject($userId);
-    }
-
-    public function addUser($user)
-    {
-        $this->removeExpiredObjects();
-
-        return $this->addObject($user);
-    }
-
-    public function updateUser($user)
-    {
-        $this->updateObject($user);
-    }
-
-    public function removeUser($userId)
-    {
-        $this->removeObject($userId);
     }
 }

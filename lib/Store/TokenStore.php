@@ -20,36 +20,85 @@
 *
 */
 
-abstract class sspmod_oauth2server_Store_TokenStore
+class TokenStore
 {
-    public function __construct($config)
+    private $store;
+
+    public function __construct($store)
     {
+        $this->store = $store;
     }
 
-    public abstract function getAuthorizationCode($codeId);
+    public function getAuthorizationCode($codeId)
+    {
+        return $this->store->getObject($codeId);
+    }
 
-    public abstract function addAuthorizationCode($code);
+    public function addAuthorizationCode($code)
+    {
+        $this->store->removeExpiredObjects();
 
-    public abstract function removeAuthorizationCode($codeId);
+        return $this->store->addObject($code);
+    }
 
-    public abstract function getRefreshToken($tokenId);
+    public function removeAuthorizationCode($codeId)
+    {
+        $this->store->removeObject($codeId);
+    }
 
-    public abstract function addRefreshToken($token);
+    public function getRefreshToken($tokenId)
+    {
+        return $this->store->getObject($tokenId);
+    }
 
-    public abstract function removeRefreshToken($tokenId);
+    public function addRefreshToken($token)
+    {
+        $this->store->removeExpiredObjects();
 
-    public abstract function getAccessToken($tokenId);
+        return $this->store->addObject($token);
+    }
 
-    public abstract function addAccessToken($token);
+    public function removeRefreshToken($tokenId)
+    {
+        $this->store->removeObject($tokenId);
+    }
 
-    public abstract function removeAccessToken($tokenId);
+    public function getAccessToken($tokenId)
+    {
+        return $this->store->getObject($tokenId);
+    }
 
-    public abstract function getUser($userId);
+    public function addAccessToken($token)
+    {
+        $this->store->removeExpiredObjects();
 
-    public abstract function addUser($user);
+        return $this->store->addObject($token);
+    }
 
-    public abstract function updateUser($user);
+    public function removeAccessToken($tokenId)
+    {
+        $this->store->removeObject($tokenId);
+    }
 
-    public abstract function removeUser($userId);
+    public function getUser($userId)
+    {
+        return $this->store->getObject($userId);
+    }
 
+    public function addUser($user)
+    {
+        $this->store->removeExpiredObjects();
+
+        return $this->store->addObject($user);
+    }
+
+    public function updateUser($user)
+    {
+        $this->store->updateObject($user);
+    }
+
+    public function removeUser($userId)
+    {
+        $this->store->removeObject($userId);
+    }
 }
