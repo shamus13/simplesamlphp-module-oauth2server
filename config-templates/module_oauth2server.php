@@ -16,6 +16,27 @@ $config = array(
         'password' => 'password'
     ),
 
+    //Definition of available scopes and descriptions
+    'scopes' => array(
+        'USER_ID' => array(
+            'en' => 'Can read the user id',
+            'da' => 'Kan læse bruger id'
+        ),
+        'USER_NAME' => array(
+            'en' => 'Can read name attributes',
+            'da' => 'Kan læse navne attributter'
+        ),
+        'USER_AFFILIATION' => array(
+            'en' => 'Can read user affiliation',
+            'da' => 'Kan læse bruger tilhørsforhold',
+        ),
+        'FULL_ACCESS' => array(
+            'en' => 'Can read all attributes',
+            'da' => 'Kan læse alle attributter',
+        ),
+    ),
+
+    //Definition of static oauth2 clients
     'clients' => array(
         'client_id' => array(
             'redirect_uri' => array('uri1', 'uri2'), // Registered redirection end points. Allow any query parameters.
@@ -24,9 +45,9 @@ $config = array(
         ),
     ),
 
+    //Authorization server properties
     'user_id_attribute' => 'eduPersonPrincipalName',
 
-    //Token properties.
     'authorization_code_time_to_live' => 300, // default life span of 300 seconds
     'refresh_token_time_to_live' => 3600, // default life span of 3600 seconds
     'access_token_time_to_live' => 300, // default life span of 300 seconds

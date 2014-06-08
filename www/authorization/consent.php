@@ -106,6 +106,10 @@ if (array_key_exists('grant', $_REQUEST)) {
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:authorization/consent.php');
 
+foreach ($config->getValue('scopes', array()) as $scope => $translations) {
+    $t->includeInlineTranslation('{oauth2server:oauth2server:' . $scope . '}', $translations);
+}
+
 $t->data['stateId'] = $_REQUEST['stateId'];
 $t->data['clientId'] = $state['clientId'];
 $t->data['scopes'] = $state['requestedScopes'];
