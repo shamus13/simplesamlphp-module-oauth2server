@@ -38,14 +38,16 @@ $user = $tokenStore->getUser($as->getAttributes()[$idAttribute][0]);
 
 $globalConfig = SimpleSAML_Configuration::getInstance();
 
-$tokens = array();
+$authorizationCodes = array();
+$refreshTokens = array();
+$accessTokens = array();
 
 if (!is_null($user)) {
     foreach ($user['authorizationCodes'] as $id) {
         $token = $tokenStore->getAuthorizationCode($id);
 
         if (!is_null($token)) {
-            array_push($tokens, $token);
+            array_push($authorizationCodes, $token);
         }
     }
 
@@ -53,7 +55,7 @@ if (!is_null($user)) {
         $token = $tokenStore->getRefreshToken($id);
 
         if (!is_null($token)) {
-            array_push($tokens, $token);
+            array_push($refreshTokens, $token);
         }
     }
 
@@ -61,14 +63,17 @@ if (!is_null($user)) {
         $token = $tokenStore->getAccessToken($id);
 
         if (!is_null($token)) {
-            array_push($tokens, $token);
+            array_push($accessTokens, $token);
         }
     }
 }
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:authorization/status.php');
 
-$t->data['tokens'] = $tokens;
+$t->data['authorizationCodes'] = $authorizationCodes;
+$t->data['refreshTokens'] = $refreshTokens;
+$t->data['accessTokens'] = $accessTokens;
+
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/authorization/status.php');
 
 $t->show();

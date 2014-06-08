@@ -25,24 +25,69 @@ $this->data['header'] = $this->t('{oauth2server:oauth2server:status_header}');
 $this->includeAtTemplateBase('includes/header.php');
 ?>
     <form action="<?php echo htmlspecialchars($this->data['form']); ?>" method="post">
-        <table>
+        <input type="hidden" name="stateId" value="<?php echo htmlspecialchars($this->data['stateId']) ?>"/>
+
+        <label for="authorizationCodes">
+            <?php echo $this->t('{oauth2server:oauth2server:status_authorization_code_header}'); ?>
+        </label>
+        <table id="authorizationCodes">
             <tr>
                 <th><?php echo $this->t('{oauth2server:oauth2server:status_token_id_header}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_type_header}'); ?></th>
                 <th><?php echo $this->t('{oauth2server:oauth2server:status_token_client_id_header}'); ?></th>
                 <th><?php echo $this->t('{oauth2server:oauth2server:status_token_expire_time_header}'); ?></th>
             </tr>
 
             <?php
-            foreach ($this->data['tokens'] as $token) {
-                echo('<tr><td>' . htmlspecialchars($token['id']) . '</td><td>' . htmlspecialchars($token['type']) .
-                    '</td><td>' . htmlspecialchars($token['clientId']) . '</td><td>' .
-                    htmlspecialchars($token['expire']) . '</td></tr>');
+            foreach ($this->data['authorizationCodes'] as $token) {
+                echo('<tr><td>' . htmlspecialchars($token['id']) .
+                    '</td><td>' . htmlspecialchars($token['clientId']) .
+                    '</td><td>' . htmlspecialchars(date("Y/m/d H:i:s",$token['expire'])) .
+                    '</td></tr>');
             }
             ?>
         </table>
-    </form>
 
+        <label for="refreshTokens">
+            <?php echo $this->t('{oauth2server:oauth2server:status_refresh_token_header}'); ?>
+        </label>
+        <table id="refreshTokens">
+            <tr>
+                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_id_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_client_id_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_expire_time_header}'); ?></th>
+            </tr>
+
+            <?php
+            foreach ($this->data['refreshTokens'] as $token) {
+                echo('<tr><td>' . htmlspecialchars($token['id']) .
+                    '</td><td>' . htmlspecialchars($token['clientId']) .
+                    '</td><td>' . htmlspecialchars(date("Y/m/d H:i:s",$token['expire'])) .
+                    '</td></tr>');
+            }
+            ?>
+        </table>
+
+        <label for="accessTokens">
+            <?php echo $this->t('{oauth2server:oauth2server:status_access_token_header}'); ?>
+        </label>
+        <table id="accessTokens">
+            <tr>
+                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_id_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_client_id_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_expire_time_header}'); ?></th>
+            </tr>
+
+            <?php
+            foreach ($this->data['accessTokens'] as $token) {
+                echo('<tr><td>' . htmlspecialchars($token['id']) .
+                    '</td><td>' . htmlspecialchars($token['clientId']) .
+                    '</td><td>' . htmlspecialchars(date("Y/m/d H:i:s",$token['expire'])) .
+                    '</td></tr>');
+            }
+            ?>
+
+        </table>
+    </form>
 <?php
 
 $this->includeAtTemplateBase('includes/footer.php');

@@ -45,13 +45,19 @@
         "en": "Grant"
     },
     "status_header": {
-        "en": "Live tokens"
+        "en": "Currently active tokens"
+    },
+    "status_authorization_code_header":{
+        "en": "Authorization Codes"
+    },
+    "status_refresh_token_header":{
+        "en": "Refresh Tokens"
+    },
+    "status_access_token_header":{
+        "en": "Access Tokens"
     },
     "status_token_id_header": {
         "en": "Token id"
-    },
-    "status_token_type_header": {
-        "en": "Token type"
     },
     "status_token_client_id_header": {
         "en": "Client Id"
