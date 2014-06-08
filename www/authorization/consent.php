@@ -45,7 +45,11 @@ $codeEntry = $authorizationCodeFactory->createCode($state['clientId'],
     $state['redirectUri'], array(), $as->getAttributes()[$idAttribute][0]);
 
 if (array_key_exists('grant', $_REQUEST)) {
-    $codeEntry['scopes'] = array_intersect($state['requestedScopes'], $_REQUEST['grantedScopes']);
+    if(isset($_REQUEST['grantedScopes'])) {
+        $codeEntry['scopes'] = array_intersect($state['requestedScopes'], $_REQUEST['grantedScopes']);
+    } else {
+        $codeEntry['scopes'] = array();
+    }
 
     $storeConfig = $config->getValue('store');
     $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
