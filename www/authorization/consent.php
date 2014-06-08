@@ -32,6 +32,8 @@ $state = SimpleSAML_Auth_State::loadState($_REQUEST['stateId'], 'oauth2server:au
 
 $globalConfig = SimpleSAML_Configuration::getInstance();
 
+$clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
+
 if (array_key_exists('grant', $_REQUEST)) {
     $authorizationCodeFactory =
         new sspmod_oauth2server_OAuth2_TokenFactory(
@@ -45,7 +47,7 @@ if (array_key_exists('grant', $_REQUEST)) {
     $codeEntry = $authorizationCodeFactory->createCode($state['clientId'],
         $state['redirectUri'], array(), $as->getAttributes()[$idAttribute][0]);
 
-    if(isset($_REQUEST['grantedScopes'])) {
+    if (isset($_REQUEST['grantedScopes'])) {
         $codeEntry['scopes'] = array_intersect($state['requestedScopes'], $_REQUEST['grantedScopes']);
     } else {
         $codeEntry['scopes'] = array();
@@ -64,8 +66,8 @@ if (array_key_exists('grant', $_REQUEST)) {
 
         $liveTokens = array($codeEntry['id']);
 
-        foreach($user['authorizationCodes'] as $tokenId) {
-            if(!is_null($tokenStore->getAuthorizationCode($tokenId))) {
+        foreach ($user['authorizationCodes'] as $tokenId) {
+            if (!is_null($tokenStore->getAuthorizationCode($tokenId))) {
                 array_push($liveTokens, $tokenId);
             }
         }
@@ -114,6 +116,12 @@ foreach ($config->getValue('scopes', array()) as $scope => $translations) {
     $t->includeInlineTranslation('{oauth2server:oauth2server:' . $scope . '}', $translations);
 }
 
+$client = $clientStore->getClient($state['clientId']);
+
+$t->includeInlineTranslation('{oauth2server:oauth2server:client_description}',
+    array_key_exists('description', $client) ? $client['description'] : array('' => ''));
+
+$t->data['clientId'] = $state['clientId'];
 $t->data['stateId'] = $_REQUEST['stateId'];
 $t->data['scopes'] = $state['requestedScopes'];
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/authorization/consent.php');

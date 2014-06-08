@@ -24,7 +24,13 @@
         "en": "Server temporarily unavailable"
     },
     "consent_header":{
-        "en": "Token Consent"
+        "en": "Client authorization request"
+    },
+    "consent_client_id_header": {
+        "en": "Client Id:"
+    },
+    "consent_scope_header": {
+        "en": "The client has requested:"
     },
     "consent_deny_description":{
         "en": "Refuse"
@@ -33,10 +39,10 @@
         "en": "Consent"
     },
     "consent_scope_name_header" : {
-        "en": "Requested Scope"
+        "en": "Permission"
     },
     "consent_scope_grant_header": {
-        "en": "Grant consent"
+        "en": "Grant"
     },
     "status_header": {
         "en": "Live tokens"

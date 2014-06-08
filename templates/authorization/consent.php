@@ -27,6 +27,18 @@ $this->includeAtTemplateBase('includes/header.php');
     <form action="<?php echo htmlspecialchars($this->data['form']); ?>" method="post">
         <input type="hidden" name="stateId" value="<?php echo htmlspecialchars($this->data['stateId']) ?>"/>
 
+        <h3>
+            <?php echo $this->t('{oauth2server:oauth2server:consent_client_id_header}'); ?>
+            "<?php echo htmlentities($this->data['clientId']); ?>"
+        </h3>
+
+        <p>
+            <?php echo $this->t('{oauth2server:oauth2server:client_description}'); ?>
+        </p>
+
+        <h3>
+            <?php echo $this->t('{oauth2server:oauth2server:consent_scope_header}'); ?>
+        </h3>
         <table>
             <tr>
                 <th><?php echo $this->t('{oauth2server:oauth2server:consent_scope_name_header}'); ?></th>
@@ -42,10 +54,12 @@ $this->includeAtTemplateBase('includes/header.php');
             ?>
         </table>
 
-        <input id="deny" name="deny" type="submit"
-               value="<?php echo $this->t('{oauth2server:oauth2server:consent_deny_description}'); ?>"/>
-        <input id="grant" name="grant" type="submit"
-               value="<?php echo $this->t('{oauth2server:oauth2server:consent_grant_description}'); ?>"/>
+        <p>
+            <input id="deny" name="deny" type="submit"
+                   value="<?php echo $this->t('{oauth2server:oauth2server:consent_deny_description}'); ?>"/>
+            <input id="grant" name="grant" type="submit"
+                   value="<?php echo $this->t('{oauth2server:oauth2server:consent_grant_description}'); ?>"/>
+        </p>
     </form>
 
 <?php

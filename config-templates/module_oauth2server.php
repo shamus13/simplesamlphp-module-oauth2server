@@ -20,19 +20,15 @@ $config = array(
     'scopes' => array(
         'USER_ID' => array(
             'en' => 'Can read the user id',
-            'da' => 'Kan læse bruger id'
         ),
         'USER_NAME' => array(
             'en' => 'Can read name attributes',
-            'da' => 'Kan læse navne attributter'
         ),
         'USER_AFFILIATION' => array(
             'en' => 'Can read user affiliation',
-            'da' => 'Kan læse bruger tilhørsforhold',
         ),
         'FULL_ACCESS' => array(
             'en' => 'Can read all attributes',
-            'da' => 'Kan læse alle attributter',
         ),
     ),
 
@@ -41,7 +37,10 @@ $config = array(
         'client_id' => array(
             'redirect_uri' => array('uri1', 'uri2'), // Registered redirection end points. Allow any query parameters.
             'scope' => array('scope1', 'scope2'), // Available scopes for this client. No default scope exists.
-            'password' => 'password' // Optional password to be used for basic authentication of clients.
+            'password' => 'password', // Optional password to be used for basic authentication of clients.
+            'description' => array(   // Description of what the client does and why it should be granted scopes.
+                'en' => 'OAuth2 Test Client',
+            ),
         ),
     ),
 
