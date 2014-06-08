@@ -40,27 +40,29 @@ $globalConfig = SimpleSAML_Configuration::getInstance();
 
 $tokens = array();
 
-foreach($user['authorizationCodes'] as $id) {
-    $token = $tokenStore->getAuthorizationCode($id);
+if (!is_null($user)) {
+    foreach ($user['authorizationCodes'] as $id) {
+        $token = $tokenStore->getAuthorizationCode($id);
 
-    if(!is_null($token)) {
-        array_push($tokens, $token);
+        if (!is_null($token)) {
+            array_push($tokens, $token);
+        }
     }
-}
 
-foreach($user['refreshTokens'] as $id) {
-    $token = $tokenStore->getRefreshToken($id);
+    foreach ($user['refreshTokens'] as $id) {
+        $token = $tokenStore->getRefreshToken($id);
 
-    if(!is_null($token)) {
-        array_push($tokens, $token);
+        if (!is_null($token)) {
+            array_push($tokens, $token);
+        }
     }
-}
 
-foreach($user['accessTokens'] as $id) {
-    $token = $tokenStore->getAccessToken($id);
+    foreach ($user['accessTokens'] as $id) {
+        $token = $tokenStore->getAccessToken($id);
 
-    if(!is_null($token)) {
-        array_push($tokens, $token);
+        if (!is_null($token)) {
+            array_push($tokens, $token);
+        }
     }
 }
 
