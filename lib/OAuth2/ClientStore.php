@@ -24,6 +24,7 @@ class sspmod_oauth2server_OAuth2_ClientStore
 {
     private $store;
     private $configuredClients;
+    private $validScopes;
 
     public function __construct($config)
     {
@@ -33,15 +34,25 @@ class sspmod_oauth2server_OAuth2_ClientStore
         $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
 
         $this->store = new $storeClass($storeConfig);
+
+        $this->validScopes = array_keys($config->getValue('scopes', array()));
     }
 
     public function getClient($clientId)
     {
+        $client = null;
+
         if(array_key_exists($clientId, $this->configuredClients)) {
-            return $this->configuredClients[$clientId];
+            $client = $this->configuredClients[$clientId];
         } else {
-            return $this->store->getObject($clientId);
+            $client = $this->store->getObject($clientId);
         }
+
+        if(!is_null($client)) {
+            $client['scope'] = array_intersect($client['scope'], $this->validScopes);
+        }
+
+        return $client;
     }
 
     public function addClient($client)
