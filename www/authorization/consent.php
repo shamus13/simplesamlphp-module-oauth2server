@@ -32,19 +32,19 @@ $state = SimpleSAML_Auth_State::loadState($_REQUEST['stateId'], 'oauth2server:au
 
 $globalConfig = SimpleSAML_Configuration::getInstance();
 
-$authorizationCodeFactory =
-    new sspmod_oauth2server_OAuth2_TokenFactory(
-        $config->getValue('authorization_code_time_to_live', 300),
-        $config->getValue('access_token_time_to_live', 300),
-        $config->getValue('refresh_token_time_to_live', 3600)
-    );
-
-$idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
-
-$codeEntry = $authorizationCodeFactory->createCode($state['clientId'],
-    $state['redirectUri'], array(), $as->getAttributes()[$idAttribute][0]);
-
 if (array_key_exists('grant', $_REQUEST)) {
+    $authorizationCodeFactory =
+        new sspmod_oauth2server_OAuth2_TokenFactory(
+            $config->getValue('authorization_code_time_to_live', 300),
+            $config->getValue('access_token_time_to_live', 300),
+            $config->getValue('refresh_token_time_to_live', 3600)
+        );
+
+    $idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
+
+    $codeEntry = $authorizationCodeFactory->createCode($state['clientId'],
+        $state['redirectUri'], array(), $as->getAttributes()[$idAttribute][0]);
+
     if(isset($_REQUEST['grantedScopes'])) {
         $codeEntry['scopes'] = array_intersect($state['requestedScopes'], $_REQUEST['grantedScopes']);
     } else {
@@ -115,9 +115,7 @@ foreach ($config->getValue('scopes', array()) as $scope => $translations) {
 }
 
 $t->data['stateId'] = $_REQUEST['stateId'];
-$t->data['clientId'] = $state['clientId'];
 $t->data['scopes'] = $state['requestedScopes'];
-$t->data['id'] = $codeEntry['id'];
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/authorization/consent.php');
 
 $t->show();
