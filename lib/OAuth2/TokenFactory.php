@@ -36,7 +36,7 @@ class sspmod_oauth2server_OAuth2_TokenFactory
     public function createCode($clientId, $redirectUri, $scopes, $userId)
     {
         return array(
-            'id' => SimpleSAML_Utilities::generateID(),
+            'id' => $this->generateID('AC'),
             'type' => 'AuthorizationCode',
             'clientId' => $clientId,
             'redirectUri' => $redirectUri,
@@ -48,7 +48,7 @@ class sspmod_oauth2server_OAuth2_TokenFactory
     public function createRefreshToken($clientId, $redirectUri, $scopes, $userId)
     {
         return array(
-            'id' => SimpleSAML_Utilities::generateID(),
+            'id' => $this->generateID('RE'),
             'type' => 'RefreshToken',
             'clientId' => $clientId,
             'redirectUri' => $redirectUri,
@@ -60,11 +60,15 @@ class sspmod_oauth2server_OAuth2_TokenFactory
     public function createBearerAccessToken($clientId, $scopes, $userId)
     {
         return array(
-            'id' => SimpleSAML_Utilities::generateID(),
+            'id' => $this->generateID('BA'),
             'type' => 'Bearer',
             'clientId' => $clientId,
             'scopes' => $scopes,
             'expire' => time() + $this->accessTokenTimeToLive,
             'userId' => $userId);
+    }
+
+    private function generateID($prefix) {
+        return $prefix . substr(SimpleSAML_Utilities::generateID(), 1);
     }
 }
