@@ -130,7 +130,7 @@ if ($errorCode !== 200) {
         }
     }
 
-    header($authHeader);
+    header($authHeader, true, $errorCode);
 } else {
     echo json_encode($response);
 }
