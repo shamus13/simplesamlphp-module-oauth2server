@@ -232,7 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 header('X-PHP-Response-Code: ' . $errorCode, true, $errorCode);
 
 if ($errorCode === 401) {
-    header("WWW-Authenticate: Basic realm=\"OAuth 2.0\"");
+    header("WWW-Authenticate: Basic realm=\"OAuth 2.0\"", true, $errorCode);
 }
 
 if (array_key_exists('error', $response)) {
