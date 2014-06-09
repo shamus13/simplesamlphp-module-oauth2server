@@ -36,13 +36,13 @@
         "en": "Refuse"
     },
     "consent_grant_description":{
-        "en": "Consent"
+        "en": "Grant"
     },
     "consent_scope_name_header" : {
         "en": "Permission"
     },
     "consent_scope_grant_header": {
-        "en": "Grant"
+        "en": "Consent"
     },
     "status_header": {
         "en": "Currently active tokens"
