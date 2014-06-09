@@ -39,10 +39,13 @@ $this->includeAtTemplateBase('includes/header.php');
 
             <?php
             foreach ($this->data['authorizationCodes'] as $token) {
-                echo('<tr><td>' . htmlspecialchars($token['id']) .
-                    '</td><td>' . htmlspecialchars($token['clientId']) .
-                    '</td><td>' . htmlspecialchars(date("Y/m/d H:i:s",$token['expire'])) .
-                    '</td></tr>');
+                ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($token['id']); ?></td>
+                    <td><?php echo htmlspecialchars($token['clientId']); ?></td>
+                    <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
+                </tr>
+            <?php
             }
             ?>
         </table>
@@ -59,10 +62,13 @@ $this->includeAtTemplateBase('includes/header.php');
 
             <?php
             foreach ($this->data['refreshTokens'] as $token) {
-                echo('<tr><td>' . htmlspecialchars($token['id']) .
-                    '</td><td>' . htmlspecialchars($token['clientId']) .
-                    '</td><td>' . htmlspecialchars(date("Y/m/d H:i:s",$token['expire'])) .
-                    '</td></tr>');
+                ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($token['id']); ?></td>
+                    <td><?php echo htmlspecialchars($token['clientId']); ?></td>
+                    <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
+                </tr>
+            <?php
             }
             ?>
         </table>
@@ -79,10 +85,13 @@ $this->includeAtTemplateBase('includes/header.php');
 
             <?php
             foreach ($this->data['accessTokens'] as $token) {
-                echo('<tr><td>' . htmlspecialchars($token['id']) .
-                    '</td><td>' . htmlspecialchars($token['clientId']) .
-                    '</td><td>' . htmlspecialchars(date("Y/m/d H:i:s",$token['expire'])) .
-                    '</td></tr>');
+                ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($token['id']); ?></td>
+                    <td><?php echo htmlspecialchars($token['clientId']); ?></td>
+                    <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
+                </tr>
+            <?php
             }
             ?>
 
