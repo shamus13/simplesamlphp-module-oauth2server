@@ -36,44 +36,26 @@ $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore(new $storeClass($storeCo
 
 $user = $tokenStore->getUser($as->getAttributes()[$idAttribute][0]);
 
-$globalConfig = SimpleSAML_Configuration::getInstance();
-
-$authorizationCodes = array();
-$refreshTokens = array();
-$accessTokens = array();
-
-if (!is_null($user)) {
-    foreach ($user['authorizationCodes'] as $id) {
-        $token = $tokenStore->getAuthorizationCode($id);
-
-        if (!is_null($token)) {
-            array_push($authorizationCodes, $token);
-        }
-    }
-
-    foreach ($user['refreshTokens'] as $id) {
-        $token = $tokenStore->getRefreshToken($id);
-
-        if (!is_null($token)) {
-            array_push($refreshTokens, $token);
-        }
-    }
-
-    foreach ($user['accessTokens'] as $id) {
-        $token = $tokenStore->getAccessToken($id);
-
-        if (!is_null($token)) {
-            array_push($accessTokens, $token);
-        }
+if (!is_null($user) && isset($_REQUEST['id'])) {
+    if (array_search($_REQUEST['id'], $user['authorizationCodes']) !== false) {
+        $token = $tokenStore->getAuthorizationCode($_REQUEST['id']);
+    } else if (array_search($_REQUEST['id'], $user['refreshTokens']) !== false) {
+        $token = $tokenStore->getRefreshToken($_REQUEST['id']);
+    } else if (array_search($_REQUEST['id'], $user['accessTokens']) !== false) {
+        $token = $tokenStore->getAccessToken($_REQUEST['id']);
     }
 }
 
-$t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:manage/status.php');
+$globalConfig = SimpleSAML_Configuration::getInstance();
 
-$t->data['authorizationCodes'] = $authorizationCodes;
-$t->data['refreshTokens'] = $refreshTokens;
-$t->data['accessTokens'] = $accessTokens;
+$t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:manage/token.php');
 
-$t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php');
+foreach ($config->getValue('scopes', array()) as $scope => $translations) {
+    $t->includeInlineTranslation('{oauth2server:oauth2server:' . $scope . '}', $translations);
+}
+
+$t->data['token'] = isset($token)? $token : null;
+
+$t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/token.php');
 
 $t->show();

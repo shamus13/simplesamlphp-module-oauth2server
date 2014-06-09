@@ -32,9 +32,9 @@ $this->includeAtTemplateBase('includes/header.php');
         </label>
         <table id="authorizationCodes">
             <tr>
-                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_id_header}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_client_id_header}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_expire_time_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_id_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_client_id_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_expire_time_header}'); ?></th>
             </tr>
 
             <?php
@@ -55,9 +55,9 @@ $this->includeAtTemplateBase('includes/header.php');
         </label>
         <table id="refreshTokens">
             <tr>
-                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_id_header}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_client_id_header}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_expire_time_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_id_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_client_id_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_expire_time_header}'); ?></th>
             </tr>
 
             <?php
@@ -78,9 +78,9 @@ $this->includeAtTemplateBase('includes/header.php');
         </label>
         <table id="accessTokens">
             <tr>
-                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_id_header}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_client_id_header}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:status_token_expire_time_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_id_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_client_id_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_expire_time_header}'); ?></th>
             </tr>
 
             <?php

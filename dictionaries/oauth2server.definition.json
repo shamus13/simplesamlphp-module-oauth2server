@@ -56,13 +56,16 @@
     "status_access_token_header":{
         "en": "Access Tokens"
     },
-    "status_token_id_header": {
+    "token_id_header": {
         "en": "Token id"
     },
-    "status_token_client_id_header": {
+    "token_client_id_header": {
         "en": "Client Id"
     },
-    "status_token_expire_time_header": {
+    "token_type_header": {
+        "en": "Token Type"
+    },
+    "token_expire_time_header": {
         "en": "Expires"
     }
 }
