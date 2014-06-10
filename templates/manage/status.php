@@ -25,16 +25,15 @@ $this->data['header'] = $this->t('{oauth2server:oauth2server:status_header}');
 $this->includeAtTemplateBase('includes/header.php');
 ?>
     <form action="<?php echo htmlspecialchars($this->data['form']); ?>" method="post">
-        <input type="hidden" name="stateId" value="<?php echo htmlspecialchars($this->data['stateId']) ?>"/>
 
         <label for="authorizationCodes">
             <?php echo $this->t('{oauth2server:oauth2server:status_authorization_code_header}'); ?>
         </label>
         <table id="authorizationCodes">
             <tr>
-                <th><?php echo $this->t('{oauth2server:oauth2server:token_id_header}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:token_client_id_header}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:token_expire_time_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_id}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_client_id}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_expire_time}'); ?></th>
             </tr>
 
             <?php
@@ -44,6 +43,11 @@ $this->includeAtTemplateBase('includes/header.php');
                     <td><?php echo htmlspecialchars($token['id']); ?></td>
                     <td><?php echo htmlspecialchars($token['clientId']); ?></td>
                     <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
+                    <td>
+                        <button type="submit" name="id" value="<?php echo htmlentities($token['id']) ?>">
+                            <?php echo $this->t('{oauth2server:oauth2server:token_revoke}'); ?>
+                        </button>
+                    </td>
                 </tr>
             <?php
             }
@@ -55,9 +59,9 @@ $this->includeAtTemplateBase('includes/header.php');
         </label>
         <table id="refreshTokens">
             <tr>
-                <th><?php echo $this->t('{oauth2server:oauth2server:token_id_header}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:token_client_id_header}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:token_expire_time_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_id}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_client_id}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_expire_time}'); ?></th>
             </tr>
 
             <?php
@@ -67,6 +71,11 @@ $this->includeAtTemplateBase('includes/header.php');
                     <td><?php echo htmlspecialchars($token['id']); ?></td>
                     <td><?php echo htmlspecialchars($token['clientId']); ?></td>
                     <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
+                    <td>
+                        <button type="submit" name="id" value="<?php echo htmlentities($token['id']) ?>">
+                            <?php echo $this->t('{oauth2server:oauth2server:token_revoke}'); ?>
+                        </button>
+                    </td>
                 </tr>
             <?php
             }
@@ -78,9 +87,9 @@ $this->includeAtTemplateBase('includes/header.php');
         </label>
         <table id="accessTokens">
             <tr>
-                <th><?php echo $this->t('{oauth2server:oauth2server:token_id_header}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:token_client_id_header}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:token_expire_time_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_id}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_client_id}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:token_expire_time}'); ?></th>
             </tr>
 
             <?php
@@ -90,6 +99,11 @@ $this->includeAtTemplateBase('includes/header.php');
                     <td><?php echo htmlspecialchars($token['id']); ?></td>
                     <td><?php echo htmlspecialchars($token['clientId']); ?></td>
                     <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
+                    <td>
+                        <button type="submit" name="id" value="<?php echo htmlentities($token['id']) ?>">
+                            <?php echo $this->t('{oauth2server:oauth2server:token_revoke}'); ?>
+                        </button>
+                    </td>
                 </tr>
             <?php
             }

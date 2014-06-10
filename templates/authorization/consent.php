@@ -28,7 +28,7 @@ $this->includeAtTemplateBase('includes/header.php');
         <input type="hidden" name="stateId" value="<?php echo htmlspecialchars($this->data['stateId']) ?>"/>
 
         <h3>
-            <?php echo $this->t('{oauth2server:oauth2server:consent_client_id_header}'); ?>
+            <?php echo $this->t('{oauth2server:oauth2server:consent_client_id}'); ?>
             "<?php echo htmlentities($this->data['clientId']); ?>"
         </h3>
 
@@ -41,8 +41,8 @@ $this->includeAtTemplateBase('includes/header.php');
         </h3>
         <table>
             <tr>
-                <th><?php echo $this->t('{oauth2server:oauth2server:consent_scope_name_header}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:consent_scope_grant_header}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:consent_scope_name}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:consent_scope_grant}'); ?></th>
             </tr>
 
             <?php

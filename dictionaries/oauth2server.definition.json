@@ -26,7 +26,7 @@
     "consent_header":{
         "en": "Client authorization request"
     },
-    "consent_client_id_header": {
+    "consent_client_id": {
         "en": "Client Id:"
     },
     "consent_scope_header": {
@@ -38,10 +38,10 @@
     "consent_grant_description":{
         "en": "Grant"
     },
-    "consent_scope_name_header" : {
+    "consent_scope_name" : {
         "en": "Permission"
     },
-    "consent_scope_grant_header": {
+    "consent_scope_grant": {
         "en": "Consent"
     },
     "status_header": {
@@ -56,16 +56,28 @@
     "status_access_token_header":{
         "en": "Access Tokens"
     },
-    "token_id_header": {
+    "token_header": {
+        "en": "Token details"
+    },
+    "token_not_found": {
+        "en": "No such token"
+    },
+    "token_id": {
         "en": "Token id"
     },
-    "token_client_id_header": {
+    "token_client_description": {
+        "en": "Client description"
+    },
+    "token_client_id": {
         "en": "Client Id"
     },
-    "token_type_header": {
+    "token_type": {
         "en": "Token Type"
     },
-    "token_expire_time_header": {
+    "token_expire_time": {
         "en": "Expires"
+    },
+    "token_revoke": {
+        "en": "Revoke"
     }
 }

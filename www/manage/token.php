@@ -54,7 +54,15 @@ foreach ($config->getValue('scopes', array()) as $scope => $translations) {
     $t->includeInlineTranslation('{oauth2server:oauth2server:' . $scope . '}', $translations);
 }
 
-$t->data['token'] = isset($token)? $token : null;
+if(isset($token)) {
+    $clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
+
+    $client = $clientStore->getClient($token['clientId']);
+
+    if(!is_null($client)) {
+        $t->data['token'] = $token;
+    }
+}
 
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/token.php');
 

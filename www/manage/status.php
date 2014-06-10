@@ -47,7 +47,11 @@ if (!is_null($user)) {
         $token = $tokenStore->getAuthorizationCode($id);
 
         if (!is_null($token)) {
-            array_push($authorizationCodes, $token);
+            if(isset($_REQUEST['id']) && $id === $_REQUEST['id']) {
+                $tokenStore->removeAuthorizationCode($id);
+            } else {
+                array_push($authorizationCodes, $token);
+            }
         }
     }
 
@@ -55,7 +59,11 @@ if (!is_null($user)) {
         $token = $tokenStore->getRefreshToken($id);
 
         if (!is_null($token)) {
-            array_push($refreshTokens, $token);
+            if(isset($_REQUEST['id']) && $id === $_REQUEST['id']) {
+                $tokenStore->removeRefreshToken($id);
+            } else {
+                array_push($refreshTokens, $token);
+            }
         }
     }
 
@@ -63,7 +71,11 @@ if (!is_null($user)) {
         $token = $tokenStore->getAccessToken($id);
 
         if (!is_null($token)) {
-            array_push($accessTokens, $token);
+            if(isset($_REQUEST['id']) && $id === $_REQUEST['id']) {
+                $tokenStore->removeAuthorizationCode($id);
+            } else {
+                array_push($accessTokens, $token);
+            }
         }
     }
 }

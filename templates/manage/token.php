@@ -25,35 +25,37 @@ $this->data['header'] = $this->t('{oauth2server:oauth2server:token_header}');
 $this->includeAtTemplateBase('includes/header.php');
 ?>
     <form action="<?php echo htmlspecialchars($this->data['form']); ?>" method="post">
-        <input type="hidden" name="stateId" value="<?php echo htmlspecialchars($this->data['stateId']) ?>"/>
-
-        <label for="token">
-            <?php echo $this->t('{oauth2server:oauth2server:token_header}'); ?>
-        </label>
-        <table id="token">
-            <?php $token = $this->data['token']; ?>
-            <tr>
-                <td><?php echo $this->t('{oauth2server:oauth2server:token_id_header}'); ?></td>
-                <td><?php echo htmlspecialchars($token['id']); ?></td>
-            </tr>
-            <tr>
-                <td><?php echo $this->t('{oauth2server:oauth2server:token_type_header}'); ?></td>
-                <td><?php echo htmlspecialchars($token['type']); ?></td>
-            </tr>
-            <tr>
-                <td><?php echo $this->t('{oauth2server:oauth2server:token_client_id_header}'); ?></td>
-                <td><?php echo htmlspecialchars($token['clientId']); ?></td>
-            </tr>
-            <tr>
-                <td><?php echo $this->t('{oauth2server:oauth2server:token_expire_time_header}'); ?></td>
-                <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
-            </tr>
+        <table>
             <?php
-            foreach ($token['scopes'] as $scope) {
+            if (isset($this->data['token'])) {
+                $token = $this->data['token'];
+
                 ?>
                 <tr>
-                    <td></td>
-                    <td><?php echo $this->t('{oauth2server:oauth2server:' . $scope . '}') ?></td>
+                    <td><?php echo $this->t('{oauth2server:oauth2server:token_client_id}'); ?></td>
+                    <td><?php echo htmlspecialchars($token['clientId']); ?></td>
+                </tr>
+                <?php
+                foreach ($token['scopes'] as $scope) {
+                    ?>
+                    <tr>
+                        <td></td>
+                        <td><?php echo $this->t('{oauth2server:oauth2server:' . $scope . '}') ?></td>
+                    </tr>
+                <?php
+                }
+                ?>
+                <tr>
+                    <td><?php echo $this->t('{oauth2server:oauth2server:token_id}'); ?></td>
+                    <td><?php echo htmlspecialchars($token['id']); ?></td>
+                </tr>
+                <tr>
+                    <td><?php echo $this->t('{oauth2server:oauth2server:token_type}'); ?></td>
+                    <td><?php echo htmlspecialchars($token['type']); ?></td>
+                </tr>
+                <tr>
+                    <td><?php echo $this->t('{oauth2server:oauth2server:token_expire_time}'); ?></td>
+                    <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
                 </tr>
             <?php
             }
