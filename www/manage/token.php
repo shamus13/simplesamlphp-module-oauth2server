@@ -64,6 +64,6 @@ if(isset($token)) {
     }
 }
 
-$t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/token.php');
+$t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php');
 
 $t->show();
