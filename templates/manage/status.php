@@ -24,7 +24,7 @@ $this->data['header'] = $this->t('{oauth2server:oauth2server:status_header}');
 
 $this->includeAtTemplateBase('includes/header.php');
 ?>
-    <form action="<?php echo htmlspecialchars($this->data['form']); ?>" method="post">
+    <form action="<?php echo htmlspecialchars($this->data['statusForm']); ?>" method="post">
 
         <label for="authorizationCodes">
             <?php echo $this->t('{oauth2server:oauth2server:status_authorization_code_header}'); ?>
@@ -40,7 +40,12 @@ $this->includeAtTemplateBase('includes/header.php');
             foreach ($this->data['authorizationCodes'] as $token) {
                 ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($token['id']); ?></td>
+                    <td>
+                        <a href="<?php echo htmlentities(SimpleSAML_Utilities::addURLparameter($this->data['tokenForm'],
+                                            array('id' => $token['id'])));?>">
+                            <?php echo htmlspecialchars($token['id']); ?>
+                        </a>
+                    </td>
                     <td><?php echo htmlspecialchars($token['clientId']); ?></td>
                     <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
                     <td>
@@ -68,7 +73,12 @@ $this->includeAtTemplateBase('includes/header.php');
             foreach ($this->data['refreshTokens'] as $token) {
                 ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($token['id']); ?></td>
+                    <td>
+                        <a href="<?php echo htmlentities(SimpleSAML_Utilities::addURLparameter($this->data['tokenForm'],
+                                            array('id' => $token['id'])));?>">
+                            <?php echo htmlspecialchars($token['id']); ?>
+                        </a>
+                    </td>
                     <td><?php echo htmlspecialchars($token['clientId']); ?></td>
                     <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
                     <td>
@@ -96,7 +106,12 @@ $this->includeAtTemplateBase('includes/header.php');
             foreach ($this->data['accessTokens'] as $token) {
                 ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($token['id']); ?></td>
+                    <td>
+                        <a href="<?php echo htmlentities(SimpleSAML_Utilities::addURLparameter($this->data['tokenForm'],
+                                            array('id' => $token['id'])));?>">
+                            <?php echo htmlspecialchars($token['id']); ?>
+                        </a>
+                    </td>
                     <td><?php echo htmlspecialchars($token['clientId']); ?></td>
                     <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
                     <td>
