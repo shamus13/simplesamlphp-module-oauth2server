@@ -50,6 +50,7 @@ class sspmod_oauth2server_OAuth2_ClientStore
 
         if(!is_null($client)) {
             $client['scope'] = array_intersect($client['scope'], $this->validScopes);
+            $client['id'] = $clientId;
         }
 
         return $client;
