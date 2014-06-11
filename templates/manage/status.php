@@ -32,7 +32,7 @@ $this->includeAtTemplateBase('includes/header.php');
         <table id="authorizationCodes">
             <tr>
                 <th><?php echo $this->t('{oauth2server:oauth2server:token_id}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:token_client_id}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:client_id}'); ?></th>
                 <th><?php echo $this->t('{oauth2server:oauth2server:token_expire_time}'); ?></th>
             </tr>
 
@@ -65,7 +65,7 @@ $this->includeAtTemplateBase('includes/header.php');
         <table id="refreshTokens">
             <tr>
                 <th><?php echo $this->t('{oauth2server:oauth2server:token_id}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:token_client_id}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:client_id}'); ?></th>
                 <th><?php echo $this->t('{oauth2server:oauth2server:token_expire_time}'); ?></th>
             </tr>
 
@@ -98,7 +98,7 @@ $this->includeAtTemplateBase('includes/header.php');
         <table id="accessTokens">
             <tr>
                 <th><?php echo $this->t('{oauth2server:oauth2server:token_id}'); ?></th>
-                <th><?php echo $this->t('{oauth2server:oauth2server:token_client_id}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:client_id}'); ?></th>
                 <th><?php echo $this->t('{oauth2server:oauth2server:token_expire_time}'); ?></th>
             </tr>
 

@@ -65,10 +65,13 @@
     "token_id": {
         "en": "Token id"
     },
-    "token_client_description": {
+    "token_scope": {
+        "en": "Scope"
+    },
+    "client_description": {
         "en": "Client description"
     },
-    "token_client_id": {
+    "client_id": {
         "en": "Client Id"
     },
     "token_type": {
@@ -82,5 +85,14 @@
     },
     "token_revoke": {
         "en": "Revoke"
+    },
+    "client_header":{
+        "en": "Client Details"
+    },
+    "client_password":{
+        "en": "Password"
+    },
+    "client_uri":{
+        "en": "Uri"
     }
 }

@@ -32,17 +32,19 @@ $this->includeAtTemplateBase('includes/header.php');
             ?>
             <table>
                 <tr>
-                    <td><?php echo $this->t('{oauth2server:oauth2server:token_client_id}'); ?></td>
+                    <td><?php echo $this->t('{oauth2server:oauth2server:client_id}'); ?></td>
                     <td><?php echo htmlspecialchars($token['clientId']); ?></td>
                 </tr>
                 <?php
+                $header = true;
                 foreach ($token['scopes'] as $scope) {
                     ?>
                     <tr>
-                        <td></td>
+                        <td><?php echo $header ? $this->t('{oauth2server:oauth2server:token_scope}') : ''; ?></td>
                         <td><?php echo $this->t('{oauth2server:oauth2server:' . $scope . '}') ?></td>
                     </tr>
-                <?php
+                    <?php
+                    $header = false;
                 }
                 ?>
                 <tr>
