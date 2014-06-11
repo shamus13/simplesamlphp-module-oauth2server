@@ -64,7 +64,7 @@ $this->includeAtTemplateBase('includes/header.php');
                 <button type="submit">
                     <?php echo $this->t('{oauth2server:oauth2server:token_back}'); ?>
                 </button>
-                <button type="submit" name="id" value="<?php echo htmlentities($token['id']) ?>">
+                <button type="submit" name="tokenId" value="<?php echo htmlentities($token['id']) ?>">
                     <?php echo $this->t('{oauth2server:oauth2server:token_revoke}'); ?>
                 </button>
             </p>

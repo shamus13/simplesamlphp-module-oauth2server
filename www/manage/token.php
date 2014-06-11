@@ -36,13 +36,13 @@ $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore(new $storeClass($storeCo
 
 $user = $tokenStore->getUser($as->getAttributes()[$idAttribute][0]);
 
-if (!is_null($user) && isset($_REQUEST['id'])) {
-    if (array_search($_REQUEST['id'], $user['authorizationCodes']) !== false) {
-        $token = $tokenStore->getAuthorizationCode($_REQUEST['id']);
-    } else if (array_search($_REQUEST['id'], $user['refreshTokens']) !== false) {
-        $token = $tokenStore->getRefreshToken($_REQUEST['id']);
-    } else if (array_search($_REQUEST['id'], $user['accessTokens']) !== false) {
-        $token = $tokenStore->getAccessToken($_REQUEST['id']);
+if (!is_null($user) && isset($_REQUEST['tokenId'])) {
+    if (array_search($_REQUEST['tokenId'], $user['authorizationCodes']) !== false) {
+        $token = $tokenStore->getAuthorizationCode($_REQUEST['tokenId']);
+    } else if (array_search($_REQUEST['tokenId'], $user['refreshTokens']) !== false) {
+        $token = $tokenStore->getRefreshToken($_REQUEST['tokenId']);
+    } else if (array_search($_REQUEST['tokenId'], $user['accessTokens']) !== false) {
+        $token = $tokenStore->getAccessToken($_REQUEST['tokenId']);
     }
 }
 
