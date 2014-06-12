@@ -88,5 +88,6 @@ $t->data['accessTokens'] = $accessTokens;
 
 $t->data['statusForm'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php');
 $t->data['tokenForm'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/token.php');
+$t->data['clientForm'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/client.php');
 
 $t->show();
