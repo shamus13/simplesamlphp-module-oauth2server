@@ -59,7 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $client = $clientStore->getClient($clientId);
 
                 if (!is_null($client)) {
-                    if ((!isset($client['password']) && is_null($password)) || $password === $client['password']) {
+                    if ((!isset($client['password']) && is_null($password)) ||
+                        (isset($client['password']) && $password === $client['password']) ||
+                        (isset($client['alternative_password']) && $password === $client['alternative_password'])) {
 
                         $storeConfig = $config->getValue('store');
                         $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');

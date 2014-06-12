@@ -48,6 +48,16 @@ $this->includeAtTemplateBase('includes/header.php');
                 }
                 ?>
                 <?php
+                if (isset($this->data['alternative_password'])) {
+                    ?>
+                    <tr>
+                        <td><?php echo $this->t('{oauth2server:oauth2server:client_alternative_password}'); ?></td>
+                        <td><?php echo htmlspecialchars($this->data['alternative_password']); ?></td>
+                    </tr>
+                <?php
+                }
+                ?>
+                <?php
                 $header = true;
                 foreach ($this->data['scopes'] as $scope) {
                     ?>

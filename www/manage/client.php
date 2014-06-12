@@ -52,6 +52,10 @@ if (isset($_REQUEST['clientId'])) {
         $t->data['uris'] = $client['redirect_uri'];
         $t->data['password'] = $client['password'];
 
+        if(isset($client['alternative_password'])) {
+            $t->data['alternative_password'] = $client['alternative_password'];
+        }
+
         $t->includeInlineTranslation('{oauth2server:oauth2server:client_description_text}', $client['description']);
     }
 }
