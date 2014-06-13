@@ -28,8 +28,6 @@ $as = new SimpleSAML_Auth_Simple($config->getValue('authsource'));
 
 $as->requireAuth();
 
-$idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
-
 $storeConfig = $config->getValue('store');
 $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
 
@@ -47,13 +45,20 @@ if (isset($_REQUEST['clientId'])) {
     $client = $clientStore->getClient($_REQUEST['clientId']);
 
     if (!is_null($client)) {
+        $idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
+
+        $id = $as->getAttributes()[$idAttribute][0];
+
         $t->data['id'] = $client['id'];
         $t->data['scopes'] = $client['scope'];
         $t->data['uris'] = $client['redirect_uri'];
-        $t->data['password'] = $client['password'];
 
-        if(isset($client['alternative_password'])) {
-            $t->data['alternative_password'] = $client['alternative_password'];
+        if (isset($client['owner']) && $client['owner'] === $id) {
+            $t->data['password'] = $client['password'];
+
+            if (isset($client['alternative_password'])) {
+                $t->data['alternative_password'] = $client['alternative_password'];
+            }
         }
 
         $t->includeInlineTranslation('{oauth2server:oauth2server:client_description_text}', $client['description']);
