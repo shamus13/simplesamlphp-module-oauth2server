@@ -89,10 +89,16 @@
     "client_header":{
         "en": "Client Details"
     },
+    "client_owner":{
+        "en": "Owner"
+    },
     "client_password":{
         "en": "Password"
     },
     "client_uri":{
         "en": "Uri"
+    },
+    "client_expire":{
+        "en": "Expires at"
     }
 }

@@ -38,6 +38,16 @@ $this->includeAtTemplateBase('includes/header.php');
                     <td><?php echo $this->t('{oauth2server:oauth2server:client_description_text}'); ?></td>
                 </tr>
                 <?php
+                if (isset($this->data['owner'])) {
+                    ?>
+                    <tr>
+                        <td><?php echo $this->t('{oauth2server:oauth2server:client_owner}'); ?></td>
+                        <td><?php echo htmlspecialchars($this->data['owner']); ?></td>
+                    </tr>
+                <?php
+                }
+                ?>
+                <?php
                 if (isset($this->data['password'])) {
                     ?>
                     <tr>
@@ -81,6 +91,16 @@ $this->includeAtTemplateBase('includes/header.php');
                         <?php
                         $header = false;
                     }
+                }
+                ?>
+                <?php
+                if (isset($this->data['expire'])) {
+                    ?>
+                    <tr>
+                        <td><?php echo $this->t('{oauth2server:oauth2server:client_expire}'); ?></td>
+                        <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $this->data['expire'])); ?></td>
+                    </tr>
+                <?php
                 }
                 ?>
             </table>

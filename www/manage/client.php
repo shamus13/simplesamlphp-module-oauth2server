@@ -53,6 +53,14 @@ if (isset($_REQUEST['clientId'])) {
         $t->data['scopes'] = $client['scope'];
         $t->data['uris'] = $client['redirect_uri'];
 
+        if(isset($client['owner'])) {
+            $t->data['owner'] = $client['owner'];
+        }
+
+        if(isset($client['expire'])) {
+            $t->data['expire'] = $client['expire'];
+        }
+
         if (isset($client['owner']) && $client['owner'] === $id) {
             $t->data['password'] = $client['password'];
 

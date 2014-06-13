@@ -82,7 +82,7 @@ if (array_key_exists('grant', $_REQUEST)) {
     } else {
         $tokenStore->addUser(array('id' => $codeEntry['userId'], 'attributes' => $as->getAttributes(),
             'authorizationCodes' => array($codeEntry['id']), 'refreshTokens' => array(), 'accessTokens' => array(),
-            'expire' => $codeEntry['expire']));
+            'clients' => array(), 'expire' => $codeEntry['expire']));
     }
 
     $response = array('code' => $codeEntry['id']);
