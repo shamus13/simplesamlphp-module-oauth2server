@@ -95,10 +95,19 @@
     "client_password":{
         "en": "Password"
     },
+    "client_alternative_password":{
+        "en": "New Password"
+    },
     "client_uri":{
         "en": "Uri"
     },
     "client_expire":{
         "en": "Expires at"
+    },
+    "add_client_cancel": {
+        "en": "Cancel"
+    },
+    "add_client_create": {
+        "en": "Create"
     }
 }
