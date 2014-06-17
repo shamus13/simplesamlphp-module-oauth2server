@@ -58,7 +58,7 @@ if (!isset($client)) {
 }
 
 if (isset($_POST['uris'])) {
-    $client['redirect_uri'] = $_POST['uris']; //TODO: split uri text to form an array of uris
+    $client['redirect_uri'] = explode(PHP_EOL, trim($_POST['uris']));
 }
 
 if (isset($_POST['availableScopes'])) {
@@ -66,7 +66,7 @@ if (isset($_POST['availableScopes'])) {
 }
 
 if (isset($_POST['clientDescription'])) {
-    $client['description'] = $_POST['clientDescription'];
+    $client['description'] = trim($_POST['clientDescription']);
 }
 
 if (isset($_POST['expire'])) {
@@ -74,16 +74,16 @@ if (isset($_POST['expire'])) {
 }
 
 if (isset($_POST['password'])) {
-    if(strlen($_POST['password']) > 0) {
-       $client['password'] = $_POST['password'];
+    if(strlen(trim($_POST['password'])) > 0) {
+       $client['password'] = trim($_POST['password']);
     } else {
         unset($client['password']);
     }
 }
 
 if (isset($_POST['alternativePassword'])) {
-    if(strlen($_POST['alternativePassword']) > 0) {
-       $client['alternative_password'] = $_POST['alternativePassword'];
+    if(strlen(trim($_POST['alternativePassword'])) > 0) {
+       $client['alternative_password'] = trim($_POST['alternativePassword']);
     } else {
         unset($client['alternative_password']);
     }

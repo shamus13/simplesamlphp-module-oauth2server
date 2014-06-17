@@ -36,8 +36,9 @@ $this->includeAtTemplateBase('includes/header.php');
             </tr>
             <tr>
                 <td><?php echo $this->t('{oauth2server:oauth2server:client_description}'); ?></td>
-                <td><input type="text" name="clientDescription"
-                           value="<?php echo htmlspecialchars($this->data['clientDescription']); ?>"/>
+                <td><textarea name="clientDescription"><?php
+                        echo htmlspecialchars($this->data['clientDescription']);
+                        ?></textarea>
                 </td>
             </tr>
             <tr>
@@ -61,8 +62,8 @@ $this->includeAtTemplateBase('includes/header.php');
                 ?>
                 <tr>
                     <td><?php echo $header ? $this->t('{oauth2server:oauth2server:token_scope}') : ''; ?></td>
-                    <td><input type="checkbox" name="availableScopes[]" value="<?php echo htmlspecialchars($scope);?>"
-                               <?php echo $checked ? 'checked="true"' : '' ?>/>
+                    <td><input type="checkbox" name="availableScopes[]" value="<?php echo htmlspecialchars($scope); ?>"
+                            <?php echo $checked ? 'checked="true"' : '' ?>/>
                         <?php echo $this->t('{oauth2server:oauth2server:' . $scope . '}') ?></td>
                 </tr>
                 <?php
@@ -72,7 +73,9 @@ $this->includeAtTemplateBase('includes/header.php');
             <tr>
                 <td><?php echo $this->t('{oauth2server:oauth2server:client_uri}'); ?></td>
                 <td><textarea name="uris"><?php
-                        echo htmlentities($this->data['uris']);
+                        foreach ($this->data['uris'] as $uri) {
+                            echo htmlentities($uri) . PHP_EOL;
+                        }
                         ?></textarea>
                 </td>
             </tr>
