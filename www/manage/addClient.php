@@ -28,22 +28,72 @@ $as = new SimpleSAML_Auth_Simple($config->getValue('authsource'));
 
 $as->requireAuth();
 
-$storeConfig = $config->getValue('store');
-$storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
+$idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
+
+$id = $as->getAttributes()[$idAttribute][0];
+
+$clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
 
 $globalConfig = SimpleSAML_Configuration::getInstance();
 
-$t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:manage/addClient.php');
-
 $scopes = $config->getValue('scopes', array());
+
+if (array_key_exists('clientId', $_REQUEST)) {
+    $temp = $clientStore->getClient($_REQUEST['clientId']);
+
+    if (!is_null($temp) && $temp['owner'] === $id) {
+        $client = $temp;
+    }
+}
+
+if (!isset($client)) {
+    $client = array(
+        'id' => 'CL' . substr(SimpleSAML_Utilities::generateID(), 1),
+        'redirect_uri' => '',
+        'description' => '',
+        'scope' => array(),
+        'owner' => $id,
+        'expire' => time() + 1234,
+    );
+}
+
+if (isset($_POST['uris'])) {
+    $client['redirect_uri'] = $_POST['uris']; //TODO: split uri text to form an array of uris
+}
+
+if (isset($_POST['availableScopes'])) {
+    $client['scope'] = array_intersect($_POST['availableScopes'], array_keys($scopes));
+}
+
+if (isset($_POST['clientDescription'])) {
+    $client['description'] = $_POST['clientDescription'];
+}
+
+if (isset($_POST['expire'])) {
+    $client['expire'] = $_POST['expire'];
+}
+
+if (isset($_POST['password'])) {
+    if(strlen($_POST['password']) > 0) {
+       $client['password'] = $_POST['password'];
+    } else {
+        unset($client['password']);
+    }
+}
+
+if (isset($_POST['alternativePassword'])) {
+    if(strlen($_POST['alternativePassword']) > 0) {
+       $client['alternative_password'] = $_POST['alternativePassword'];
+    } else {
+        unset($client['alternative_password']);
+    }
+}
+
+$t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:manage/addClient.php');
 
 foreach ($scopes as $scope => $translations) {
     $t->includeInlineTranslation('{oauth2server:oauth2server:' . $scope . '}', $translations);
 }
-
-$idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
-
-$id = $as->getAttributes()[$idAttribute][0];
 
 $scopeMap = array();
 
@@ -51,25 +101,24 @@ foreach ($scopes as $scope => $translations) {
     $scopeMap[$scope] = false;
 }
 
-if (isset($_REQUEST['availableScopes'])) {
-    foreach ($_REQUEST['availableScopes'] as $scope) {
-//        if (array_key_exists($scope, $scopeMap)) {
-            $scopeMap[$scope] = true;
-//        }
+foreach ($client['scope'] as $scope) {
+    if (array_key_exists($scope, $scopeMap)) {
+        $scopeMap[$scope] = true;
     }
 }
 
-$t->data['id'] = isset($_REQUEST['clientId']) ? $_REQUEST['clientId'] : '';
+
+$t->data['id'] = $client['id'];
 $t->data['scopes'] = $scopeMap;
-$t->data['uris'] = isset($_REQUEST['uris']) ? $_REQUEST['uris'] : '';
-$t->data['owner'] = $id;
-$t->data['expire'] = isset($_REQUEST['expire']) ? $_REQUEST['expire'] : 0;
+$t->data['uris'] = $client['redirect_uri'];
+$t->data['owner'] =  $id;
+$t->data['expire'] = isset($client['expire']) ? $client['expire'] : 0;
 
-$t->data['password'] = isset($_REQUEST['password']) ? $_REQUEST['password'] : '';
+$t->data['password'] = isset($client['password']) ? $client['password'] : '';
 
-$t->data['alternativePassword'] = isset($_REQUEST['alternativePassword']) ? $_REQUEST['alternativePassword'] : '';
+$t->data['alternativePassword'] = isset($client['alternative_password']) ? $client['alternative_password'] : '';
 
-$t->data['clientDescription'] = isset($_REQUEST['clientDescription']) ? $_REQUEST['clientDescription'] : '';
+$t->data['clientDescription'] = isset($client['description']) ? $client['description'] : '';
 
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/addClient.php');
 
