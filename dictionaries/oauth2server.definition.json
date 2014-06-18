@@ -107,7 +107,7 @@
     "add_client_cancel": {
         "en": "Cancel"
     },
-    "add_client_create": {
-        "en": "Create"
+    "add_client_submit": {
+        "en": "Submit"
     }
 }

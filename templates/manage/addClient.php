@@ -91,7 +91,7 @@ $this->includeAtTemplateBase('includes/header.php');
             <input name="cancel" type="submit"
                    value="<?php echo $this->t('{oauth2server:oauth2server:add_client_cancel}'); ?>"/>
             <input name="create" type="submit"
-                   value="<?php echo $this->t('{oauth2server:oauth2server:add_client_create}'); ?>"/>
+                   value="<?php echo $this->t('{oauth2server:oauth2server:add_client_submit}'); ?>"/>
         </p>
     </form>
 <?php
