@@ -37,7 +37,7 @@ $this->includeAtTemplateBase('includes/header.php');
             <tr>
                 <td><?php echo $this->t('{oauth2server:oauth2server:client_description}'); ?></td>
                 <td><textarea name="clientDescription"><?php
-                        echo htmlspecialchars($this->data['clientDescription']);
+                        echo $this->t('{oauth2server:oauth2server:client_description_text}');
                         ?></textarea>
                 </td>
             </tr>

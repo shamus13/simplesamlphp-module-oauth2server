@@ -50,11 +50,14 @@ if (!isset($client)) {
     $client = array(
         'id' => 'CL' . substr(SimpleSAML_Utilities::generateID(), 1),
         'redirect_uri' => '',
-        'description' => '',
+        'description' => array('' => ''),
         'scope' => array(),
         'owner' => $id,
         'expire' => time() + 1234,
     );
+
+    //TODO: add client entry to store
+    //TODO: add client id to user record
 }
 
 if (isset($_POST['uris'])) {
@@ -65,8 +68,8 @@ if (isset($_POST['availableScopes'])) {
     $client['scope'] = array_intersect($_POST['availableScopes'], array_keys($scopes));
 }
 
-if (isset($_POST['clientDescription'])) {
-    $client['description'] = trim($_POST['clientDescription']);
+if (isset($_POST['clientDescription']) && isset($_POST['language'])) {
+    $client['description'][$_POST['language']] = trim($_POST['clientDescription']);
 }
 
 if (isset($_POST['expire'])) {
@@ -74,20 +77,22 @@ if (isset($_POST['expire'])) {
 }
 
 if (isset($_POST['password'])) {
-    if(strlen(trim($_POST['password'])) > 0) {
-       $client['password'] = trim($_POST['password']);
+    if (strlen(trim($_POST['password'])) > 0) {
+        $client['password'] = trim($_POST['password']);
     } else {
         unset($client['password']);
     }
 }
 
 if (isset($_POST['alternativePassword'])) {
-    if(strlen(trim($_POST['alternativePassword'])) > 0) {
-       $client['alternative_password'] = trim($_POST['alternativePassword']);
+    if (strlen(trim($_POST['alternativePassword'])) > 0) {
+        $client['alternative_password'] = trim($_POST['alternativePassword']);
     } else {
         unset($client['alternative_password']);
     }
 }
+
+//TODO: persist client update
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:manage/addClient.php');
 
@@ -107,18 +112,17 @@ foreach ($client['scope'] as $scope) {
     }
 }
 
+$t->includeInlineTranslation('{oauth2server:oauth2server:client_description_text}', $client['description']);
 
 $t->data['id'] = $client['id'];
 $t->data['scopes'] = $scopeMap;
 $t->data['uris'] = $client['redirect_uri'];
-$t->data['owner'] =  $id;
+$t->data['owner'] = $id;
 $t->data['expire'] = isset($client['expire']) ? $client['expire'] : 0;
 
 $t->data['password'] = isset($client['password']) ? $client['password'] : '';
 
 $t->data['alternativePassword'] = isset($client['alternative_password']) ? $client['alternative_password'] : '';
-
-$t->data['clientDescription'] = isset($client['description']) ? $client['description'] : '';
 
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/addClient.php');
 
