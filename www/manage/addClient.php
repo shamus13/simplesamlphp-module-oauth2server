@@ -53,7 +53,7 @@ if (array_key_exists('clientId', $_REQUEST)) {
 if (!isset($client)) {
     $client = array(
         'id' => 'CL' . substr(SimpleSAML_Utilities::generateID(), 1),
-        'redirect_uri' => '',
+        'redirect_uri' => array(),
         'description' => array('' => ''),
         'scope' => array(),
         'owner' => $id,
