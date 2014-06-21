@@ -53,7 +53,7 @@ if (!isset($client)) {
         'description' => array('' => ''),
         'scope' => array(),
         'owner' => $id,
-        'expire' => time() + 1234,
+        'expire' => time() + $config->getValue('client_grace_period', 30*24*60*60),
     );
 
     //TODO: add client entry to store
@@ -72,10 +72,6 @@ if (isset($_POST['clientDescription']) && isset($_POST['language'])) {
     $client['description'][$_POST['language']] = trim($_POST['clientDescription']);
 }
 
-if (isset($_POST['expire'])) {
-    $client['expire'] = $_POST['expire'];
-}
-
 if (isset($_POST['password'])) {
     if (strlen(trim($_POST['password'])) > 0) {
         $client['password'] = trim($_POST['password']);
@@ -90,6 +86,10 @@ if (isset($_POST['alternativePassword'])) {
     } else {
         unset($client['alternative_password']);
     }
+}
+
+if(!empty($_POST)) {
+    $client['expire'] = time() + $config->getValue('client_grace_period', 30*24*60*60);
 }
 
 //TODO: persist client update

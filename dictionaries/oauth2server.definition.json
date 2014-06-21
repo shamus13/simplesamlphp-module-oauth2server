@@ -98,8 +98,11 @@
     "client_alternative_password":{
         "en": "New Password"
     },
+    "client_token_scope":{
+        "en": "Allowed scopes"
+    },
     "client_uri":{
-        "en": "Uri"
+        "en": "Redirect URI's"
     },
     "client_expire":{
         "en": "Expires at"

@@ -61,7 +61,7 @@ $this->includeAtTemplateBase('includes/header.php');
             foreach ($this->data['scopes'] as $scope => $checked) {
                 ?>
                 <tr>
-                    <td><?php echo $header ? $this->t('{oauth2server:oauth2server:token_scope}') : ''; ?></td>
+                    <td><?php echo $header ? $this->t('{oauth2server:oauth2server:client_token_scope}') : ''; ?></td>
                     <td><input type="checkbox" name="availableScopes[]" value="<?php echo htmlspecialchars($scope); ?>"
                             <?php echo $checked ? 'checked="true"' : '' ?>/>
                         <?php echo $this->t('{oauth2server:oauth2server:' . $scope . '}') ?></td>
@@ -81,9 +81,7 @@ $this->includeAtTemplateBase('includes/header.php');
             </tr>
             <tr>
                 <td><?php echo $this->t('{oauth2server:oauth2server:client_expire}'); ?></td>
-                <td><input type="text" name="expire"
-                           value="<?php echo htmlspecialchars($this->data['expire']); ?>"/>
-                </td>
+                <td><?php echo htmlspecialchars(date('Y/m/d H:i:s',$this->data['expire'])); ?></td>
             </tr>
         </table>
 
