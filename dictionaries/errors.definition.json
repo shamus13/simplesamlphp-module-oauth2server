@@ -1,0 +1,8 @@
+{
+    "title_REGISTRATION_DISABLED": {
+        "en": "Client registration not enabled"
+    },
+    "descr_REGISTRATION_DISABLED": {
+        "en": "User registration of oauth2 clients is currently disabled in the configuration."
+    }
+}

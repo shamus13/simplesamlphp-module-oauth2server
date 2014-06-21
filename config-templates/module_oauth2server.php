@@ -46,7 +46,7 @@ $config = array(
     ),
 
     //Configuration of dynamic clients
-    'enable_client_registration' => true, //allow users to register clients, default false
+    'enable_client_registration' => false, //allow users to register clients, default false
     'client_grace_period' => 30*24*60*60, //grace period in seconds before unused clients expire, default 30 days
 
     //Authorization server properties

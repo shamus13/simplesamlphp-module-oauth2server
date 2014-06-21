@@ -28,6 +28,10 @@ $as = new SimpleSAML_Auth_Simple($config->getValue('authsource'));
 
 $as->requireAuth();
 
+if (!$config->getValue('enable_client_registration', false)) {
+    throw new SimpleSAML_Error_Error('oauth2server:REGISTRATION_DISABLED');
+}
+
 $idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
 
 $id = $as->getAttributes()[$idAttribute][0];
