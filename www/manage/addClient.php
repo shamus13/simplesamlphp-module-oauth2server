@@ -53,7 +53,7 @@ if (!isset($client)) {
         'description' => array('' => ''),
         'scope' => array(),
         'owner' => $id,
-        'expire' => time() + $config->getValue('client_grace_period', 30*24*60*60),
+        'expire' => time() + $config->getValue('client_grace_period', 30 * 24 * 60 * 60),
     );
 
     $clientStore->addClient($client);
@@ -61,36 +61,36 @@ if (!isset($client)) {
     //TODO: add client id to user record
 }
 
-if (isset($_POST['uris'])) {
-    $client['redirect_uri'] = explode(PHP_EOL, trim($_POST['uris']));
-}
-
-if (isset($_POST['availableScopes'])) {
-    $client['scope'] = array_intersect($_POST['availableScopes'], array_keys($scopes));
-}
-
-if (isset($_POST['clientDescription']) && isset($_POST['language'])) {
-    $client['description'][$_POST['language']] = trim($_POST['clientDescription']);
-}
-
-if (isset($_POST['password'])) {
-    if (strlen(trim($_POST['password'])) > 0) {
-        $client['password'] = trim($_POST['password']);
-    } else {
-        unset($client['password']);
+if (isset($_POST['create'])) {
+    if (isset($_POST['uris'])) {
+        $client['redirect_uri'] = explode(PHP_EOL, trim($_POST['uris']));
     }
-}
 
-if (isset($_POST['alternativePassword'])) {
-    if (strlen(trim($_POST['alternativePassword'])) > 0) {
-        $client['alternative_password'] = trim($_POST['alternativePassword']);
-    } else {
-        unset($client['alternative_password']);
+    if (isset($_POST['availableScopes'])) {
+        $client['scope'] = array_intersect($_POST['availableScopes'], array_keys($scopes));
     }
-}
 
-if(!empty($_POST)) {
-    $client['expire'] = time() + $config->getValue('client_grace_period', 30*24*60*60);
+    if (isset($_POST['clientDescription']) && isset($_POST['language'])) {
+        $client['description'][$_POST['language']] = trim($_POST['clientDescription']);
+    }
+
+    if (isset($_POST['password'])) {
+        if (strlen(trim($_POST['password'])) > 0) {
+            $client['password'] = trim($_POST['password']);
+        } else {
+            unset($client['password']);
+        }
+    }
+
+    if (isset($_POST['alternativePassword'])) {
+        if (strlen(trim($_POST['alternativePassword'])) > 0) {
+            $client['alternative_password'] = trim($_POST['alternativePassword']);
+        } else {
+            unset($client['alternative_password']);
+        }
+    }
+
+    $client['expire'] = time() + $config->getValue('client_grace_period', 30 * 24 * 60 * 60);
 
     $clientStore->updateClient($client);
 }
