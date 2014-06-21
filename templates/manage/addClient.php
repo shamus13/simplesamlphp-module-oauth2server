@@ -43,8 +43,7 @@ $this->includeAtTemplateBase('includes/header.php');
             </tr>
             <tr>
                 <td><?php echo $this->t('{oauth2server:oauth2server:client_owner}'); ?></td>
-                <td><input type="text" name="owner" readonly
-                           value="<?php echo htmlspecialchars($this->data['owner']); ?>"/></td>
+                <td><?php echo htmlspecialchars($this->data['owner']); ?></td>
             </tr>
             <tr>
                 <td><?php echo $this->t('{oauth2server:oauth2server:client_password}'); ?></td>

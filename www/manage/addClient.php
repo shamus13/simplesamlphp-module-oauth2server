@@ -56,7 +56,8 @@ if (!isset($client)) {
         'expire' => time() + $config->getValue('client_grace_period', 30*24*60*60),
     );
 
-    //TODO: add client entry to store
+    $clientStore->addClient($client);
+
     //TODO: add client id to user record
 }
 
@@ -90,9 +91,9 @@ if (isset($_POST['alternativePassword'])) {
 
 if(!empty($_POST)) {
     $client['expire'] = time() + $config->getValue('client_grace_period', 30*24*60*60);
-}
 
-//TODO: persist client update
+    $clientStore->updateClient($client);
+}
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:manage/addClient.php');
 
