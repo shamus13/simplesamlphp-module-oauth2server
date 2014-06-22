@@ -52,17 +52,13 @@ if (array_key_exists('clientId', $_REQUEST)) {
 
 if (!isset($client)) {
     $client = array(
-        'id' => 'CL' . substr(SimpleSAML_Utilities::generateID(), 1),
+        'id' => '',
         'redirect_uri' => array(),
         'description' => array('' => ''),
         'scope' => array(),
         'owner' => $id,
         'expire' => time() + $config->getValue('client_grace_period', 30 * 24 * 60 * 60),
     );
-
-    $clientStore->addClient($client);
-
-    //TODO: add client id to user record
 }
 
 if (isset($_POST['create'])) {
@@ -96,7 +92,18 @@ if (isset($_POST['create'])) {
 
     $client['expire'] = time() + $config->getValue('client_grace_period', 30 * 24 * 60 * 60);
 
-    $clientStore->updateClient($client);
+    if($client['id'] != '') {
+        $clientStore->updateClient($client);
+
+        //TODO: extend user time to live
+    } else {
+        $client['id'] = 'CL' . substr(SimpleSAML_Utilities::generateID(), 1);
+
+        //TODO: add client id to user
+        //TODO: extend user time to live
+
+        $clientStore->addClient($client);
+    }
 }
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:manage/addClient.php');
