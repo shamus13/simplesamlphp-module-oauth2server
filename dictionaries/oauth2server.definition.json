@@ -110,6 +110,12 @@
     "client_expire": {
         "en": "Expires"
     },
+    "client_back": {
+        "en": "Back"
+    },
+    "client_edit": {
+        "en": "Edit"
+    },
     "client_delete": {
         "en": "Delete"
     },

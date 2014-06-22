@@ -28,9 +28,6 @@ $as = new SimpleSAML_Auth_Simple($config->getValue('authsource'));
 
 $as->requireAuth();
 
-$storeConfig = $config->getValue('store');
-$storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
-
 $globalConfig = SimpleSAML_Configuration::getInstance();
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:manage/client.php');
@@ -67,12 +64,14 @@ if (isset($_REQUEST['clientId'])) {
             if (isset($client['alternative_password'])) {
                 $t->data['alternative_password'] = $client['alternative_password'];
             }
+            $t->data['editform'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/addClient.php');
         }
 
         $t->includeInlineTranslation('{oauth2server:oauth2server:client_description_text}', $client['description']);
     }
 }
 
-$t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php');
+$t->data['backform'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php');
+
 
 $t->show();
