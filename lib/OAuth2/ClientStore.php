@@ -25,6 +25,7 @@ class sspmod_oauth2server_OAuth2_ClientStore
     private $store;
     private $configuredClients;
     private $validScopes;
+    private $registrationEnabled;
 
     public function __construct($config)
     {
@@ -36,6 +37,8 @@ class sspmod_oauth2server_OAuth2_ClientStore
         $this->store = new $storeClass($storeConfig);
 
         $this->validScopes = array_keys($config->getValue('scopes', array()));
+
+        $this->registrationEnabled = $config->getValue('enable_client_registration', false);
     }
 
     public function getClient($clientId)
@@ -44,7 +47,7 @@ class sspmod_oauth2server_OAuth2_ClientStore
 
         if (array_key_exists($clientId, $this->configuredClients)) {
             $client = $this->configuredClients[$clientId];
-        } else {
+        } else if ($this->registrationEnabled) {
             $client = $this->store->getObject($clientId);
         }
 
@@ -61,18 +64,31 @@ class sspmod_oauth2server_OAuth2_ClientStore
         if (!array_key_exists($client['id'], $this->configuredClients)) {
             $this->store->removeExpiredObjects();
 
-            return $this->store->addObject($client);
+            if ($this->registrationEnabled) {
+                if (is_null($this->store->getObject($client['id']))) {
+
+                    return $this->store->addObject($client);
+                } else {
+                    throw new SimpleSAML_Error_Error('oauth2server:DUPLICATE');
+                }
+            } else {
+                throw new SimpleSAML_Error_Error('oauth2server:REGISTRATION_DISABLED');
+            }
         } else {
-            throw new SimpleSAML_Error_Error('DUPLICATE');
+            throw new SimpleSAML_Error_Error('oauth2server:DUPLICATE');
         }
     }
 
     public function updateClient($client)
     {
         if (!array_key_exists($client['id'], $this->configuredClients)) {
-            return $this->store->updateObject($client);
+            if ($this->registrationEnabled) {
+                return $this->store->updateObject($client);
+            } else {
+                throw new SimpleSAML_Error_Error('oauth2server:REGISTRATION_DISABLED');
+            }
         } else {
-            throw new SimpleSAML_Error_Error('READONLY');
+            throw new SimpleSAML_Error_Error('oauth2server:READONLY');
         }
     }
 
@@ -81,7 +97,7 @@ class sspmod_oauth2server_OAuth2_ClientStore
         if (!array_key_exists($clientId, $this->configuredClients)) {
             return $this->store->removeObject($clientId);
         } else {
-            throw new SimpleSAML_Error_Error('READONLY');
+            throw new SimpleSAML_Error_Error('oauth2server:READONLY');
         }
     }
 }
