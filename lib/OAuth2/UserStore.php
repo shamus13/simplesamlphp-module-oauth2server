@@ -20,16 +20,37 @@
 *
 */
 
-abstract class sspmod_oauth2server_Store_Store
+class sspmod_oauth2server_OAuth2_UserStore
 {
+    private $store;
 
-    public abstract function removeExpiredObjects();
+    public function __construct($config)
+    {
+        $storeConfig = $config->getValue('store');
+        $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
 
-    public abstract function getObject($id);
+        $this->store = new $storeClass($storeConfig);
+    }
 
-    public abstract function addObject($object);
+    public function getUser($userId)
+    {
+        return $this->store->getObject($userId);
+    }
 
-    public abstract function updateObject($object);
+    public function addUser($user)
+    {
+        $this->store->removeExpiredObjects();
 
-    public abstract function removeObject($id);
+        return $this->store->addObject($user);
+    }
+
+    public function updateUser($user)
+    {
+        $this->store->updateObject($user);
+    }
+
+    public function removeUser($userId)
+    {
+        $this->store->removeObject($userId);
+    }
 }

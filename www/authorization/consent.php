@@ -59,7 +59,9 @@ if (array_key_exists('grant', $_REQUEST)) {
 
     $tokenStore->addAuthorizationCode($codeEntry);
 
-    $user = $tokenStore->getUser($codeEntry['userId']);
+    $userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
+
+    $user = $userStore->getUser($codeEntry['userId']);
 
     if (is_array($user)) {
         $user['attributes'] = $as->getAttributes();
@@ -78,9 +80,9 @@ if (array_key_exists('grant', $_REQUEST)) {
             $user['expire'] = $codeEntry['expire'];
         }
 
-        $tokenStore->updateUser($user);
+        $userStore->updateUser($user);
     } else {
-        $tokenStore->addUser(array('id' => $codeEntry['userId'], 'attributes' => $as->getAttributes(),
+        $userStore->addUser(array('id' => $codeEntry['userId'], 'attributes' => $as->getAttributes(),
             'authorizationCodes' => array($codeEntry['id']), 'refreshTokens' => array(), 'accessTokens' => array(),
             'clients' => array(), 'expire' => $codeEntry['expire']));
     }

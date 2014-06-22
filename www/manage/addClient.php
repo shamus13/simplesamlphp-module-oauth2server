@@ -45,7 +45,7 @@ $scopes = $config->getValue('scopes', array());
 if (array_key_exists('clientId', $_REQUEST)) {
     $temp = $clientStore->getClient($_REQUEST['clientId']);
 
-    if (!is_null($temp) && $temp['owner'] === $id) {
+    if (!is_null($temp) && isset($temp['owner']) && $temp['owner'] === $id) {
         $client = $temp;
     }
 }

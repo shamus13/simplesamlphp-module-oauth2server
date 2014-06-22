@@ -51,7 +51,7 @@ $this->includeAtTemplateBase('includes/header.php');
                 <tr>
                     <td><?php echo $this->t('{oauth2server:oauth2server:' . $scope . '}') ?></td>
                     <td>
-                        <input type="checkbox" name="grantedScopes[]" value="<?php echo htmlspecialchars($scope);?>"/>
+                        <input type="checkbox" name="grantedScopes[]" value="<?php echo htmlspecialchars($scope); ?>"/>
                     </td>
                 </tr>
             <?php

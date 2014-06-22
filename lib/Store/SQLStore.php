@@ -50,7 +50,7 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         $preparedCleanUpStatement->execute(array(':expire' => time()));
     }
 
-    public function getObject($id)   //TODO: add object type check
+    public function getObject($id) //TODO: add object type check
     {
         $query = 'select id, value, expire from OAuth2 where id = :id';
 
@@ -78,7 +78,7 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         return null;
     }
 
-    public function addObject($object)  //TODO: add object type check
+    public function addObject($object) //TODO: add object type check
     {
         $insertStatement = "insert into OAuth2 values(:id, :value, :expire)";
 
@@ -92,7 +92,7 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         return $object['id'];
     }
 
-    public function updateObject($object)  //TODO: add object type check
+    public function updateObject($object) //TODO: add object type check
     {
         $updateStatement = "update OAuth2 set value = :value, expire = :expire where id = :id";
 

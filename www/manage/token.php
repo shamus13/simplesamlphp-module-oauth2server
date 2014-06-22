@@ -34,7 +34,9 @@ $storeConfig = $config->getValue('store');
 $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
 $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore(new $storeClass($storeConfig));
 
-$user = $tokenStore->getUser($as->getAttributes()[$idAttribute][0]);
+$userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
+
+$user = $userStore->getUser($as->getAttributes()[$idAttribute][0]);
 
 if (!is_null($user) && isset($_REQUEST['tokenId'])) {
     if (array_search($_REQUEST['tokenId'], $user['authorizationCodes']) !== false) {
@@ -54,12 +56,12 @@ foreach ($config->getValue('scopes', array()) as $scope => $translations) {
     $t->includeInlineTranslation('{oauth2server:oauth2server:' . $scope . '}', $translations);
 }
 
-if(isset($token)) {
+if (isset($token)) {
     $clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
 
     $client = $clientStore->getClient($token['clientId']);
 
-    if(!is_null($client)) {
+    if (!is_null($client)) {
         $t->data['token'] = $token;
     }
 }

@@ -34,7 +34,9 @@ $storeConfig = $config->getValue('store');
 $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
 $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore(new $storeClass($storeConfig));
 
-$user = $tokenStore->getUser($as->getAttributes()[$idAttribute][0]);
+$userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
+
+$user = $userStore->getUser($as->getAttributes()[$idAttribute][0]);
 
 $globalConfig = SimpleSAML_Configuration::getInstance();
 
@@ -47,7 +49,7 @@ if (!is_null($user)) {
         $token = $tokenStore->getAuthorizationCode($id);
 
         if (!is_null($token)) {
-            if(isset($_REQUEST['tokenId']) && $id === $_REQUEST['tokenId']) {
+            if (isset($_REQUEST['tokenId']) && $id === $_REQUEST['tokenId']) {
                 $tokenStore->removeAuthorizationCode($id);
             } else {
                 array_push($authorizationCodes, $token);
@@ -59,7 +61,7 @@ if (!is_null($user)) {
         $token = $tokenStore->getRefreshToken($id);
 
         if (!is_null($token)) {
-            if(isset($_REQUEST['tokenId']) && $id === $_REQUEST['tokenId']) {
+            if (isset($_REQUEST['tokenId']) && $id === $_REQUEST['tokenId']) {
                 $tokenStore->removeRefreshToken($id);
             } else {
                 array_push($refreshTokens, $token);
@@ -71,7 +73,7 @@ if (!is_null($user)) {
         $token = $tokenStore->getAccessToken($id);
 
         if (!is_null($token)) {
-            if(isset($_REQUEST['tokenId']) && $id === $_REQUEST['tokenId']) {
+            if (isset($_REQUEST['tokenId']) && $id === $_REQUEST['tokenId']) {
                 $tokenStore->removeAuthorizationCode($id);
             } else {
                 array_push($accessTokens, $token);

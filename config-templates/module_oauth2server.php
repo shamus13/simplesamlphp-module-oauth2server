@@ -39,7 +39,7 @@ $config = array(
             'scope' => array('scope1', 'scope2'), // Available scopes for this client. No default scope exists.
             'password' => 'password', // Optional password to be used for basic authentication of clients.
             'alternative_password' => 'new_password', // Optional alternative password used for graceful password changes.
-            'description' => array(   // Description of what the client does and why it should be granted scopes.
+            'description' => array( // Description of what the client does and why it should be granted scopes.
                 'en' => 'OAuth2 Test Client',
             ),
         ),
@@ -47,7 +47,7 @@ $config = array(
 
     //Configuration of dynamic clients
     'enable_client_registration' => false, //allow users to register clients, default false
-    'client_grace_period' => 30*24*60*60, //grace period in seconds before unused clients expire, default 30 days
+    'client_grace_period' => 30 * 24 * 60 * 60, //grace period in seconds before unused clients expire, default 30 days
 
     //Authorization server properties
     'user_id_attribute' => 'eduPersonPrincipalName',

@@ -68,7 +68,8 @@ class sspmod_oauth2server_OAuth2_TokenFactory
             'userId' => $userId);
     }
 
-    private function generateID($prefix) {
+    private function generateID($prefix)
+    {
         return $prefix . substr(SimpleSAML_Utilities::generateID(), 1);
     }
 }

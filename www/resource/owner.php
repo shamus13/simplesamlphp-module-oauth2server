@@ -45,10 +45,12 @@ if ($config->getValue('enable_resource_owner_service', false)) {
             $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
             $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore(new $storeClass($storeConfig));
 
+            $userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
+
             $accessToken = $tokenStore->getAccessToken($accessTokenId);
 
             if ($accessToken != null) {
-                $user = $tokenStore->getUser($accessToken['userId']);
+                $user = $userStore->getUser($accessToken['userId']);
             }
 
             if (isset($user) && $user != null) {

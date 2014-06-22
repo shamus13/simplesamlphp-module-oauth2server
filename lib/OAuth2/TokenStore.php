@@ -79,26 +79,4 @@ class sspmod_oauth2server_OAuth2_TokenStore
     {
         $this->store->removeObject($tokenId);
     }
-
-    public function getUser($userId)
-    {
-        return $this->store->getObject($userId);
-    }
-
-    public function addUser($user)
-    {
-        $this->store->removeExpiredObjects();
-
-        return $this->store->addObject($user);
-    }
-
-    public function updateUser($user)
-    {
-        $this->store->updateObject($user);
-    }
-
-    public function removeUser($userId)
-    {
-        $this->store->removeObject($userId);
-    }
 }

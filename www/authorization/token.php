@@ -61,11 +61,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!is_null($client)) {
                     if ((!isset($client['password']) && is_null($password)) ||
                         (isset($client['password']) && $password === $client['password']) ||
-                        (isset($client['alternative_password']) && $password === $client['alternative_password'])) {
+                        (isset($client['alternative_password']) && $password === $client['alternative_password'])
+                    ) {
 
                         $storeConfig = $config->getValue('store');
                         $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
                         $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore(new $storeClass($storeConfig));
+
+                        $userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
 
                         $authorizationTokenId = null;
                         $authorizationToken = null;
@@ -81,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
 
                         if (!is_null($authorizationToken)) {
-                            $user = $tokenStore->getUser($authorizationToken['userId']);
+                            $user = $userStore->getUser($authorizationToken['userId']);
                         }
 
                         if (!is_null($user)) {
@@ -111,8 +114,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                         $liveRefreshTokens = array($refreshToken['id']);
 
-                                        foreach($user['refreshTokens'] as $tokenId) {
-                                            if(!is_null($tokenStore->getRefreshToken($tokenId))) {
+                                        foreach ($user['refreshTokens'] as $tokenId) {
+                                            if (!is_null($tokenStore->getRefreshToken($tokenId))) {
                                                 array_push($liveRefreshTokens, $tokenId);
                                             }
                                         }
@@ -123,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             $user['expire'] = $refreshToken['expire'];
                                         }
 
-                                        if(($index = array_search($authorizationTokenId, $user['authorizationCodes'])) !== false) {
+                                        if (($index = array_search($authorizationTokenId, $user['authorizationCodes'])) !== false) {
                                             unset($user['authorizationCodes'][$index]);
                                         }
 
@@ -139,8 +142,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                     $liveAccessTokens = array($accessToken['id']);
 
-                                    foreach($user['accessTokens'] as $tokenId) {
-                                        if(!is_null($tokenStore->getAccessToken($tokenId))) {
+                                    foreach ($user['accessTokens'] as $tokenId) {
+                                        if (!is_null($tokenStore->getAccessToken($tokenId))) {
                                             array_push($liveAccessTokens, $tokenId);
                                         }
                                     }
@@ -174,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 $errorCode = 400;
                             }
 
-                            $tokenStore->updateUser($user);
+                            $userStore->updateUser($user);
 
                         } else if (is_null($authorizationTokenId)) {
                             if ($_POST['grant_type'] === 'authorization_code') {

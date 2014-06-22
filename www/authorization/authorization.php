@@ -41,7 +41,7 @@ if (isset($_REQUEST['state'])) {
     $responseParameters['state'] = $_REQUEST['state'];
 }
 
-if(isset($_REQUEST['client_id'])) {
+if (isset($_REQUEST['client_id'])) {
     $client = $clientStore->getClient($_REQUEST['client_id']);
 }
 

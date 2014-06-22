@@ -75,7 +75,7 @@ $this->includeAtTemplateBase('includes/header.php');
                         <td><?php echo $header ? $this->t('{oauth2server:oauth2server:token_scope}') : ''; ?></td>
                         <td><?php echo $this->t('{oauth2server:oauth2server:' . $scope . '}') ?></td>
                     </tr>
-                <?php
+                    <?php
                     $header = false;
                 }
                 ?>

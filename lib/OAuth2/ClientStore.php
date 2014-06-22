@@ -42,13 +42,13 @@ class sspmod_oauth2server_OAuth2_ClientStore
     {
         $client = null;
 
-        if(array_key_exists($clientId, $this->configuredClients)) {
+        if (array_key_exists($clientId, $this->configuredClients)) {
             $client = $this->configuredClients[$clientId];
         } else {
             $client = $this->store->getObject($clientId);
         }
 
-        if(!is_null($client)) {
+        if (!is_null($client)) {
             $client['scope'] = array_intersect($client['scope'], $this->validScopes);
             $client['id'] = $clientId;
         }
@@ -58,7 +58,7 @@ class sspmod_oauth2server_OAuth2_ClientStore
 
     public function addClient($client)
     {
-        if(!array_key_exists($client['id'], $this->configuredClients)) {
+        if (!array_key_exists($client['id'], $this->configuredClients)) {
             $this->store->removeExpiredObjects();
 
             return $this->store->addObject($client);
@@ -69,7 +69,7 @@ class sspmod_oauth2server_OAuth2_ClientStore
 
     public function updateClient($client)
     {
-        if(!array_key_exists($client['id'], $this->configuredClients)) {
+        if (!array_key_exists($client['id'], $this->configuredClients)) {
             return $this->store->updateObject($client);
         } else {
             throw new SimpleSAML_Error_Error('READONLY');
@@ -78,7 +78,7 @@ class sspmod_oauth2server_OAuth2_ClientStore
 
     public function removeClient($clientId)
     {
-        if(!array_key_exists($clientId, $this->configuredClients)) {
+        if (!array_key_exists($clientId, $this->configuredClients)) {
             return $this->store->removeObject($clientId);
         } else {
             throw new SimpleSAML_Error_Error('READONLY');
