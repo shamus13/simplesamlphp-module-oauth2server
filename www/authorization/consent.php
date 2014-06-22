@@ -53,9 +53,7 @@ if (array_key_exists('grant', $_REQUEST)) {
         $codeEntry['scopes'] = array();
     }
 
-    $storeConfig = $config->getValue('store');
-    $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
-    $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore(new $storeClass($storeConfig));
+    $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore($config);
 
     $tokenStore->addAuthorizationCode($codeEntry);
 

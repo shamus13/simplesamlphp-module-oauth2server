@@ -24,9 +24,12 @@ class sspmod_oauth2server_OAuth2_TokenStore
 {
     private $store;
 
-    public function __construct($store)
+    public function __construct($config)
     {
-        $this->store = $store;
+        $storeConfig = $config->getValue('store');
+        $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
+
+        $this->store = new $storeClass($storeConfig);
     }
 
     public function getAuthorizationCode($codeId)

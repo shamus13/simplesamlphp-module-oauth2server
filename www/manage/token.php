@@ -30,9 +30,7 @@ $as->requireAuth();
 
 $idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
 
-$storeConfig = $config->getValue('store');
-$storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
-$tokenStore = new sspmod_oauth2server_OAuth2_TokenStore(new $storeClass($storeConfig));
+$tokenStore = new sspmod_oauth2server_OAuth2_TokenStore($config);
 
 $userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
 
