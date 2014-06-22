@@ -34,6 +34,8 @@ $globalConfig = SimpleSAML_Configuration::getInstance();
 
 $clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
 
+$client = $clientStore->getClient($state['clientId']);
+
 if (array_key_exists('grant', $_REQUEST)) {
     $authorizationCodeFactory =
         new sspmod_oauth2server_OAuth2_TokenFactory(
@@ -59,6 +61,18 @@ if (array_key_exists('grant', $_REQUEST)) {
 
     $userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
 
+    if (isset($client['expire'])) {
+        $clientGracePeriod = $config->getValue('client_grace_period', 30 * 24 * 60 * 60);
+
+        $now = time();
+
+        if ($client['expire'] < $now + $clientGracePeriod / 2) {
+            $client['expire'] = $now + $clientGracePeriod;
+
+            $clientStore->updateClient($client);
+        }
+    }
+
     $user = $userStore->getUser($codeEntry['userId']);
 
     if (is_array($user)) {
@@ -78,11 +92,18 @@ if (array_key_exists('grant', $_REQUEST)) {
             $user['expire'] = $codeEntry['expire'];
         }
 
+        if (isset($client['expire']) && $client['expire'] > $user['expire']) {
+            $user['expire'] = $client['expire'];
+        }
+
         $userStore->updateUser($user);
     } else {
+        $expire = isset($client['expire']) && $client['expire'] > $codeEntry['expire'] ?
+            $client['expire'] : $codeEntry['expire'];
+
         $userStore->addUser(array('id' => $codeEntry['userId'], 'attributes' => $as->getAttributes(),
             'authorizationCodes' => array($codeEntry['id']), 'refreshTokens' => array(), 'accessTokens' => array(),
-            'clients' => array(), 'expire' => $codeEntry['expire']));
+            'clients' => array(), 'expire' => $expire));
     }
 
     $response = array('code' => $codeEntry['id']);
@@ -115,8 +136,6 @@ $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:authorization/co
 foreach ($config->getValue('scopes', array()) as $scope => $translations) {
     $t->includeInlineTranslation('{oauth2server:oauth2server:' . $scope . '}', $translations);
 }
-
-$client = $clientStore->getClient($state['clientId']);
 
 $t->includeInlineTranslation('{oauth2server:oauth2server:client_description}',
     array_key_exists('description', $client) ? $client['description'] : array('' => ''));
