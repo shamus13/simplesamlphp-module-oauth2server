@@ -140,6 +140,44 @@ $this->includeAtTemplateBase('includes/header.php');
             ?>
 
         </table>
+        <?php if (isset($this->data['clients'])) { ?>
+        <label for="clients">
+            <?php echo $this->t('{oauth2server:oauth2server:status_clients_header}'); ?>
+        </label>
+        <table id="clients">
+            <tr>
+                <th><?php echo $this->t('{oauth2server:oauth2server:client_id}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:client_description}'); ?></th>
+                <th><?php echo $this->t('{oauth2server:oauth2server:client_expire}'); ?></th>
+            </tr>
+
+            <?php
+            foreach ($this->data['clients'] as $client) {
+                ?>
+                <tr>
+                    <td>
+                        <a href="<?php echo htmlentities(SimpleSAML_Utilities::addURLparameter($this->data['clientForm'],
+                            array('clientId' => $client['id'])));?>">
+                            <?php echo htmlspecialchars($client['id']); ?>
+                        </a>
+                    </td>
+                    <td>
+                        <?php echo $this->t('{oauth2server:oauth2server:client_description_' .
+                        $client['id'] . '}'); ?>
+                    </td>
+                    <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $client['expire'])); ?></td>
+                    <td>
+                        <button type="submit" name="clientId" value="<?php echo htmlentities($client['id']) ?>">
+                            <?php echo $this->t('{oauth2server:oauth2server:client_delete}'); ?>
+                        </button>
+                    </td>
+                </tr>
+            <?php
+            }
+            }
+            ?>
+
+        </table>
     </form>
 <?php
 

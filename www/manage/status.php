@@ -31,7 +31,7 @@ $as->requireAuth();
 $idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
 
 $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore($config);
-
+$clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
 $userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
 
 $user = $userStore->getUser($as->getAttributes()[$idAttribute][0]);
@@ -41,6 +41,7 @@ $globalConfig = SimpleSAML_Configuration::getInstance();
 $authorizationCodes = array();
 $refreshTokens = array();
 $accessTokens = array();
+$clients = array();
 
 if (!is_null($user)) {
     foreach ($user['authorizationCodes'] as $id) {
@@ -79,7 +80,17 @@ if (!is_null($user)) {
         }
     }
 
-    //TODO: add ids for the users registered clients
+    foreach ($user['clients'] as $id) {
+        $client = $clientStore->getClient($id);
+
+        if (!is_null($client)) {
+            if (isset($_REQUEST['clientId']) && $id === $_REQUEST['clientId']) {
+                $clientStore->removeClient($id);
+            } else {
+                array_push($clients, $client);
+            }
+        }
+    }
 
     //TODO: persist the user account since we have basically gone through the trouble of pruning all dead tokens
 }
@@ -89,6 +100,15 @@ $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:manage/status.ph
 $t->data['authorizationCodes'] = $authorizationCodes;
 $t->data['refreshTokens'] = $refreshTokens;
 $t->data['accessTokens'] = $accessTokens;
+
+if($config->getValue('enable_client_registration',false)) {
+    $t->data['clients'] = $clients;
+
+    foreach($clients as $client) {
+        $t->includeInlineTranslation('{oauth2server:oauth2server:client_description_'.$client['id'].'}',
+            $client['description']);
+    }
+}
 
 $t->data['statusForm'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php');
 $t->data['tokenForm'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/token.php');

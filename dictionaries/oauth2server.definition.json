@@ -56,6 +56,9 @@
     "status_access_token_header": {
         "en": "Access Tokens"
     },
+    "status_clients_header": {
+        "en": "Registered clients"
+    },
     "token_header": {
         "en": "Token details"
     },
@@ -105,7 +108,10 @@
         "en": "Redirect URI's"
     },
     "client_expire": {
-        "en": "Expires at"
+        "en": "Expires"
+    },
+    "client_delete": {
+        "en": "Delete"
     },
     "add_client_cancel": {
         "en": "Cancel"
