@@ -50,6 +50,8 @@ if (array_key_exists('clientId', $_REQUEST)) {
     }
 }
 
+$clientGracePeriod = $config->getValue('client_grace_period', 30 * 24 * 60 * 60);
+
 if (!isset($client)) {
     $client = array(
         'id' => '',
@@ -57,7 +59,7 @@ if (!isset($client)) {
         'description' => array('' => ''),
         'scope' => array(),
         'owner' => $id,
-        'expire' => time() + $config->getValue('client_grace_period', 30 * 24 * 60 * 60),
+        'expire' => time() + $clientGracePeriod,
     );
 }
 
@@ -90,19 +92,49 @@ if (isset($_POST['create'])) {
         }
     }
 
-    $client['expire'] = time() + $config->getValue('client_grace_period', 30 * 24 * 60 * 60);
+    $client['expire'] = time() + $clientGracePeriod;
 
-    if($client['id'] != '') {
+    $userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
+
+    $user = $userStore->getUser($id);
+
+    if (is_null($user)) {
+        $user = array('attributes' => $as->getAttributes(), 'authorizationCodes' => array(),
+            'refreshTokens' => array(), 'accessTokens' => array(),
+            'clients' => array(), 'expire' => $client['expire']);
+
+        $userModified = true;
+    } else {
+        $userModified = false;
+    }
+
+    if ($client['id'] != '') {
         $clientStore->updateClient($client);
-
-        //TODO: extend user time to live
     } else {
         $client['id'] = 'CL' . substr(SimpleSAML_Utilities::generateID(), 1);
 
-        //TODO: add client id to user
-        //TODO: extend user time to live
-
         $clientStore->addClient($client);
+    }
+
+    if (!array_search($client['id'], $user['clients'])) {
+        array_push($user['clients'], $client['id']);
+
+        $userModified = true;
+    }
+
+    if ($client['expire'] - $user['expire'] > $clientGracePeriod / 2) {
+        $user['expire'] = $client['expire'];
+        $userModified = true;
+    }
+
+    if ($userModified) {
+        if (isset($user['id'])) {
+            $userStore->updateUser($user);
+        } else {
+            $user['id'] = $id;
+
+            $userStore->addUser($user);
+        }
     }
 }
 
