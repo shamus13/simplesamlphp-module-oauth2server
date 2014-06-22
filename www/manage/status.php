@@ -78,6 +78,10 @@ if (!is_null($user)) {
             }
         }
     }
+
+    //TODO: add ids for the users registered clients
+
+    //TODO: persist the user account since we have basically gone through the trouble of pruning all dead tokens
 }
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:manage/status.php');

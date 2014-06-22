@@ -148,6 +148,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                     $user['accessTokens'] = $liveAccessTokens;
 
+                                    if (isset($client['expire'])) {
+                                        $clientGracePeriod = $config->getValue('client_grace_period', 30 * 24 * 60 * 60);
+
+                                        $now = time();
+
+                                        if ($client['expire'] < $now + $clientGracePeriod / 2) {
+                                            $client['expire'] = $now + $clientGracePeriod;
+
+                                            $clientStore->updateClient($client);
+                                        }
+
+                                        if ($client['expire'] > $user['expire']) {
+                                            $user['expire'] = $client['expire'];
+                                        }
+                                    }
+
                                     $response = array('access_token' => $accessToken['id'],
                                         'token_type' => $accessToken['type'],
                                         'expires_in' => ($accessToken['expire'] - time()),
