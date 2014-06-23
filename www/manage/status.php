@@ -44,6 +44,7 @@ $accessTokens = array();
 $clients = array();
 
 if (!is_null($user)) {
+    $liveAuthorizationCodes = array();
     foreach ($user['authorizationCodes'] as $id) {
         $token = $tokenStore->getAuthorizationCode($id);
 
@@ -52,10 +53,12 @@ if (!is_null($user)) {
                 $tokenStore->removeAuthorizationCode($id);
             } else {
                 array_push($authorizationCodes, $token);
+                array_push($liveAuthorizationCodes, $token['id']);
             }
         }
     }
 
+    $liveRefreshTokens = array();
     foreach ($user['refreshTokens'] as $id) {
         $token = $tokenStore->getRefreshToken($id);
 
@@ -64,10 +67,12 @@ if (!is_null($user)) {
                 $tokenStore->removeRefreshToken($id);
             } else {
                 array_push($refreshTokens, $token);
+                array_push($liveRefreshTokens, $token['id']);
             }
         }
     }
 
+    $liveAccessTokens = array();
     foreach ($user['accessTokens'] as $id) {
         $token = $tokenStore->getAccessToken($id);
 
@@ -76,10 +81,12 @@ if (!is_null($user)) {
                 $tokenStore->removeAuthorizationCode($id);
             } else {
                 array_push($accessTokens, $token);
+                array_push($liveAccessTokens, $token['id']);
             }
         }
     }
 
+    $liveClients = array();
     foreach ($user['clients'] as $id) {
         $client = $clientStore->getClient($id);
 
@@ -88,11 +95,23 @@ if (!is_null($user)) {
                 $clientStore->removeClient($id);
             } else {
                 array_push($clients, $client);
+                array_push($liveClients, $client['id']);
             }
         }
     }
 
-    //TODO: persist the user account since we have basically gone through the trouble of pruning all dead tokens
+    if(count($liveAuthorizationCodes) != count($user['authorizationCodes']) ||
+        count($liveRefreshTokens) != count($user['refreshTokens']) ||
+        count($liveAccessTokens) != count($user['accessTokens']) ||
+        count($liveClients) != count($user['clients'])
+    ) {
+        $user['authorizationCodes'] = $liveAuthorizationCodes;
+        $user['refreshTokens'] = $liveRefreshTokens;
+        $user['accessTokens'] = $liveAccessTokens;
+        $user['clients'] = $liveClients;
+
+        $userStore->updateUser($user);
+    }
 }
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:manage/status.php');
