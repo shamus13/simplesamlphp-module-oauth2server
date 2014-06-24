@@ -92,9 +92,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 if ($authorizationToken['redirectUri'] == $redirectUri) {
                                     $tokenFactory =
                                         new sspmod_oauth2server_OAuth2_TokenFactory(
-                                            $config->getValue('authorization_code_time_to_live', 300),
-                                            $config->getValue('access_token_time_to_live', 300),
-                                            $config->getValue('refresh_token_time_to_live', 3600)
+                                            $authorizationToken['authorizationCodeTTL'],
+                                            $authorizationToken['accessTokenTTL'],
+                                            $authorizationToken['refreshTokenTTL']
                                         );
 
                                     $accessToken =

@@ -42,6 +42,9 @@ class sspmod_oauth2server_OAuth2_TokenFactory
             'redirectUri' => $redirectUri,
             'scopes' => $scopes,
             'expire' => time() + $this->authorizationCodeTimeToLive,
+            'authorizationCodeTTL' => $this->authorizationCodeTimeToLive,
+            'refreshTokenTTL' => $this->refreshTokenTimeToLive,
+            'accessTokenTTL' => $this->accessTokenTimeToLive,
             'userId' => $userId);
     }
 
@@ -54,6 +57,9 @@ class sspmod_oauth2server_OAuth2_TokenFactory
             'redirectUri' => $redirectUri,
             'scopes' => $scopes,
             'expire' => time() + $this->refreshTokenTimeToLive,
+            'authorizationCodeTTL' => $this->authorizationCodeTimeToLive,
+            'refreshTokenTTL' => $this->refreshTokenTimeToLive,
+            'accessTokenTTL' => $this->accessTokenTimeToLive,
             'userId' => $userId);
     }
 
@@ -65,6 +71,9 @@ class sspmod_oauth2server_OAuth2_TokenFactory
             'clientId' => $clientId,
             'scopes' => $scopes,
             'expire' => time() + $this->accessTokenTimeToLive,
+            'authorizationCodeTTL' => $this->authorizationCodeTimeToLive,
+            'refreshTokenTTL' => $this->refreshTokenTimeToLive,
+            'accessTokenTTL' => $this->accessTokenTimeToLive,
             'userId' => $userId);
     }
 
