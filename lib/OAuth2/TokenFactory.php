@@ -33,7 +33,7 @@ class sspmod_oauth2server_OAuth2_TokenFactory
         $this->refreshTokenTimeToLive = $refreshTokenTimeToLive;
     }
 
-    public function createCode($clientId, $redirectUri, $scopes, $userId)
+    public function createAuthorizationCode($clientId, $redirectUri, $scopes, $userId)
     {
         return array(
             'id' => $this->generateID('AC'),

@@ -46,7 +46,7 @@ if (array_key_exists('grant', $_REQUEST)) {
 
     $idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
 
-    $codeEntry = $authorizationCodeFactory->createCode($state['clientId'],
+    $codeEntry = $authorizationCodeFactory->createAuthorizationCode($state['clientId'],
         $state['redirectUri'], array(), $as->getAttributes()[$idAttribute][0]);
 
     if (isset($_REQUEST['grantedScopes'])) {
