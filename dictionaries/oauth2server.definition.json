@@ -44,6 +44,9 @@
     "consent_scope_grant": {
         "en": "Consent"
     },
+    "consent_refresh_token_ttl": {
+        "en": "Authorization expires in"
+    },
     "status_header": {
         "en": "Currently active tokens"
     },

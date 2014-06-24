@@ -100,7 +100,7 @@ if (!is_null($user)) {
         }
     }
 
-    if(count($liveAuthorizationCodes) != count($user['authorizationCodes']) ||
+    if (count($liveAuthorizationCodes) != count($user['authorizationCodes']) ||
         count($liveRefreshTokens) != count($user['refreshTokens']) ||
         count($liveAccessTokens) != count($user['accessTokens']) ||
         count($liveClients) != count($user['clients'])
@@ -120,11 +120,11 @@ $t->data['authorizationCodes'] = $authorizationCodes;
 $t->data['refreshTokens'] = $refreshTokens;
 $t->data['accessTokens'] = $accessTokens;
 
-if($config->getValue('enable_client_registration',false)) {
+if ($config->getValue('enable_client_registration', false)) {
     $t->data['clients'] = $clients;
 
-    foreach($clients as $client) {
-        $t->includeInlineTranslation('{oauth2server:oauth2server:client_description_'.$client['id'].'}',
+    foreach ($clients as $client) {
+        $t->includeInlineTranslation('{oauth2server:oauth2server:client_description_' . $client['id'] . '}',
             $client['description']);
     }
 }

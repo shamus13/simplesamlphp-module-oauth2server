@@ -53,7 +53,13 @@ $config = array(
     'user_id_attribute' => 'eduPersonPrincipalName',
 
     'authorization_code_time_to_live' => 300, // default life span of 300 seconds
-    'refresh_token_time_to_live' => 3600, // default life span of 3600 seconds
+    'refresh_token_time_to_live' => array( // preselects first entry
+        3600, // 1 hour
+        300, // 5 minutes
+        24 * 3600, // 1 day
+        30 * 24 * 3600, // 30 days
+        365 * 24 * 3600 // 1 year
+    ), // default life span of 1 hour
     'access_token_time_to_live' => 300, // default life span of 300 seconds
 
     //resourceOwner properties.

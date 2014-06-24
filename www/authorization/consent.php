@@ -36,12 +36,25 @@ $clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
 
 $client = $clientStore->getClient($state['clientId']);
 
+$refreshTokenTTLs = $config->getValue('refresh_token_time_to_live', array());
+
+if (empty($refreshTokenTTLs)) {
+    array_push($refreshTokenTTLs, 3600);
+}
+
 if (array_key_exists('grant', $_REQUEST)) {
+
+    if (array_key_exists('ttl', $_REQUEST) && array_search($_REQUEST['ttl'], $refreshTokenTTLs) !== false) {
+        $refreshTokenTTL = $_REQUEST['ttl'];
+    } else {
+        $refreshTokenTTL = $refreshTokenTTLs[0];
+    }
+
     $authorizationCodeFactory =
         new sspmod_oauth2server_OAuth2_TokenFactory(
             $config->getValue('authorization_code_time_to_live', 300),
             $config->getValue('access_token_time_to_live', 300),
-            $config->getValue('refresh_token_time_to_live', 3600)
+            $refreshTokenTTL
         );
 
     $idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
@@ -145,8 +158,11 @@ $t->data['stateId'] = $_REQUEST['stateId'];
 $t->data['scopes'] = $state['requestedScopes'];
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/authorization/consent.php');
 
-$t->show();
+$t->data['ttlChoices'] = $refreshTokenTTLs;
+sort($t->data['ttlChoices'], SORT_NUMERIC);
+$t->data['ttlDefault'] = $refreshTokenTTLs[0];
 
+$t->show();
 
 //TODO: add support for warning about non https redirection end points
 //TODO: add support for choosing refresh token time to live

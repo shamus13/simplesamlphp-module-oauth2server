@@ -60,6 +60,20 @@ $this->includeAtTemplateBase('includes/header.php');
         </table>
 
         <p>
+            <label for="ttl">
+                <?php echo $this->t('{oauth2server:oauth2server:consent_refresh_token_ttl}'); ?>
+            </label>
+            <select name="ttl" id="ttl">
+                <?php foreach ($this->data['ttlChoices'] as $ttl) { ?>
+                    <option value="<?php echo htmlentities($ttl) ?>"
+                        <?php echo $this->data['ttlDefault'] == $ttl ? 'selected="selected"' : '' ?>>
+                        <?php echo htmlentities($ttl) /*TODO: we need to add labels instead of using seconds */?>
+                    </option>
+                <?php } ?>
+            </select>
+        </p>
+
+        <p>
             <input id="deny" name="deny" type="submit"
                    value="<?php echo $this->t('{oauth2server:oauth2server:consent_deny_description}'); ?>"/>
             <input id="grant" name="grant" type="submit"
