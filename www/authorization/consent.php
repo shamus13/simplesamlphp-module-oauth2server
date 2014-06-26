@@ -36,7 +36,7 @@ $clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
 
 $client = $clientStore->getClient($state['clientId']);
 
-$refreshTokenTTLs = $config->getValue('refresh_token_time_to_live', array());
+$refreshTokenTTLs = $config->getValue('refresh_token_time_to_live');
 
 if (empty($refreshTokenTTLs)) {
     array_push($refreshTokenTTLs, 3600);
@@ -44,10 +44,10 @@ if (empty($refreshTokenTTLs)) {
 
 if (array_key_exists('grant', $_REQUEST)) {
 
-    if (array_key_exists('ttl', $_REQUEST) && array_search($_REQUEST['ttl'], $refreshTokenTTLs) !== false) {
+    if (array_key_exists('ttl', $_REQUEST) && array_key_exists($_REQUEST['ttl'], $refreshTokenTTLs)) {
         $refreshTokenTTL = $_REQUEST['ttl'];
     } else {
-        $refreshTokenTTL = $refreshTokenTTLs[0];
+        $refreshTokenTTL = $refreshTokenTTLs[array_keys($refreshTokenTTLs)[0]];
     }
 
     $authorizationCodeFactory =
@@ -158,9 +158,13 @@ $t->data['stateId'] = $_REQUEST['stateId'];
 $t->data['scopes'] = $state['requestedScopes'];
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/authorization/consent.php');
 
-$t->data['ttlChoices'] = $refreshTokenTTLs;
+foreach ($refreshTokenTTLs as $ttl => $translations) {
+    $t->includeInlineTranslation('{oauth2server:oauth2server:ttl_' . $ttl . '}', $translations);
+}
+
+$t->data['ttlChoices'] = array_keys($refreshTokenTTLs);
+$t->data['ttlDefault'] = $t->data['ttlChoices'][0];
 sort($t->data['ttlChoices'], SORT_NUMERIC);
-$t->data['ttlDefault'] = $refreshTokenTTLs[0];
 
 $t->show();
 

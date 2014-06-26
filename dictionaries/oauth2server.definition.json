@@ -45,7 +45,7 @@
         "en": "Consent"
     },
     "consent_refresh_token_ttl": {
-        "en": "Authorization expires in"
+        "en": "Authorization last for"
     },
     "status_header": {
         "en": "Currently active tokens"

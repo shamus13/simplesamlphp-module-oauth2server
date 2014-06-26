@@ -67,7 +67,7 @@ $this->includeAtTemplateBase('includes/header.php');
                 <?php foreach ($this->data['ttlChoices'] as $ttl) { ?>
                     <option value="<?php echo htmlentities($ttl) ?>"
                         <?php echo $this->data['ttlDefault'] == $ttl ? 'selected="selected"' : '' ?>>
-                        <?php echo htmlentities($ttl) /*TODO: we need to add labels instead of using seconds */?>
+                        <?php echo $this->t('{oauth2server:oauth2server:ttl_' . $ttl . '}')?>
                     </option>
                 <?php } ?>
             </select>
