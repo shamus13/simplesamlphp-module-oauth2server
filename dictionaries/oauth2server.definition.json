@@ -122,10 +122,13 @@
     "client_delete": {
         "en": "Delete"
     },
-    "add_client_cancel": {
-        "en": "Cancel"
+    "client_cancel": {
+        "en": "back"
     },
-    "add_client_submit": {
-        "en": "Submit"
+    "client_create": {
+        "en": "Create"
+    },
+    "client_update": {
+        "en": "Update"
     }
 }

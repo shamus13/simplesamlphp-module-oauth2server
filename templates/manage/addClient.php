@@ -36,7 +36,7 @@ $this->includeAtTemplateBase('includes/header.php');
             </tr>
             <tr>
                 <td><?php echo $this->t('{oauth2server:oauth2server:client_description}'); ?></td>
-                <td><textarea name="clientDescription"><?php
+                <td><textarea name="clientDescription"<?php echo $this->data['editable'] ? '' : ' readonly' ?>><?php
                         echo $this->t('{oauth2server:oauth2server:client_description_text}');
                         ?></textarea>
                 </td>
@@ -47,12 +47,13 @@ $this->includeAtTemplateBase('includes/header.php');
             </tr>
             <tr>
                 <td><?php echo $this->t('{oauth2server:oauth2server:client_password}'); ?></td>
-                <td><input type="text" name="password"
+                <td><input type="text" name="password"<?php echo $this->data['editable'] ? '' : ' readonly' ?>
                            value="<?php echo htmlspecialchars($this->data['password']); ?>"/></td>
             </tr>
             <tr>
                 <td><?php echo $this->t('{oauth2server:oauth2server:client_alternative_password}'); ?></td>
-                <td><input type="text" name="alternativePassword"
+                <td><input type="text"
+                           name="alternativePassword"<?php echo $this->data['editable'] ? '' : ' readonly' ?>
                            value="<?php echo htmlspecialchars($this->data['alternativePassword']); ?>"/></td>
             </tr>
             <?php
@@ -62,7 +63,7 @@ $this->includeAtTemplateBase('includes/header.php');
                 <tr>
                     <td><?php echo $header ? $this->t('{oauth2server:oauth2server:client_token_scope}') : ''; ?></td>
                     <td><input type="checkbox" name="availableScopes[]" value="<?php echo htmlspecialchars($scope); ?>"
-                            <?php echo $checked ? 'checked="true"' : '' ?>/>
+                            <?php echo $checked ? 'checked="true"' : '' ?><?php echo $this->data['editable'] ? '' : ' disabled="disabled"' ?>/>
                         <?php echo $this->t('{oauth2server:oauth2server:' . $scope . '}') ?></td>
                 </tr>
                 <?php
@@ -71,7 +72,7 @@ $this->includeAtTemplateBase('includes/header.php');
             ?>
             <tr>
                 <td><?php echo $this->t('{oauth2server:oauth2server:client_uri}'); ?></td>
-                <td><textarea name="uris"><?php
+                <td><textarea name="uris"<?php echo $this->data['editable'] ? '' : ' readonly' ?>><?php
                         foreach ($this->data['uris'] as $uri) {
                             echo htmlentities($uri) . PHP_EOL;
                         }
@@ -80,15 +81,23 @@ $this->includeAtTemplateBase('includes/header.php');
             </tr>
             <tr>
                 <td><?php echo $this->t('{oauth2server:oauth2server:client_expire}'); ?></td>
-                <td><?php echo htmlspecialchars(date('Y/m/d H:i:s', $this->data['expire'])); ?></td>
+                <td><?php echo isset($this->data['expire']) ?
+                        htmlspecialchars(date('Y/m/d H:i:s', $this->data['expire'])) : ''; ?></td>
             </tr>
         </table>
 
         <p>
             <input name="cancel" type="submit"
-                   value="<?php echo $this->t('{oauth2server:oauth2server:add_client_cancel}'); ?>"/>
-            <input name="create" type="submit"
-                   value="<?php echo $this->t('{oauth2server:oauth2server:add_client_submit}'); ?>"/>
+                   value="<?php echo $this->t('{oauth2server:oauth2server:client_back}'); ?>"/>
+            <?php if ($this->data['editable'] && $this->data['id'] !== '') { ?>
+                <input name="update" type="submit"
+                       value="<?php echo $this->t('{oauth2server:oauth2server:client_update}'); ?>"/>
+                <input name="delete" type="submit"
+                       value="<?php echo $this->t('{oauth2server:oauth2server:client_delete}'); ?>"/>
+            <?php } else if ($this->data['editable'] && $this->data['id'] == '') { ?>
+                <input name="update" type="submit"
+                       value="<?php echo $this->t('{oauth2server:oauth2server:client_create}'); ?>"/>
+            <?php } ?>
         </p>
     </form>
 <?php

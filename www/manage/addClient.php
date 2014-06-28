@@ -43,16 +43,12 @@ $globalConfig = SimpleSAML_Configuration::getInstance();
 $scopes = $config->getValue('scopes', array());
 
 if (array_key_exists('clientId', $_REQUEST)) {
-    $temp = $clientStore->getClient($_REQUEST['clientId']);
-
-    if (!is_null($temp) && isset($temp['owner']) && $temp['owner'] === $id) {
-        $client = $temp;
-    }
+    $client = $clientStore->getClient($_REQUEST['clientId']);
 }
 
 $clientGracePeriod = $config->getValue('client_grace_period', 30 * 24 * 60 * 60);
 
-if (!isset($client)) {
+if (!isset($client) || !is_array($client)) {
     $client = array(
         'id' => '',
         'redirect_uri' => array(),
@@ -63,7 +59,9 @@ if (!isset($client)) {
     );
 }
 
-if (isset($_POST['create'])) {
+$ownedByMe = isset($client['owner']) && $client['owner'] === $id;
+
+if ($ownedByMe && isset($_POST['update'])) {
     if (isset($_POST['uris'])) {
         $client['redirect_uri'] = explode(PHP_EOL, trim($_POST['uris']));
     }
@@ -116,7 +114,7 @@ if (isset($_POST['create'])) {
         $clientStore->addClient($client);
     }
 
-    if (!array_search($client['id'], $user['clients'])) {
+    if (array_search($client['id'], $user['clients']) === false) {
         array_push($user['clients'], $client['id']);
 
         $userModified = true;
@@ -136,7 +134,11 @@ if (isset($_POST['create'])) {
             $userStore->addUser($user);
         }
     }
-} else if(isset($_POST['cancel'])) {
+} else if (isset($_POST['cancel'])) {
+    SimpleSAML_Utilities::redirect(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
+} else if ($ownedByMe && isset($_POST['delete'])) {
+    $clientStore->removeClient($client['id']);
+
     SimpleSAML_Utilities::redirect(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
 }
 
@@ -160,15 +162,19 @@ foreach ($client['scope'] as $scope) {
 
 $t->includeInlineTranslation('{oauth2server:oauth2server:client_description_text}', $client['description']);
 
+$t->data['editable'] = $ownedByMe;
 $t->data['id'] = $client['id'];
 $t->data['scopes'] = $scopeMap;
-$t->data['uris'] = $client['redirect_uri'];
+$t->data['uris'] = $ownedByMe ? $client['redirect_uri'] : array();
 $t->data['owner'] = $id;
-$t->data['expire'] = isset($client['expire']) ? $client['expire'] : 0;
 
-$t->data['password'] = isset($client['password']) ? $client['password'] : '';
+if (isset($client['expire'])) {
+    $t->data['expire'] = $client['expire'];
+}
 
-$t->data['alternativePassword'] = isset($client['alternative_password']) ? $client['alternative_password'] : '';
+$t->data['password'] = $ownedByMe && isset($client['password']) ? $client['password'] : '';
+
+$t->data['alternativePassword'] = $ownedByMe && isset($client['alternative_password']) ? $client['alternative_password'] : '';
 
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/addClient.php');
 
