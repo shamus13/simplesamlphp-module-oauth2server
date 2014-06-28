@@ -136,6 +136,8 @@ if (isset($_POST['create'])) {
             $userStore->addUser($user);
         }
     }
+} else if(isset($_POST['cancel'])) {
+    SimpleSAML_Utilities::redirect(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
 }
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:manage/addClient.php');
