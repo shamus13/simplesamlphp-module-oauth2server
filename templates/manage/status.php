@@ -166,11 +166,6 @@ $this->includeAtTemplateBase('includes/header.php');
                         $client['id'] . '}'); ?>
                     </td>
                     <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $client['expire'])); ?></td>
-                    <td>
-                        <button type="submit" name="clientId" value="<?php echo htmlentities($client['id']) ?>">
-                            <?php echo $this->t('{oauth2server:oauth2server:client_delete}'); ?>
-                        </button>
-                    </td>
                 </tr>
             <?php
             }

@@ -91,12 +91,8 @@ if (!is_null($user)) {
         $client = $clientStore->getClient($id);
 
         if (!is_null($client)) {
-            if (isset($_REQUEST['clientId']) && $id === $_REQUEST['clientId']) {
-                $clientStore->removeClient($id);
-            } else {
-                array_push($clients, $client);
-                array_push($liveClients, $client['id']);
-            }
+            array_push($clients, $client);
+            array_push($liveClients, $client['id']);
         }
     }
 
