@@ -28,6 +28,10 @@ $as = new SimpleSAML_Auth_Simple($config->getValue('authsource'));
 
 $as->requireAuth();
 
+if (isset($_POST['back'])) {
+    SimpleSAML_Utilities::redirect(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
+}
+
 $idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
 
 $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore($config);
@@ -39,10 +43,28 @@ $user = $userStore->getUser($as->getAttributes()[$idAttribute][0]);
 if (!is_null($user) && isset($_REQUEST['tokenId'])) {
     if (array_search($_REQUEST['tokenId'], $user['authorizationCodes']) !== false) {
         $token = $tokenStore->getAuthorizationCode($_REQUEST['tokenId']);
+
+        if (is_array($token) && isset($_POST['revoke'])) {
+            $tokenStore->removeAuthorizationCode($_REQUEST['tokenId']);
+
+            SimpleSAML_Utilities::redirect(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
+        }
     } else if (array_search($_REQUEST['tokenId'], $user['refreshTokens']) !== false) {
         $token = $tokenStore->getRefreshToken($_REQUEST['tokenId']);
+
+        if (is_array($token) && isset($_POST['revoke'])) {
+            $tokenStore->removeRefreshToken($_REQUEST['tokenId']);
+
+            SimpleSAML_Utilities::redirect(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
+        }
     } else if (array_search($_REQUEST['tokenId'], $user['accessTokens']) !== false) {
         $token = $tokenStore->getAccessToken($_REQUEST['tokenId']);
+
+        if (is_array($token) && isset($_POST['revoke'])) {
+            $tokenStore->removeAccessToken($_REQUEST['tokenId']);
+
+            SimpleSAML_Utilities::redirect(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
+        }
     }
 }
 
@@ -61,9 +83,11 @@ if (isset($token)) {
 
     if (!is_null($client)) {
         $t->data['token'] = $token;
+
+        $t->includeInlineTranslation('{oauth2server:oauth2server:client_description_text}', $client['description']);
     }
 }
 
-$t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php');
+$t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/token.php');
 
 $t->show();

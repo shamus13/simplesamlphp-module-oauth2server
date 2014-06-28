@@ -30,10 +30,24 @@ $this->includeAtTemplateBase('includes/header.php');
             $token = $this->data['token'];
 
             ?>
+            <input type="text" name="tokenId" hidden="hidden" readonly
+                   value="<?php echo htmlspecialchars($token['id']); ?>"/>
             <table>
+                <tr>
+                    <td><?php echo $this->t('{oauth2server:oauth2server:token_id}'); ?></td>
+                    <td><?php echo htmlspecialchars($token['id']); ?></td>
+                </tr>
+                <tr>
+                    <td><?php echo $this->t('{oauth2server:oauth2server:token_type}'); ?></td>
+                    <td><?php echo htmlspecialchars($token['type']); ?></td>
+                </tr>
                 <tr>
                     <td><?php echo $this->t('{oauth2server:oauth2server:client_id}'); ?></td>
                     <td><?php echo htmlspecialchars($token['clientId']); ?></td>
+                </tr>
+                <tr>
+                    <td><?php echo $this->t('{oauth2server:oauth2server:client_description}'); ?></td>
+                    <td><?php echo $this->t('{oauth2server:oauth2server:client_description_text}'); ?></td>
                 </tr>
                 <?php
                 $header = true;
@@ -48,25 +62,16 @@ $this->includeAtTemplateBase('includes/header.php');
                 }
                 ?>
                 <tr>
-                    <td><?php echo $this->t('{oauth2server:oauth2server:token_id}'); ?></td>
-                    <td><?php echo htmlspecialchars($token['id']); ?></td>
-                </tr>
-                <tr>
-                    <td><?php echo $this->t('{oauth2server:oauth2server:token_type}'); ?></td>
-                    <td><?php echo htmlspecialchars($token['type']); ?></td>
-                </tr>
-                <tr>
                     <td><?php echo $this->t('{oauth2server:oauth2server:token_expire_time}'); ?></td>
                     <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
                 </tr>
             </table>
             <p>
-                <button type="submit">
-                    <?php echo $this->t('{oauth2server:oauth2server:token_back}'); ?>
-                </button>
-                <button type="submit" name="tokenId" value="<?php echo htmlentities($token['id']) ?>">
-                    <?php echo $this->t('{oauth2server:oauth2server:token_revoke}'); ?>
-                </button>
+
+                <input name="back" type="submit"
+                       value="<?php echo $this->t('{oauth2server:oauth2server:token_back}'); ?>"/>
+                <input name="revoke" type="submit"
+                       value="<?php echo $this->t('{oauth2server:oauth2server:token_revoke}'); ?>"/>
             </p>
         <?php
         }
