@@ -166,6 +166,10 @@ $t->data['ttlChoices'] = array_keys($refreshTokenTTLs);
 $t->data['ttlDefault'] = $t->data['ttlChoices'][0];
 sort($t->data['ttlChoices'], SORT_NUMERIC);
 
-$t->show();
+switch(parse_url($state['returnUri'], PHP_URL_SCHEME)) {
+    case 'http': $t->data['redirection'] = 'insecure'; break;
+    case 'https': break;
+    default: $t->data['redirection'] = 'unknown';
+}
 
-//TODO: add support for warning about non https redirection end points
+$t->show();

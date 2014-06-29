@@ -47,6 +47,12 @@
     "consent_refresh_token_ttl": {
         "en": "Authorization last for"
     },
+    "consent_redirection_insecure": {
+        "en": "Warning. This client uses an insecure endpoint."
+    },
+    "consent_redirection_unknown": {
+        "en": "Warning. This client uses a non standard endpoint."
+    },
     "status_header": {
         "en": "Currently active tokens"
     },

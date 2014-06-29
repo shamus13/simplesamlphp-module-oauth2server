@@ -67,11 +67,19 @@ $this->includeAtTemplateBase('includes/header.php');
                 <?php foreach ($this->data['ttlChoices'] as $ttl) { ?>
                     <option value="<?php echo htmlentities($ttl) ?>"
                         <?php echo $this->data['ttlDefault'] == $ttl ? 'selected="selected"' : '' ?>>
-                        <?php echo $this->t('{oauth2server:oauth2server:ttl_' . $ttl . '}')?>
+                        <?php echo $this->t('{oauth2server:oauth2server:ttl_' . $ttl . '}') ?>
                     </option>
                 <?php } ?>
             </select>
         </p>
+
+        <?php if (isset($this->data['redirection'])) { ?>
+            <p>
+                <?php
+                echo $this->t('{oauth2server:oauth2server:consent_redirection_' . $this->data['redirection'] . '}');
+                ?>
+            </p>
+        <?php } ?>
 
         <p>
             <input id="deny" name="deny" type="submit"
