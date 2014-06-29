@@ -52,10 +52,12 @@ if (isset($client)) {
     ) {
         $returnUri = (isset($_REQUEST['redirect_uri'])) ? $_REQUEST['redirect_uri'] : $client['redirect_uri'][0];
 
-        $legalRedirectUri = false; //TODO: we also need to verify, that there is no fragment part in the uri but how?
+        $legalRedirectUri = false;
 
-        foreach ($client['redirect_uri'] as $uri) {
-            $legalRedirectUri |= strpos($returnUri, $uri) === 0;
+        if (!is_string(parse_url($returnUri, PHP_URL_FRAGMENT))) {
+            foreach ($client['redirect_uri'] as $uri) {
+                $legalRedirectUri |= strpos($returnUri, $uri) === 0;
+            }
         }
 
         if ($legalRedirectUri) {
@@ -111,8 +113,14 @@ if (isset($client)) {
 
             SimpleSAML_Utilities::redirect(SimpleSAML_Utilities::addURLparameter($returnUri, $responseParameters));
         } else {
-            $error = 'invalid_redirect_uri'; // this is not a proper error code used only internally
-            $error_description = 'illegal redirect_uri: ' . $returnUri;
+            if (is_string(parse_url($returnUri, PHP_URL_FRAGMENT))) {
+                $error = 'invalid_redirect_uri'; // this is not a proper error code used only internally
+                $error_description = 'fragments are not allowed in redirect_uri: ' . $returnUri;
+
+            } else {
+                $error = 'invalid_redirect_uri'; // this is not a proper error code used only internally
+                $error_description = 'illegal redirect_uri: ' . $returnUri;
+            }
         }
     } else {
         $error = 'server_error';
