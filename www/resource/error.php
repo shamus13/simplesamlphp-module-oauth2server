@@ -33,8 +33,8 @@ if (array_key_exists('error', $_REQUEST)) {
     $t->data['error'] = $_REQUEST['error'];
 }
 
-if (array_key_exists('errorDescription', $_REQUEST)) {
-    $t->data['errorDescription'] = $_REQUEST['errorDescription'];
+if (array_key_exists('error_description', $_REQUEST)) {
+    $t->data['errorDescription'] = $_REQUEST['error_description'];
 }
 
 $t->show();

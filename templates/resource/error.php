@@ -36,6 +36,11 @@ $this->includeAtTemplateBase('includes/header.php');
         ?>
     </p>
 
+    <p>
+        <?php
+        echo htmlentities($this->data['errorDescription']);
+        ?>
+    </p>
 <?php
 
 $this->includeAtTemplateBase('includes/footer.php');
