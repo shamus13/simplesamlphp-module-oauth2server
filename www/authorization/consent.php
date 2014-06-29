@@ -169,4 +169,3 @@ sort($t->data['ttlChoices'], SORT_NUMERIC);
 $t->show();
 
 //TODO: add support for warning about non https redirection end points
-//TODO: add support for choosing refresh token time to live
