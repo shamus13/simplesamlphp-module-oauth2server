@@ -63,10 +63,15 @@ if (array_key_exists('grant', $_REQUEST)) {
         $state['redirectUri'], array(), $as->getAttributes()[$idAttribute][0]);
 
     if (isset($_REQUEST['grantedScopes'])) {
-        $codeEntry['scopes'] = array_intersect($state['requestedScopes'], $_REQUEST['grantedScopes']);
+        $scopesTemp = $_REQUEST['grantedScopes'];
     } else {
-        $codeEntry['scopes'] = array();
+        $scopesTemp = array();
     }
+
+    $scopesTemp = array_unique(array_merge($scopesTemp,
+        (isset($client['scopeRequired']) ? $client['scopeRequired'] : array())));
+
+    $codeEntry['scopes'] = array_intersect($state['requestedScopes'], $scopesTemp);
 
     $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore($config);
 
@@ -155,7 +160,17 @@ $t->includeInlineTranslation('{oauth2server:oauth2server:client_description}',
 
 $t->data['clientId'] = $state['clientId'];
 $t->data['stateId'] = $_REQUEST['stateId'];
-$t->data['scopes'] = $state['requestedScopes'];
+
+$t->data['scopes'] = array();
+
+foreach ($state['requestedScopes'] as $scope) {
+    $t->data['scopes'][$scope] = false;
+}
+
+foreach ((isset($client['scopeRequired']) ? $client['scopeRequired'] : array()) as $scope) {
+    $t->data['scopes'][$scope] = true;
+}
+
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/authorization/consent.php');
 
 foreach ($refreshTokenTTLs as $ttl => $translations) {
@@ -166,10 +181,14 @@ $t->data['ttlChoices'] = array_keys($refreshTokenTTLs);
 $t->data['ttlDefault'] = $t->data['ttlChoices'][0];
 sort($t->data['ttlChoices'], SORT_NUMERIC);
 
-switch(parse_url($state['returnUri'], PHP_URL_SCHEME)) {
-    case 'http': $t->data['redirection'] = 'insecure'; break;
-    case 'https': break;
-    default: $t->data['redirection'] = 'unknown';
+switch (parse_url($state['returnUri'], PHP_URL_SCHEME)) {
+    case 'http':
+        $t->data['redirection'] = 'insecure';
+        break;
+    case 'https':
+        break;
+    default:
+        $t->data['redirection'] = 'unknown';
 }
 
 $t->show();

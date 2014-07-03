@@ -46,12 +46,14 @@ $this->includeAtTemplateBase('includes/header.php');
             </tr>
 
             <?php
-            foreach ($this->data['scopes'] as $scope) {
+            foreach ($this->data['scopes'] as $scope => $required) {
                 ?>
                 <tr>
                     <td><?php echo $this->t('{oauth2server:oauth2server:' . $scope . '}') ?></td>
                     <td>
-                        <input type="checkbox" name="grantedScopes[]" value="<?php echo htmlspecialchars($scope); ?>"/>
+                        <input type="checkbox" name="grantedScopes[]" <?php
+                        echo $required? 'disabled="disabled" checked="true"':''?>
+                               value="<?php echo htmlspecialchars($scope); ?>" />
                     </td>
                 </tr>
             <?php

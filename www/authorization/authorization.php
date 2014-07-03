@@ -62,7 +62,8 @@ if (isset($client)) {
 
         if ($legalRedirectUri) {
             $requestedScopes = (isset($_REQUEST['scope'])) ? explode(' ', $_REQUEST['scope']) : array();
-            $definedScopes = (isset($client['scope'])) ? $client['scope'] : array();
+            $definedScopes = array_merge((isset($client['scope'])) ? $client['scope'] : array(),
+                (isset($client['scopeRequired'])) ? $client['scopeRequired'] : array());
 
             $invalidScopes = array_diff($requestedScopes, $definedScopes);
 
