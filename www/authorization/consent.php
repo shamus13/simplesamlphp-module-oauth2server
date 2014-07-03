@@ -68,8 +68,11 @@ if (array_key_exists('grant', $_REQUEST)) {
         $scopesTemp = array();
     }
 
-    $scopesTemp = array_unique(array_merge($scopesTemp,
-        (isset($client['scopeRequired']) ? $client['scopeRequired'] : array())));
+    foreach ($client['scope'] as $scope => $required) {
+        if ($required) {
+            array_push($scopesTemp, $scope);
+        }
+    }
 
     $codeEntry['scopes'] = array_intersect($state['requestedScopes'], $scopesTemp);
 
@@ -163,12 +166,10 @@ $t->data['stateId'] = $_REQUEST['stateId'];
 
 $t->data['scopes'] = array();
 
-foreach ($state['requestedScopes'] as $scope) {
-    $t->data['scopes'][$scope] = false;
-}
+$scopes = isset($client['scope']) ? $client['scope'] : array();
 
-foreach ((isset($client['scopeRequired']) ? $client['scopeRequired'] : array()) as $scope) {
-    $t->data['scopes'][$scope] = true;
+foreach ($state['requestedScopes'] as $scope) {
+    $t->data['scopes'][$scope] = isset($scopes[$scope]) && $scopes[$scope];
 }
 
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/authorization/consent.php');

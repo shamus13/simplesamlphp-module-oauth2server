@@ -62,17 +62,22 @@ if (isset($client)) {
 
         if ($legalRedirectUri) {
             $requestedScopes = (isset($_REQUEST['scope'])) ? explode(' ', $_REQUEST['scope']) : array();
-            $definedScopes = array_merge((isset($client['scope'])) ? $client['scope'] : array(),
-                (isset($client['scopeRequired'])) ? $client['scopeRequired'] : array());
+            $definedScopes = (isset($client['scope'])) ? $client['scope'] : array();
 
-            $invalidScopes = array_diff($requestedScopes, $definedScopes);
+            foreach ($client['scope'] as $scope => $required) {
+                if ($required) {
+                    array_push($requestedScopes, $scope);
+                }
+            }
+
+            $invalidScopes = array_diff($requestedScopes, array_keys($definedScopes));
 
             if (count($invalidScopes) == 0) {
                 if (isset($_REQUEST['response_type']) && $_REQUEST['response_type'] === 'code') {
 
                     $state = array('clientId' => $_REQUEST['client_id'],
                         'redirectUri' => (isset($_REQUEST['redirect_uri'])) ? $_REQUEST['redirect_uri'] : null,
-                        'requestedScopes' => $requestedScopes,
+                        'requestedScopes' => array_unique($requestedScopes),
                         'returnUri' => $returnUri);
 
                     if (array_key_exists('state', $_REQUEST)) {

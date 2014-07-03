@@ -179,3 +179,6 @@ $t->data['alternativePassword'] = $ownedByMe && isset($client['alternative_passw
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/client.php');
 
 $t->show();
+
+
+//TODO: handle the new internal scope (name => required) format

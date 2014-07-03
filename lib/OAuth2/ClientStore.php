@@ -29,7 +29,24 @@ class sspmod_oauth2server_OAuth2_ClientStore
 
     public function __construct($config)
     {
-        $this->configuredClients = $config->getValue('clients', array());
+        $this->configuredClients = array();
+
+        foreach ($config->getValue('clients', array()) as $clientId => $client) {
+            $scopes = array();
+
+            foreach ((isset($client['scope']) ? $client['scope'] : array()) as $scope) {
+                $scopes[$scope] = false;
+            }
+
+            foreach ((isset($client['scopeRequired']) ? $client['scopeRequired'] : array()) as $scope) {
+                $scopes[$scope] = true;
+            }
+
+            unset($client['scopeRequired']);
+            $client['scope'] = $scopes;
+
+            $this->configuredClients[$clientId] = $client;
+        }
 
         $storeConfig = $config->getValue('store');
         $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
@@ -52,7 +69,15 @@ class sspmod_oauth2server_OAuth2_ClientStore
         }
 
         if (!is_null($client)) {
-            $client['scope'] = array_intersect($client['scope'], $this->validScopes);
+            $scopes = array();
+
+            foreach ($this->validScopes as $scope) {
+                if (array_key_exists($scope, $client['scope'])) {
+                    $scopes[$scope] = $client['scope'][$scope];
+                }
+            }
+
+            $client['scope'] = $scopes;
             $client['id'] = $clientId;
         }
 

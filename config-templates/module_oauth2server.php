@@ -57,7 +57,7 @@ $config = array(
     'refresh_token_time_to_live' => array( // preselects first entry, no default defined
         3600 => array('en' => 'an hour'),
         300 => array('en' => '5 minutes'),
-        (24 * 3600) => array('en'=> 'a day'),
+        (24 * 3600) => array('en' => 'a day'),
         (30 * 24 * 3600) => array('en' => 'a month'),
         (365 * 24 * 3600) => array('en' => 'a year')
     ),
