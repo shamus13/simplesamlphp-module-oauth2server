@@ -58,13 +58,31 @@ $this->includeAtTemplateBase('includes/header.php');
             </tr>
             <?php
             $header = true;
-            foreach ($this->data['scopes'] as $scope => $checked) {
+            foreach ($this->data['scopes'] as $scope => $permission) {
                 ?>
                 <tr>
                     <td><?php echo $header ? $this->t('{oauth2server:oauth2server:client_token_scope}') : ''; ?></td>
-                    <td><input type="checkbox" name="availableScopes[]" value="<?php echo htmlspecialchars($scope); ?>"
-                            <?php echo $checked ? 'checked="true"' : '' ?><?php echo $this->data['editable'] ? '' : ' disabled="disabled"' ?>/>
-                        <?php echo $this->t('{oauth2server:oauth2server:' . $scope . '}') ?></td>
+                    <td><label
+                            for="<?php echo htmlentities($scope) ?>"><?php echo $this->t('{oauth2server:oauth2server:' . $scope . '}') ?></label>
+                    </td>
+                    <td><select name="<?php echo htmlentities($scope) ?>" id="<?php echo htmlentities($scope) ?>" <?php
+                        echo $this->data['editable'] ? '' : 'disabled="disabled"'?>>
+                            <option value="<?php echo htmlentities('REQUIRED') ?>" <?php
+                            echo $permission === 'REQUIRED' ? 'selected="selected"' : ''
+                            ?>>
+                                <?php echo $this->t('{oauth2server:oauth2server:client_token_scope_REQUIRED}') ?>
+                            </option>
+                            <option value="<?php echo htmlentities('ALLOWED') ?>" <?php
+                            echo $permission === 'ALLOWED' ? 'selected="selected"' : ''
+                            ?>>
+                                <?php echo $this->t('{oauth2server:oauth2server:client_token_scope_ALLOWED}') ?>
+                            </option>
+                            <option value="<?php echo htmlentities('NOT_ALLOWED') ?>" <?php
+                            echo $permission === 'NOT_ALLOWED' ? 'selected="selected"' : ''
+                            ?>>
+                                <?php echo $this->t('{oauth2server:oauth2server:client_token_scope_NOT_ALLOWED}') ?>
+                            </option>
+                        </select></td>
                 </tr>
                 <?php
                 $header = false;

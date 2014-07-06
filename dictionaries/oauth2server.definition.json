@@ -111,7 +111,16 @@
         "en": "New Password"
     },
     "client_token_scope": {
-        "en": "Allowed scopes"
+        "en": "Scopes"
+    },
+    "client_token_scope_REQUIRED": {
+        "en": "Required"
+    },
+    "client_token_scope_ALLOWED": {
+        "en": "Allowed"
+    },
+    "client_token_scope_NOT_ALLOWED": {
+        "en": "Not allowed"
     },
     "client_uri": {
         "en": "Redirect URI's"

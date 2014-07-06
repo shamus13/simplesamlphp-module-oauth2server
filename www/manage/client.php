@@ -70,6 +70,18 @@ if ($ownedByMe && isset($_POST['update'])) {
         $client['scope'] = array_intersect($_POST['availableScopes'], array_keys($scopes));
     }
 
+    foreach ($config->getValue('scopes', array()) as $scope => $translations) {
+        if (array_key_exists($scope, $_POST)) {
+            if ('REQUIRED' === $_POST[$scope]) {
+                $client['scope'][$scope] = true;
+            } else if ('ALLOWED' === $_POST[$scope]) {
+                $client['scope'][$scope] = false;
+            } else {
+                unset($client['scope'][$scope]);
+            }
+        }
+    }
+
     if (isset($_POST['clientDescription']) && isset($_POST['language'])) {
         $client['description'][$_POST['language']] = trim($_POST['clientDescription']);
     }
@@ -151,12 +163,12 @@ foreach ($scopes as $scope => $translations) {
 $scopeMap = array();
 
 foreach ($scopes as $scope => $translations) {
-    $scopeMap[$scope] = false;
+    $scopeMap[$scope] = 'NOT_ALLOWED';
 }
 
-foreach ($client['scope'] as $scope) {
+foreach ($client['scope'] as $scope => $required) {
     if (array_key_exists($scope, $scopeMap)) {
-        $scopeMap[$scope] = true;
+        $scopeMap[$scope] = $required ? 'REQUIRED' : 'ALLOWED';
     }
 }
 
@@ -179,6 +191,3 @@ $t->data['alternativePassword'] = $ownedByMe && isset($client['alternative_passw
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/client.php');
 
 $t->show();
-
-
-//TODO: handle the new internal scope (name => required) format
