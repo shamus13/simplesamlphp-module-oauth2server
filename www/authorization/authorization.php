@@ -102,7 +102,7 @@ if (isset($client)) {
                 }
             } else {
                 $error = 'invalid_scope';
-                $error_description = 'invalid scope: ' . $invalidScopes[0];
+                $error_description = 'invalid scope: ' . array_pop($invalidScopes);
             }
 
             //something went wrong, but we do have a valid uri to redirect to.
