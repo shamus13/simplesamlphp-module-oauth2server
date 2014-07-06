@@ -20,7 +20,7 @@
 *
 */
 
-$this->data['header'] = $this->t('{oauth2server:oauth2server:authorization_error_header}');
+$this->data['header'] = $this->t('{oauth2server:errors:authorization_error_header}');
 
 $this->includeAtTemplateBase('includes/header.php');
 ?>
@@ -32,7 +32,7 @@ $this->includeAtTemplateBase('includes/header.php');
 
     <p>
         <?php
-        echo $this->t('{oauth2server:oauth2server:authorization_error_' . $this->data['error'] . '}');
+        echo $this->t('{oauth2server:errors:authorization_error_' . $this->data['error'] . '}');
         ?>
     </p>
 

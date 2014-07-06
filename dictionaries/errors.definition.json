@@ -1,4 +1,25 @@
 {
+    "authorization_error_header": {
+        "en": "Authorization Error"
+    },
+    "authorization_error_invalid_request": {
+        "en": "Invalid request"
+    },
+    "authorization_error_unauthorized_client": {
+        "en": "Unauthorized client"
+    },
+    "authorization_error_access_denied": {
+        "en": "Access denied"
+    },
+    "authorization_error_unsupported_response_type": {
+        "en": "Unsupported response type"
+    },
+    "authorization_error_invalid_scope": {
+        "en": "Invalid scope provided"
+    },
+    "authorization_error_server_error": {
+        "en": "Internal server error"
+    },
     "title_REGISTRATION_DISABLED": {
         "en": "Client registration not enabled"
     },
