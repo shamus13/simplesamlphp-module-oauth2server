@@ -21,4 +21,10 @@
 
 Bjørn Rohde Jensen <brj@statsbiblioteket.dk>
 
+//TODO: change redirect uri check to exact match instead of prefix match
+//TODO: add one or more validate ticket endpoints for resource servers to use
+//TODO: add support storing tokens etc in LDAP
+//TODO: add support storing tokens etc in memcached
+//TODO: add support storing tokens etc in redis
+
 ????-??-?? Bjørn Rohde Jensen <brj@statsbiblioteket.dk>

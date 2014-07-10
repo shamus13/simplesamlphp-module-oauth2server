@@ -26,15 +26,12 @@ $globalConfig = SimpleSAML_Configuration::getInstance();
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:authorization/error.php');
 
-$t->data['error'] = 'server_error';
-$t->data['errorDescription'] = 'no description';
-
-if (array_key_exists('error', $_REQUEST)) {
-    $t->data['error'] = $_REQUEST['error'];
-}
-
-if (array_key_exists('error_description', $_REQUEST)) {
-    $t->data['errorDescription'] = $_REQUEST['error_description'];
+if (array_key_exists('error_code_internal', $_REQUEST)) {
+    $t->data['code'] = $_REQUEST['error_code_internal'];
+    $t->data['parameters'] = $_REQUEST['error_parameters_internal'];
+} else {
+    $t->data['code'] = 'UNKNOWN';
+    $t->data['parameters'] = array();
 }
 
 $t->show();

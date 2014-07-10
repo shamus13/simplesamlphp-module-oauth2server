@@ -173,19 +173,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 } else {
                                     $response = array('error' => 'invalid_grant',
                                         'error_description' => 'mismatching redirection uri, expected: ' .
-                                        $authorizationToken['redirectUri'] . ' got: ' . $redirectUri);
+                                        $authorizationToken['redirectUri'] . ' got: ' . $redirectUri,
+                                        'error_code_internal' => 'MISMATCHING_' . strtoupper($_POST['grant_type']) . '_URI',
+                                        'error_parameters_internal' => array('URI_ACTUAL' => $redirectUri),
+                                    );
 
                                     $errorCode = 400;
                                 }
                             } else {
                                 if ($_POST['grant_type'] === 'authorization_code') {
                                     $response = array('error' => 'invalid_grant',
-                                        'error_description' => 'authorization code grant was not issued for client id: ' .
-                                        $clientId);
+                                        'error_description' => 'authorization code grant was not issued for client id: ' . $clientId,
+                                        'error_code_internal' => 'MISMATCHING_AUTHORIZATION_CODE_CLIENT',
+                                        'error_parameters_internal' => array('CLIENT_ID' => $clientId),
+                                    );
                                 } else {
                                     $response = array('error' => 'invalid_grant',
-                                        'error_description' => 'refresh token was not issued for client id: ' .
-                                        $clientId);
+                                        'error_description' => 'refresh token was not issued for client id: ' . $clientId,
+                                        'error_code_internal' => 'MISMATCHING_REFRESH_TOKEN_CLIENT',
+                                        'error_parameters_internal' => array('CLIENT_ID' => $clientId),
+                                    );
                                 }
 
                                 $errorCode = 400;
@@ -196,54 +203,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         } else if (is_null($authorizationTokenId)) {
                             if ($_POST['grant_type'] === 'authorization_code') {
                                 $response = array('error' => 'invalid_request',
-                                    'error_description' => 'missing authorization code');
+                                    'error_description' => 'missing authorization code',
+                                    'error_code_internal' => 'MISSING_AUTHORIZATION_CODE',
+                                    'error_parameters_internal' => array(),
+                                );
                             } else {
                                 $response = array('error' => 'invalid_request',
-                                    'error_description' => 'missing refresh token');
+                                    'error_description' => 'missing refresh token',
+                                    'error_code_internal' => 'MISSING_REFRESH_TOKEN',
+                                    'error_parameters_internal' => array(),
+                                );
                             }
 
                             $errorCode = 400;
                         } else {
                             if ($_POST['grant_type'] === 'authorization_code') {
                                 $response = array('error' => 'invalid_grant',
-                                    'error_description' => 'unknown authorization code grant: ' . $authorizationTokenId);
+                                    'error_description' => 'unknown authorization code grant: ' . $authorizationTokenId,
+                                    'error_code_internal' => 'INVALID_AUTHORIZATION_CODE',
+                                    'error_parameters_internal' => array('CODE' => $authorizationTokenId),
+                                );
                             } else {
                                 $response = array('error' => 'invalid_grant',
-                                    'error_description' => 'unknown refresh token: ' . $authorizationTokenId);
+                                    'error_description' => 'unknown refresh token: ' . $authorizationTokenId,
+                                    'error_code_internal' => 'INVALID_REFRESH_TOKEN',
+                                    'error_parameters_internal' => array('TOKEN_ID' => $authorizationTokenId),
+                                );
                             }
 
                             $errorCode = 400;
                         }
                     } else {
                         $response = array('error' => 'invalid_client',
-                            'error_description' => 'invalid client credentials: ' . $clientId);
+                            'error_description' => 'invalid client credentials: ' . $clientId,
+                            'error_code_internal' => 'INVALID_CLIENT_CREDENTIALS',
+                            'error_parameters_internal' => array(),
+                        );
 
                         $errorCode = 401;
                     }
                 } else {
                     $response = array('error' => 'invalid_client',
-                        'error_description' => 'unknown client id: ' . $clientId);
+                        'error_description' => 'unknown client id: ' . $clientId,
+                        'error_code_internal' => 'UNAUTHORIZED_CLIENT_ID',
+                        'error_parameters_internal' => array('CLIENT_ID' => $clientId),
+                    );
 
                     $errorCode = 400;
                 }
             } else {
-                $response = array('error' => 'invalid_request', 'error_description' => 'missing client id');
+                $response = array('error' => 'invalid_request',
+                    'error_description' => 'missing client id',
+                    'error_code_internal' => 'MISSING_CLIENT_ID',
+                    'error_parameters_internal' => array(),
+                );
 
                 $errorCode = 400;
             }
         } else {
             $response = array('error' => 'unsupported_grant_type',
-                'error_description' => 'unsupported grant type: ' . $_POST['grant_type']);
+                'error_description' => 'unsupported grant type: ' . $_POST['grant_type'],
+                'error_code_internal' => 'UNSUPPORTED_GRANT_TYPE',
+                'error_parameters_internal' => array('GRANT_TYPE' => $_POST['grant_type']),
+            );
 
             $errorCode = 400;
         }
     } else {
-        $response = array('error' => 'invalid_request', 'error_description' => 'missing grant type');
+        $response = array('error' => 'invalid_request',
+            'error_description' => 'missing grant type',
+            'error_code_internal' => 'MISSING_GRANT_TYPE',
+            'error_parameters_internal' => array(),
+        );
 
         $errorCode = 400;
     }
 } else {
-    $response = array('error' => 'invalid_request', 'error_description' => 'http(s) POST required');
+    $response = array('error' => 'invalid_request',
+        'error_description' => 'http(s) POST required',
+        'error_code_internal' => 'MUST_POST',
+        'error_parameters_internal' => array(),
+    );
 
     $errorCode = 400;
 }
@@ -259,6 +299,8 @@ if (array_key_exists('error', $response)) {
         SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $response);
 
     $response['error_uri'] = $error_uri;
+    unset($response['error_code_internal']);
+    unset($response['error_parameters_internal']);
 }
 
 echo json_encode($response);

@@ -20,27 +20,23 @@
 *
 */
 
-$this->data['header'] = $this->t('{oauth2server:errors:authorization_error_header}');
+$this->data['header'] = $this->t('{oauth2server:errors:authorization_error_short' . $this->data['code'] . '}');
 
 $this->includeAtTemplateBase('includes/header.php');
 ?>
     <h2>
         <?php
-        echo $this->data['error'];
+        echo $this->t('{oauth2server:errors:authorization_error_short' . $this->data['code'] . '}');
         ?>
     </h2>
 
     <p>
         <?php
-        echo $this->t('{oauth2server:errors:authorization_error_' . $this->data['error'] . '}');
+        echo $this->t('{oauth2server:errors:authorization_error_long' . $this->data['code'] . '}',
+            $this->data['parameters']);
         ?>
     </p>
 
-    <p>
-        <?php
-        echo htmlentities($this->data['errorDescription']);
-        ?>
-    </p>
 <?php
 
 $this->includeAtTemplateBase('includes/footer.php');

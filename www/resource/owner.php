@@ -89,6 +89,12 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                         'error_description' => 'The token does not have the scopes required for access.');
 
                     $response['scope'] = trim(implode(' ', array_keys($configuredAttributeScopes)));
+
+                    $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
+                        SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
+                        array('error_code_internal' => 'INSUFFICIENT_SCOPE',
+                            'error_parameters_internal' => array('SCOPES' => $response['scope'])));
+
                 }
             } else {
                 // no such token, token expired or revoked
@@ -96,6 +102,11 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
                 $response = array('error' => 'invalid_token',
                     'error_description' => 'The token does not exist. It may have been revoked or expired.');
+
+                $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
+                    SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
+                    array('error_code_internal' => 'INVALID_ACCESS_TOKEN',
+                        'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
             }
         } else {
             // wrong token type
@@ -103,6 +114,11 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
             $response = array('error' => 'invalid_token',
                 'error_description' => 'Only Bearer tokens are supported');
+
+            $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
+                SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
+                array('error_code_internal' => 'UNSUPPORTED_ACCESS_TOKEN',
+                    'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
         }
     } else {
         // error missing token
@@ -115,6 +131,11 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
     $response = array('error' => 'invalid_request',
         'error_description' => 'resource owner end point not enabled');
+
+    $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
+        SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
+        array('error_code_internal' => 'DISABLED',
+            'error_parameters_internal' => array()));
 }
 
 header('X-PHP-Response-Code: ' . $errorCode, true, $errorCode);
@@ -123,7 +144,8 @@ if ($errorCode !== 200) {
     $authHeader = "WWW-Authenticate: Bearer ";
 
     if (array_key_exists('error', $response)) {
-        $authHeader .= 'error="' . $response['error'] . '",error_description="' . $response['error_description'] . '"';
+        $authHeader .= 'error="' . $response['error'] . '",error_description="' .
+            $response['error_description'] . '",' . 'error_uri="' . urlencode($response['error_uri']) . '"';
 
         if (array_key_exists('scope', $response)) {
             $authHeader .= ',scope="' . $response['scope'] . '"';

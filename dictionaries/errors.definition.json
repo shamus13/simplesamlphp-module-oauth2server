@@ -1,24 +1,165 @@
 {
-    "authorization_error_header": {
-        "en": "Authorization Error"
+    "authorization_error_short_MISSING_CLIENT_ID": {
+        "en": "Missing OAuth2 client id parameter"
     },
-    "authorization_error_invalid_request": {
-        "en": "Invalid request"
+    "authorization_error_long_MISSING_CLIENT_ID": {
+        "en": "The request did not contain a client id, and this OAuth2 authorization server only supports registered clients."
     },
-    "authorization_error_unauthorized_client": {
-        "en": "Unauthorized client"
+    "authorization_error_short_UNAUTHORIZED_CLIENT": {
+        "en": "No registered client with the given client_id"
     },
-    "authorization_error_access_denied": {
-        "en": "Access denied"
+    "authorization_error_long_UNAUTHORIZED_CLIENT": {
+        "en": "There is no registered client with client_id \"CLIENT_ID\". It may have been deleted or expired due to inactivity."
     },
-    "authorization_error_unsupported_response_type": {
-        "en": "Unsupported response type"
+    "authorization_error_short_NO_REDIRECT_URI": {
+        "en": "The client has no redirection end point"
     },
-    "authorization_error_invalid_scope": {
-        "en": "Invalid scope provided"
+    "authorization_error_long_NO_REDIRECT_URI": {
+        "en": "The client does not have any registered redirection end points, which is required by the standard to prevent the authorization server from being used as an open redirector."
     },
-    "authorization_error_server_error": {
-        "en": "Internal server error"
+    "authorization_error_short_INVALID_REDIRECT_URI": {
+        "en": "The given redirection uri is not one of the clients registered end points"
+    },
+    "authorization_error_long_INVALID_REDIRECT_URI": {
+        "en": "The redirection uri \"REDIRECT_URI\" does not match any of the redirection end points of the client."
+    },
+    "authorization_error_short_FRAGMENT_REDIRECT_URI": {
+        "en": "The given redirection uri contains a fragment"
+    },
+    "authorization_error_long_FRAGMENT_REDIRECT_URI": {
+        "en": "The redirection uri \"REDIRECT_URI\" contains the fragment \"FRAGMENT\" which is explicitly forbidden by the standard."
+    },
+    "authorization_error_short_INVALID_SCOPE": {
+        "en": "An invalid scope was requested"
+    },
+    "authorization_error_long_INVALID_SCOPE": {
+        "en": "The requested scope \"SCOPE\" is not a valid scope for the specified client."
+    },
+    "authorization_error_short_UNSUPPORTED_RESPONSE_TYPE": {
+        "en": "An unsupported response type was requested"
+    },
+    "authorization_error_long_UNSUPPORTED_RESPONSE_TYPE": {
+        "en": "The requested response type \"RESPONSE_TYPE\" is not supported. Only authorization code grant flow is supported."
+    },
+    "authorization_error_short_MISSING_RESPONSE_TYPE": {
+        "en": "Required response type parameter missing from request"
+    },
+    "authorization_error_long_MISSING_RESPONSE_TYPE": {
+        "en": "No response type was included in the request. Authorization can not take place with a response type."
+    },
+    "authorization_error_short_MUST_POST": {
+        "en": "Http(s) POST is required"
+    },
+    "authorization_error_long_MUST_POST": {
+        "en": "Http(s) POST is required but another type of request was sent."
+    },
+    "authorization_error_short_MISSING_GRANT_TYPE": {
+        "en": "Required grant type parameter missing from request"
+    },
+    "authorization_error_long_MISSING_GRANT_TYPE": {
+        "en": "No grant type was included in the request. Authorization can not take place with a grant type."
+    },
+    "authorization_error_short_UNSUPPORTED_GRANT_TYPE": {
+        "en": "An unsupported grant type was requested"
+    },
+    "authorization_error_long_UNSUPPORTED_GRANT_TYPE": {
+        "en": "The requested grant type \"GRANT_TYPE\" is not supported. Only authorization code grant or refresh token grant is supported."
+    },
+    "authorization_error_short_INVALID_CLIENT_CREDENTIALS": {
+        "en": "Missing or incorrect client password"
+    },
+    "authorization_error_long_INVALID_CLIENT_CREDENTIALS": {
+        "en": "An incorrect password was provided, the password was missing or a password was provided where none is allowed."
+    },
+    "authorization_error_short_INVALID_REFRESH_TOKEN": {
+        "en": "No refresh token with the given id exists"
+    },
+    "authorization_error_long_INVALID_REFRESH_TOKEN": {
+        "en": "There is no such refresh token \"TOKEN_ID\". It may have expired or been revoked."
+    },
+    "authorization_error_short_INVALID_AUTHORIZATION_CODE": {
+        "en": "No authorization code with the given id exists"
+    },
+    "authorization_error_long_INVALID_AUTHORIZATION_CODE": {
+        "en": "There is no such authorization code \"CODE\". It may have expired or been revoked."
+    },
+    "authorization_error_short_MISSING_REFRESH_TOKEN": {
+        "en": "Required refresh token parameter missing from request"
+    },
+    "authorization_error_long_MISSING_REFRESH_TOKEN": {
+        "en": "No refresh token was included in the request. The refresh grant flow requires a refresh token."
+    },
+    "authorization_error_short_MISSING_AUTHORIZATION_CODE": {
+        "en": "Required authorization code parameter missing from request"
+    },
+    "authorization_error_long_MISSING_AUTHORIZATION_CODE": {
+        "en": "No authorization code was included in the request. The authorization code grant flow requires an authorization code."
+    },
+    "authorization_error_short_MISMATCHING_REFRESH_TOKEN_CLIENT": {
+        "en": "Refresh token was not issued to this client"
+    },
+    "authorization_error_long_MISMATCHING_REFRESH_TOKEN_CLIENT": {
+        "en": "The refresh token was not issued to the client with id \"CLIENT_ID\"."
+    },
+    "authorization_error_short_MISMATCHING_AUTHORIZATION_CODE_CLIENT": {
+        "en": "Authorization code was not issued to this client"
+    },
+    "authorization_error_long_MISMATCHING_AUTHORIZATION_CODE_CLIENT": {
+        "en": "The authorization code was not issued to the client with id \"CLIENT_ID\"."
+    },
+    "authorization_error_short_MISMATCHING_REFRESH_TOKEN_URI": {
+        "en": "Refresh token was issued for a different redirection end point"
+    },
+    "authorization_error_long_MISMATCHING_REFRESH_TOKEN_URI": {
+        "en": "The refresh token was not issued with \"URI_ACTUAL\" as redirection end point."
+    },
+    "authorization_error_short_MISMATCHING_AUTHORIZATION_CODE_URI": {
+        "en": "Authorization code was issued for a different redirection end point"
+    },
+    "authorization_error_long_MISMATCHING_AUTHORIZATION_CODE_URI": {
+        "en": "The authorization code was not issued with \"URI_ACTUAL\" as redirection end point."
+    },
+    "authorization_error_short_CONSENT_NOT_GRANTED": {
+        "en": "Consent was not granted"
+    },
+    "authorization_error_long_CONSENT_NOT_GRANTED": {
+        "en": "The user did not grant the client the requested access."
+    },
+    "authorization_error_short_UNKNOWN": {
+        "en": "An unknown server error was encountered"
+    },
+    "authorization_error_long_UNKNOWN": {
+        "en": "An unknown server error was encountered. The server log files may contain more details."
+    },
+    "owner_error_short_UNKNOWN": {
+        "en": "An unknown server error was encountered"
+    },
+    "owner_error_long_UNKNOWN": {
+        "en": "An unknown server error was encountered. The server log files may contain more details."
+    },
+    "owner_error_short_INSUFFICIENT_SCOPE": {
+        "en": "The access token has insufficient scope"
+    },
+    "owner_error_long_INSUFFICIENT_SCOPE": {
+        "en": "The access token does not have a scope, which grants access to resource owner attributes. At least one of \"SCOPES\" is required."
+    },
+    "owner_error_short_INVALID_ACCESS_TOKEN": {
+        "en": "No access token with the given id exists"
+    },
+    "owner_error_long_INVALID_ACCESS_TOKEN": {
+        "en": "There is no such access token \"TOKEN_ID\". It may have expired or been revoked."
+    },
+    "owner_error_short_UNSUPPORTED_ACCESS_TOKEN": {
+        "en": "Only bearer access tokens are supported"
+    },
+    "owner_error_long_UNSUPPORTED_ACCESS_TOKEN": {
+        "en": "Only bearer access tokens are supported, but the access token \"TOKEN_ID\" is not a bearer access token."
+    },
+    "owner_error_short_DISABLED": {
+        "en": "Resource owner end point not enabled"
+    },
+    "owner_error_long_DISABLED": {
+        "en": "The resource owners attributes can not be access, since the resource owner end point has not been enabled."
     },
     "title_REGISTRATION_DISABLED": {
         "en": "Client registration not enabled"

@@ -96,13 +96,22 @@ if (isset($client)) {
                 } else if (!isset($_REQUEST['response_type'])) {
                     $error = 'invalid_request';
                     $error_description = 'missing response type';
+                    $error_code_internal = 'MISSING_RESPONSE_TYPE';
+                    $error_parameters_internal = array();
                 } else {
                     $error = 'unsupported_response_type';
                     $error_description = 'unsupported response type: ' . $_REQUEST['response_type'];
+                    $error_code_internal = 'UNSUPPORTED_RESPONSE_TYPE';
+                    $error_parameters_internal = array('RESPONSE_TYPE' => $_REQUEST['response_type']);
+
                 }
             } else {
+                $firstOffendingScope = array_pop($invalidScopes);
+
                 $error = 'invalid_scope';
-                $error_description = 'invalid scope: ' . array_pop($invalidScopes);
+                $error_description = 'invalid scope: ' . $firstOffendingScope;
+                $error_code_internal = 'INVALID_SCOPE';
+                $error_parameters_internal = array('SCOPE' => $firstOffendingScope);
             }
 
             //something went wrong, but we do have a valid uri to redirect to.
@@ -113,7 +122,8 @@ if (isset($client)) {
             $error_uri =
                 SimpleSAML_Utilities::addURLparameter(
                     SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'),
-                    $responseParameters);
+                    array('error' => $error, 'error_description' => $error_description,
+                    'error_code_internal' => $error_code_internal, 'error_parameters_internal' => $error_parameters_internal));
 
             $responseParameters['error_uri'] = $error_uri;
 
@@ -122,28 +132,41 @@ if (isset($client)) {
             if (is_string(parse_url($returnUri, PHP_URL_FRAGMENT))) {
                 $error = 'invalid_redirect_uri'; // this is not a proper error code used only internally
                 $error_description = 'fragments are not allowed in redirect_uri: ' . $returnUri;
+                $error_code_internal = 'FRAGMENT_REDIRECT_URI';
+                $error_parameters_internal = array('REDIRECT_URI' => $returnUri,
+                    'FRAGMENT' => parse_url($returnUri, PHP_URL_FRAGMENT));
 
             } else {
                 $error = 'invalid_redirect_uri'; // this is not a proper error code used only internally
                 $error_description = 'illegal redirect_uri: ' . $returnUri;
+                $error_code_internal = 'INVALID_REDIRECT_URI';
+                $error_parameters_internal = array('REDIRECT_URI' => $returnUri);
             }
         }
     } else {
         $error = 'server_error';
         $error_description = 'no redirection uri associated with client id';
+        $error_code_internal = 'NO_REDIRECT_URI';
+        $error_parameters_internal = array();
     }
 } else if (isset($_REQUEST['client_id'])) {
     $error = 'unauthorized_client';
     $error_description = 'unauthorized_client: ' . $_REQUEST['client_id'];
+    $error_code_internal = 'UNAUTHORIZED_CLIENT';
+    $error_parameters_internal = array('CLIENT_ID' =>$_REQUEST['client_id']);
 } else {
     $error = 'missing_client';
     $error_description = 'missing client id';
+    $error_code_internal = 'MISSING_CLIENT_ID';
+    $error_parameters_internal = array();
 }
 
 //something went wrong, and we do not have a valid uri to redirect to.
 
 $responseParameters['error'] = $error;
 $responseParameters['error_description'] = $error_description;
+$responseParameters['error_code_internal'] = $error_code_internal;
+$responseParameters['error_parameters_internal'] = $error_parameters_internal;
 
 $error_uri = SimpleSAML_Utilities::addURLparameter(
     SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $responseParameters);
