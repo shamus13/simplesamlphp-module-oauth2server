@@ -56,7 +56,7 @@ if (isset($client)) {
 
         if (!is_string(parse_url($returnUri, PHP_URL_FRAGMENT))) {
             foreach ($client['redirect_uri'] as $uri) {
-                $legalRedirectUri |= strpos($returnUri, $uri) === 0;
+                $legalRedirectUri |= ($returnUri === $uri);
             }
         }
 
