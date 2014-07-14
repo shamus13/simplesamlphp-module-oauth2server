@@ -28,6 +28,8 @@
 *
 *    client_id     - a configured id string agreed upon by any given client and authorization server
 *    redirect_uri  - same redirect_uri as used for the authorization code grant request
+*
+*    Clients may or may not have to provide Basic authentication header information based on their configuration.
 */
 
 session_cache_limiter('nocache');

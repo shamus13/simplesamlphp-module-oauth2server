@@ -32,6 +32,14 @@ $config = array(
         ),
     ),
 
+    //Definition of oauth2 resource servers
+    'resources' => array(
+        'resource_id' => array(
+            'password' => 'password', // Password to be used for basic authentication of clients.
+            'alternative_password' => 'new_password', // Optional alternative password used for graceful password changes.
+        )
+    ),
+
     //Definition of static oauth2 clients
     'clients' => array(
         'client_id' => array(
