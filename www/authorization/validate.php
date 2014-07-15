@@ -53,20 +53,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['access_token']) &&
         ) {
             $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore($config);
 
-            $token = $tokenStore->getAccessToken($_POST['access_token']);
+            $accessToken = $tokenStore->getAccessToken($_POST['access_token']);
 
-            if (is_array($token)) {
+            if (is_array($accessToken)) {
                 $clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
                 $userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
 
-                if (is_array($clientStore->getClient($token['clientId'])) &&
-                    is_array($userStore->getUser($token['userId']))
+                if (is_array($clientStore->getClient($accessToken['clientId'])) &&
+                    is_array($userStore->getUser($accessToken['userId']))
                 ) {
 
                     echo json_encode(array(
                         'status' => 'valid_token',
                         'expires_in' => ($accessToken['expire'] - time()),
-                        'scope' => $accessToken['scopes'],
+                        'scopes' => $accessToken['scopes'],
                         'userId' => $accessToken['userId']
                     ));
 
