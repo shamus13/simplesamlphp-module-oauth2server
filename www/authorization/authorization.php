@@ -54,7 +54,12 @@ if (isset($client)) {
 
         $legalRedirectUri = false;
 
-        if (!is_string(parse_url($returnUri, PHP_URL_FRAGMENT))) {
+        $parsedUri = parse_url($returnUri);
+
+        if (is_array($parsedUri) && ($parsedUri['scheme'] == 'intent' ||
+                (($parsedUri['scheme'] == 'http' || $parsedUri['scheme'] == 'https') &&
+                    !array_key_exists('fragment', $parsedUri)))
+        ) {
             foreach ($client['redirect_uri'] as $uri) {
                 $legalRedirectUri |= ($returnUri === $uri);
             }
@@ -123,7 +128,7 @@ if (isset($client)) {
                 SimpleSAML_Utilities::addURLparameter(
                     SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'),
                     array('error' => $error, 'error_description' => $error_description,
-                    'error_code_internal' => $error_code_internal, 'error_parameters_internal' => $error_parameters_internal));
+                        'error_code_internal' => $error_code_internal, 'error_parameters_internal' => $error_parameters_internal));
 
             $responseParameters['error_uri'] = $error_uri;
 
@@ -153,7 +158,7 @@ if (isset($client)) {
     $error = 'unauthorized_client';
     $error_description = 'unauthorized_client: ' . $_REQUEST['client_id'];
     $error_code_internal = 'UNAUTHORIZED_CLIENT';
-    $error_parameters_internal = array('CLIENT_ID' =>$_REQUEST['client_id']);
+    $error_parameters_internal = array('CLIENT_ID' => $_REQUEST['client_id']);
 } else {
     $error = 'missing_client';
     $error_description = 'missing client id';
