@@ -155,7 +155,7 @@ if (array_key_exists('grant', $_REQUEST)) {
         $response['state'] = $state['state'];
     }
 
-    SimpleSAML_Utilities::redirect(SimpleSAML_Utilities::addURLparameter($state['returnUri'], $response));
+    sspmod_oauth2server_Utility_Uri::redirectUri(sspmod_oauth2server_Utility_Uri::addQueryParametersToUrl($state['returnUri'], $response));
 }
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:authorization/consent.php');

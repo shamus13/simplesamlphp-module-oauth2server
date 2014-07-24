@@ -132,7 +132,7 @@ if (isset($client)) {
 
             $responseParameters['error_uri'] = $error_uri;
 
-            SimpleSAML_Utilities::redirect(SimpleSAML_Utilities::addURLparameter($returnUri, $responseParameters));
+            sspmod_oauth2server_Utility_Uri::redirectUri(sspmod_oauth2server_Utility_Uri::addQueryParametersToUrl($returnUri, $responseParameters));
         } else {
             if (is_string(parse_url($returnUri, PHP_URL_FRAGMENT))) {
                 $error = 'invalid_redirect_uri'; // this is not a proper error code used only internally
