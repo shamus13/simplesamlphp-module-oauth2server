@@ -28,7 +28,8 @@ $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:authorization/er
 
 if (array_key_exists('error_code_internal', $_REQUEST)) {
     $t->data['code'] = $_REQUEST['error_code_internal'];
-    $t->data['parameters'] = $_REQUEST['error_parameters_internal'];
+    $t->data['parameters'] = array_key_exists('error_parameters_internal', $_REQUEST) ?
+        $_REQUEST['error_parameters_internal'] : array();
 } else {
     $t->data['code'] = 'UNKNOWN';
     $t->data['parameters'] = array();
