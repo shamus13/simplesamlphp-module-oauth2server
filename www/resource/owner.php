@@ -154,5 +154,5 @@ if ($errorCode !== 200) {
 
     header($authHeader, true, $errorCode);
 } else {
-    echo json_encode($response);
+    echo count($response) > 0 ? json_encode($response): '{}';
 }
