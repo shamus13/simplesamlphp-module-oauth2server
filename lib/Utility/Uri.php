@@ -1,6 +1,7 @@
 <?php
 
-class sspmod_oauth2server_Utility_Uri {
+class sspmod_oauth2server_Utility_Uri
+{
 
     public static function addQueryParametersToUrl($url, $response)
     {

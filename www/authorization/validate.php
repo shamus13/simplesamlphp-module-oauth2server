@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['access_token']) &&
                     echo json_encode(array(
                         'status' => 'valid_token',
                         'expires_in' => ($accessToken['expire'] - time()),
-                        'scopes' => $accessToken['scopes'],
+                        'scopes' => array_values($accessToken['scopes']),
                         'userId' => $accessToken['userId']
                     ));
 
