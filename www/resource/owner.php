@@ -24,6 +24,7 @@
 session_cache_limiter('nocache');
 
 header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
 
 $config = SimpleSAML_Configuration::getConfig('module_oauth2server.php');
 
