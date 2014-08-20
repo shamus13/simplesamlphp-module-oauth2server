@@ -24,7 +24,10 @@
 session_cache_limiter('nocache');
 
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
+
+//headers to support javascript ajax clients
+header('Access-Control-Allow-Origin: *'); //allow cross domain
+header('Access-Control-Allow-Headers: Authorization'); //allow custom header
 
 $config = SimpleSAML_Configuration::getConfig('module_oauth2server.php');
 
@@ -33,99 +36,101 @@ $response = null;
 
 if ($config->getValue('enable_resource_owner_service', false)) {
 
-    foreach (getallheaders() as $name => $value) {
-        if ($name === 'Authorization' && strpos($value, 'Bearer ') === 0) {
-            $tokenType = 'Bearer';
-            $accessTokenId = base64_decode(trim(substr($value, 7)));
-        }
-    }
-
-    if (isset($accessTokenId)) {
-        if ('Bearer' === $tokenType) {
-            $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore($config);
-
-            $userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
-
-            $accessToken = $tokenStore->getAccessToken($accessTokenId);
-
-            if ($accessToken != null) {
-                $user = $userStore->getUser($accessToken['userId']);
+    if ($_SERVER['REQUEST_METHOD'] != 'OPTIONS') {  //sort of ignore the damn ajax options pre-flight requests
+        foreach (getallheaders() as $name => $value) {
+            if ($name === 'Authorization' && strpos($value, 'Bearer ') === 0) {
+                $tokenType = 'Bearer';
+                $accessTokenId = base64_decode(trim(substr($value, 7)));
             }
+        }
 
-            if (isset($user) && $user != null) {
-                $configuredAttributeScopes = $config->getValue('resource_owner_service_attribute_scopes', array());
+        if (isset($accessTokenId)) {
+            if ('Bearer' === $tokenType) {
+                $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore($config);
 
-                $attributeScopes = array_intersect($accessToken['scopes'], array_keys($configuredAttributeScopes));
+                $userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
 
-                if (count($attributeScopes) > 0) {
-                    $response = array();
+                $accessToken = $tokenStore->getAccessToken($accessTokenId);
 
-                    $attributeNames = array(); // null means grab all attributes
+                if ($accessToken != null) {
+                    $user = $userStore->getUser($accessToken['userId']);
+                }
 
-                    foreach ($attributeScopes as $scope) {
-                        if (is_array($attributeNames) && is_array($configuredAttributeScopes[$scope])) {
-                            $attributeNames = array_merge($attributeNames, $configuredAttributeScopes[$scope]);
-                        } else {
-                            $attributeNames = null;
+                if (isset($user) && $user != null) {
+                    $configuredAttributeScopes = $config->getValue('resource_owner_service_attribute_scopes', array());
 
-                            break;
-                        }
-                    }
+                    $attributeScopes = array_intersect($accessToken['scopes'], array_keys($configuredAttributeScopes));
 
-                    if (is_array($attributeNames)) {
+                    if (count($attributeScopes) > 0) {
                         $response = array();
 
-                        foreach (array_unique($attributeNames) as $attributeName) {
-                            if (array_key_exists($attributeName, $user['attributes'])) {
-                                $response[$attributeName] = $user['attributes'][$attributeName];
+                        $attributeNames = array(); // null means grab all attributes
+
+                        foreach ($attributeScopes as $scope) {
+                            if (is_array($attributeNames) && is_array($configuredAttributeScopes[$scope])) {
+                                $attributeNames = array_merge($attributeNames, $configuredAttributeScopes[$scope]);
+                            } else {
+                                $attributeNames = null;
+
+                                break;
                             }
                         }
+
+                        if (is_array($attributeNames)) {
+                            $response = array();
+
+                            foreach (array_unique($attributeNames) as $attributeName) {
+                                if (array_key_exists($attributeName, $user['attributes'])) {
+                                    $response[$attributeName] = $user['attributes'][$attributeName];
+                                }
+                            }
+                        } else {
+                            $response = $user['attributes'];
+                        }
                     } else {
-                        $response = $user['attributes'];
+                        $errorCode = 403;
+
+                        $response = array('error' => 'insufficient_scope',
+                            'error_description' => 'The token does not have the scopes required for access.');
+
+                        $response['scope'] = trim(implode(' ', array_keys($configuredAttributeScopes)));
+
+                        $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
+                            SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
+                            array('error_code_internal' => 'INSUFFICIENT_SCOPE',
+                                'error_parameters_internal' => array('SCOPES' => $response['scope'])));
+
                     }
                 } else {
-                    $errorCode = 403;
+                    // no such token, token expired or revoked
+                    $errorCode = 401;
 
-                    $response = array('error' => 'insufficient_scope',
-                        'error_description' => 'The token does not have the scopes required for access.');
-
-                    $response['scope'] = trim(implode(' ', array_keys($configuredAttributeScopes)));
+                    $response = array('error' => 'invalid_token',
+                        'error_description' => 'The token does not exist. It may have been revoked or expired.');
 
                     $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
                         SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                        array('error_code_internal' => 'INSUFFICIENT_SCOPE',
-                            'error_parameters_internal' => array('SCOPES' => $response['scope'])));
-
+                        array('error_code_internal' => 'INVALID_ACCESS_TOKEN',
+                            'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
                 }
             } else {
-                // no such token, token expired or revoked
+                // wrong token type
                 $errorCode = 401;
 
                 $response = array('error' => 'invalid_token',
-                    'error_description' => 'The token does not exist. It may have been revoked or expired.');
+                    'error_description' => 'Only Bearer tokens are supported');
 
                 $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
                     SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                    array('error_code_internal' => 'INVALID_ACCESS_TOKEN',
+                    array('error_code_internal' => 'UNSUPPORTED_ACCESS_TOKEN',
                         'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
             }
         } else {
-            // wrong token type
+            // error missing token
             $errorCode = 401;
 
-            $response = array('error' => 'invalid_token',
-                'error_description' => 'Only Bearer tokens are supported');
-
-            $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
-                SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                array('error_code_internal' => 'UNSUPPORTED_ACCESS_TOKEN',
-                    'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
+            $response = array();
         }
-    } else {
-        // error missing token
-        $errorCode = 401;
-
-        $response = array();
     }
 } else {
     $errorCode = 403;
@@ -155,5 +160,5 @@ if ($errorCode !== 200) {
 
     header($authHeader, true, $errorCode);
 } else {
-    echo count($response) > 0 ? json_encode($response): '{}';
+    echo count($response) > 0 ? json_encode($response) : '{}';
 }

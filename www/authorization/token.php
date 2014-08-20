@@ -35,7 +35,10 @@
 session_cache_limiter('nocache');
 
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
+
+//headers to support javascript ajax clients
+header('Access-Control-Allow-Origin: *'); //allow cross domain
+header('Access-Control-Allow-Headers: Authorization'); //allow custom header
 
 $config = SimpleSAML_Configuration::getConfig('module_oauth2server.php');
 
@@ -281,7 +284,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $errorCode = 400;
     }
-} else {
+} else if ($_SERVER['REQUEST_METHOD'] != 'OPTIONS') { //dont freak over the damn ajax options pre-flight requests
+
     $response = array('error' => 'invalid_request',
         'error_description' => 'http(s) POST required',
         'error_code_internal' => 'MUST_POST',
@@ -297,13 +301,15 @@ if ($errorCode === 401) {
     header("WWW-Authenticate: Basic realm=\"OAuth 2.0\"", true, $errorCode);
 }
 
-if (array_key_exists('error', $response)) {
-    $error_uri = SimpleSAML_Utilities::addURLparameter(
-        SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $response);
+if (!is_null($response)) {
+    if (array_key_exists('error', $response)) {
+        $error_uri = SimpleSAML_Utilities::addURLparameter(
+            SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $response);
 
-    $response['error_uri'] = $error_uri;
-    unset($response['error_code_internal']);
-    unset($response['error_parameters_internal']);
+        $response['error_uri'] = $error_uri;
+        unset($response['error_code_internal']);
+        unset($response['error_parameters_internal']);
+    }
+
+    echo json_encode($response);
 }
-
-echo json_encode($response);
