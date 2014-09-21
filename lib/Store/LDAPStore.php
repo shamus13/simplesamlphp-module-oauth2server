@@ -49,10 +49,10 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
 
         ldap_bind($connection, $this->ldapUsername, $this->ldapPassword); //todo: check errors
 
-        $expire = time() + 60;
+        $expire = strval(time() + 60);
 
         $resultSet = ldap_search($connection, $this->searchBase,
-            "(&(expireTime < $expire)(objectClass=jsonObject))", null, true); //todo: check errors
+            "(&(expireTime<=$expire)(objectClass=jsonObject))", array(), true); //todo: check errors
 
         $results = ldap_get_entries($connection, $resultSet); //todo: check errors
 
@@ -60,7 +60,7 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
 
         if ($results != false && $results['count'] > 0) {
             for ($i = 0; $i < $results['count']; ++$i) {
-                ldap_delete($connection, "cn={$results[$i]['cn'][0]}");
+                ldap_delete($connection, "{$results[$i]['dn']}");
             }
         }
 
