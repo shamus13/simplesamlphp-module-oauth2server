@@ -21,11 +21,11 @@ $config = array(
     'store' => array(
         'class' => 'oauth2server:LDAPStore',
 
-        'url' => 'ldap://white-pi/',
+        'url' => 'ldap://example.com/',
         'tls' => true,
-        'username' => 'cn=Manager,dc=grixie,dc=dk',
+        'username' => 'cn=Manager,dc=example,dc=com',
         'password' => 'secret',
-        'base' => 'dc=store,dc=grixie,dc=dk'
+        'base' => 'dc=store,dc=example,dc=com'
     ),
 
     //Definition of available scopes and descriptions
