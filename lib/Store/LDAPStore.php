@@ -94,7 +94,11 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
 
         ldap_close($connection);
 
-        return $value;
+        if (!is_null($value) && $value['expire'] > time()) {
+            return $value;
+        } else {
+            return null;
+        }
     }
 
     public function addObject($object)
