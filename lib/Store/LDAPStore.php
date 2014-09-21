@@ -22,29 +22,135 @@
 
 class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Store
 {
+    private $ldapUrl;
+    private $enableTLS;
+    private $ldapUsername;
+    private $ldapPassword;
+    private $searchBase;
 
     public function __construct($config)
     {
+        $this->ldapUrl = $config['url'];
+        $this->enableTLS = $config['tls'];
+        $this->ldapUsername = $config['username'];
+        $this->ldapPassword = $config['password'];
+        $this->searchBase = $config['base'];
     }
 
     public function removeExpiredObjects()
     {
+        $connection = ldap_connect($this->ldapUrl); //todo: check errors
+
+        ldap_set_option($connection, LDAP_OPT_PROTOCOL_VERSION, 3); //todo: check errors
+
+        if ($this->enableTLS) {
+            ldap_start_tls($connection); //todo: check errors
+        }
+
+        ldap_bind($connection, $this->ldapUsername, $this->ldapPassword); //todo: check errors
+
+        $expire = time() + 60;
+
+        $resultSet = ldap_search($connection, $this->searchBase,
+            "(&(expireTime < $expire)(objectClass=jsonObject))", null, true); //todo: check errors
+
+        $results = ldap_get_entries($connection, $resultSet); //todo: check errors
+
+        $value = null;
+
+        if ($results != false && $results['count'] > 0) {
+            for ($i = 0; $i < $results['count']; ++$i) {
+                ldap_delete($connection, "cn={$results[$i]['cn'][0]}");
+            }
+        }
+
+        ldap_close($connection);
     }
 
     public function getObject($id)
     {
+        $connection = ldap_connect($this->ldapUrl); //todo: check errors
 
+        ldap_set_option($connection, LDAP_OPT_PROTOCOL_VERSION, 3); //todo: check errors
+
+        if ($this->enableTLS) {
+            ldap_start_tls($connection); //todo: check errors
+        }
+
+        ldap_bind($connection, $this->ldapUsername, $this->ldapPassword); //todo: check errors
+
+        $resultSet = ldap_search($connection, $this->searchBase, "(&(cn=$id)(objectClass=jsonObject))"); //todo: check errors
+
+        $results = ldap_get_entries($connection, $resultSet); //todo: check errors
+
+        $value = null;
+
+        if ($results != false && $results['count'] > 0) {
+            $value = json_decode($results[0]['jsonstring'][0], true);
+
+            $value['id'] = $results[0]['cn'][0];
+            $value['expire'] = intval($results[0]['expiretime'][0]);
+        }
+
+        ldap_close($connection);
+
+        return $value;
     }
 
     public function addObject($object)
     {
+        $connection = ldap_connect($this->ldapUrl); //todo: check errors
+
+        ldap_set_option($connection, LDAP_OPT_PROTOCOL_VERSION, 3); //todo: check errors
+
+        if ($this->enableTLS) {
+            ldap_start_tls($connection); //todo: check errors
+        }
+
+        ldap_bind($connection, $this->ldapUsername, $this->ldapPassword); //todo: check errors
+
+        ldap_add($connection, "cn={$object['id']},{$this->searchBase}",
+            array('jsonString' => array(json_encode($object)),
+                'expireTime' => array(strval($object['expire'])),
+                'objectClass' => array('jsonObject')));
+
+        ldap_close($connection);
     }
 
     public function updateObject($object)
     {
+        $connection = ldap_connect($this->ldapUrl); //todo: check errors
+
+        ldap_set_option($connection, LDAP_OPT_PROTOCOL_VERSION, 3); //todo: check errors
+
+        if ($this->enableTLS) {
+            ldap_start_tls($connection); //todo: check errors
+        }
+
+        ldap_bind($connection, $this->ldapUsername, $this->ldapPassword); //todo: check errors
+
+        ldap_modify($connection, "cn={$object['id']},{$this->searchBase}",
+            array('jsonString' => array(json_encode($object)),
+                'expireTime' => array(strval($object['expire'])),
+                'objectClass' => array('jsonObject')));
+
+        ldap_close($connection);
     }
 
     public function removeObject($id)
     {
+        $connection = ldap_connect($this->ldapUrl); //todo: check errors
+
+        ldap_set_option($connection, LDAP_OPT_PROTOCOL_VERSION, 3); //todo: check errors
+
+        if ($this->enableTLS) {
+            ldap_start_tls($connection); //todo: check errors
+        }
+
+        ldap_bind($connection, $this->ldapUsername, $this->ldapPassword); //todo: check errors
+
+        ldap_delete($connection, "cn={$id},{$this->searchBase}");
+
+        ldap_close($connection);
     }
 }

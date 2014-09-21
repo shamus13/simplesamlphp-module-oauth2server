@@ -22,7 +22,6 @@
 Bjørn Rohde Jensen <brj@statsbiblioteket.dk>
 
 //TODO: add IDPList to clients
-//TODO: add support storing tokens etc in LDAP
 //TODO: add support storing tokens etc in memcached
 //TODO: add support storing tokens etc in redis
 

@@ -8,12 +8,24 @@ $config = array(
 
     'authsource' => 'oauth',
 
+    /*
     'store' => array(
         'class' => 'oauth2server:SQLStore',
         //'dsn' => 'pgsql:host=localhost;port=5432;dbname=name',
         'dsn' => 'sqlite:/path/to/sqlitedatabase.sq3',
         'username' => 'user',
         'password' => 'password'
+    ),
+    */
+
+    'store' => array(
+        'class' => 'oauth2server:LDAPStore',
+
+        'url' => 'ldap://white-pi/',
+        'tls' => true,
+        'username' => 'cn=Manager,dc=grixie,dc=dk',
+        'password' => 'secret',
+        'base' => 'dc=store,dc=grixie,dc=dk'
     ),
 
     //Definition of available scopes and descriptions
