@@ -47,7 +47,7 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
 
         $preparedCleanUpStatement = $this->pdo->prepare($cleanUpStatement);
 
-        $preparedCleanUpStatement->execute(array(':expire' => time()));
+        $preparedCleanUpStatement->execute(array(':expire' => time() + 60));
     }
 
     public function getObject($id) //TODO: add object type check
