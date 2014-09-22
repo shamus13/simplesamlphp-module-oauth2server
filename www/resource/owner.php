@@ -20,7 +20,6 @@
 *
 *    OAuth2 resource end point for accessing attributes associated with the resource owner
 */
-//TODO: make this able to look up user data in an LDAP etc
 session_cache_limiter('nocache');
 
 header('Content-Type: application/json; charset=utf-8');
