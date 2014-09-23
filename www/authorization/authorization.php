@@ -29,10 +29,6 @@ session_cache_limiter('nocache');
 
 $config = SimpleSAML_Configuration::getConfig('module_oauth2server.php');
 
-$as = new SimpleSAML_Auth_Simple($config->getValue('authsource'));
-
-$as->requireAuth();
-
 $clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
 
 $responseParameters = array();
@@ -46,6 +42,20 @@ if (isset($_REQUEST['client_id'])) {
 }
 
 if (isset($client)) {
+    $as = new SimpleSAML_Auth_Simple($config->getValue('authsource'));
+
+    $params = array();
+
+    if (array_key_exists('IDPList', $client)) {
+        if (sizeof($client['IDPList']) > 1) {
+            $params['saml:IDPList'] = $client['IDPList'];
+        } else if (sizeof($client['IDPList']) === 1) {
+            $params['saml:idp'] = $client['IDPList'][0];
+        }
+    }
+
+    $as->requireAuth($params);
+
     if (array_key_exists('redirect_uri', $client) &&
         is_array($client['redirect_uri']) &&
         count($client['redirect_uri']) > 0

@@ -26,7 +26,7 @@ $config = SimpleSAML_Configuration::getConfig('module_oauth2server.php');
 
 $as = new SimpleSAML_Auth_Simple($config->getValue('authsource'));
 
-$as->requireAuth();
+$as->requireAuth();  //todo: add scoping support
 
 $state = SimpleSAML_Auth_State::loadState($_REQUEST['stateId'], 'oauth2server:authorization/consent');
 
