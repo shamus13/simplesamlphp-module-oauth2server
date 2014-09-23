@@ -63,6 +63,10 @@ $config = array(
             'description' => array( // Description of what the client does and why it should be granted scopes.
                 'en' => 'OAuth2 Test Client',
             ),
+            'IDPList' => array( // Optional list of entity id's of IdP's to used for scoping during the wayf step.
+                'entityID1',    // Only applicable to SAML2 authsources.
+                'entityID2',
+            ),
         ),
     ),
 
