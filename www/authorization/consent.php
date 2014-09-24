@@ -24,10 +24,6 @@ session_cache_limiter('nocache');
 
 $config = SimpleSAML_Configuration::getConfig('module_oauth2server.php');
 
-$as = new SimpleSAML_Auth_Simple($config->getValue('authsource'));
-
-$as->requireAuth();  //todo: add scoping support
-
 $state = SimpleSAML_Auth_State::loadState($_REQUEST['stateId'], 'oauth2server:authorization/consent');
 
 $globalConfig = SimpleSAML_Configuration::getInstance();
@@ -35,6 +31,20 @@ $globalConfig = SimpleSAML_Configuration::getInstance();
 $clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
 
 $client = $clientStore->getClient($state['clientId']);
+
+$as = new SimpleSAML_Auth_Simple($config->getValue('authsource'));
+
+$params = array();
+
+if (array_key_exists('IDPList', $client)) {
+    if (sizeof($client['IDPList']) > 1) {
+        $params['saml:IDPList'] = $client['IDPList'];
+    } else if (sizeof($client['IDPList']) === 1) {
+        $params['saml:idp'] = $client['IDPList'][0];
+    }
+}
+
+$as->requireAuth($params);
 
 $refreshTokenTTLs = $config->getValue('refresh_token_time_to_live');
 
