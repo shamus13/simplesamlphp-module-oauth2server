@@ -100,7 +100,7 @@ $this->includeAtTemplateBase('includes/header.php');
             <tr>
                 <td><?php echo $this->t('{oauth2server:oauth2server:client_expire}'); ?></td>
                 <td><?php echo isset($this->data['expire']) ?
-                        htmlspecialchars(date('Y/m/d H:i:s', $this->data['expire'])) : ''; ?></td>
+                        htmlspecialchars(date('Y-m-d H:i:s', $this->data['expire'])) : ''; ?></td>
             </tr>
         </table>
 

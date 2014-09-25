@@ -52,7 +52,7 @@ $this->includeAtTemplateBase('includes/header.php');
                             <?php echo htmlspecialchars($token['clientId']); ?>
                         </a>
                     </td>
-                    <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
+                    <td><?php echo htmlspecialchars(date("Y-m-d H:i:s", $token['expire'])); ?></td>
                     <td>
                         <button type="submit" name="tokenId" value="<?php echo htmlentities($token['id']) ?>">
                             <?php echo $this->t('{oauth2server:oauth2server:token_revoke}'); ?>
@@ -90,7 +90,7 @@ $this->includeAtTemplateBase('includes/header.php');
                             <?php echo htmlspecialchars($token['clientId']); ?>
                         </a>
                     </td>
-                    <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
+                    <td><?php echo htmlspecialchars(date("Y-m-d H:i:s", $token['expire'])); ?></td>
                     <td>
                         <button type="submit" name="tokenId" value="<?php echo htmlentities($token['id']) ?>">
                             <?php echo $this->t('{oauth2server:oauth2server:token_revoke}'); ?>
@@ -128,7 +128,7 @@ $this->includeAtTemplateBase('includes/header.php');
                             <?php echo htmlspecialchars($token['clientId']); ?>
                         </a>
                     </td>
-                    <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
+                    <td><?php echo htmlspecialchars(date("Y-m-d H:i:s", $token['expire'])); ?></td>
                     <td>
                         <button type="submit" name="tokenId" value="<?php echo htmlentities($token['id']) ?>">
                             <?php echo $this->t('{oauth2server:oauth2server:token_revoke}'); ?>
@@ -165,7 +165,7 @@ $this->includeAtTemplateBase('includes/header.php');
                         <?php echo $this->t('{oauth2server:oauth2server:client_description_' .
                         $client['id'] . '}'); ?>
                     </td>
-                    <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $client['expire'])); ?></td>
+                    <td><?php echo htmlspecialchars(date("Y-m-d H:i:s", $client['expire'])); ?></td>
                 </tr>
             <?php
             }

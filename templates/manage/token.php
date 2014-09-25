@@ -63,7 +63,7 @@ $this->includeAtTemplateBase('includes/header.php');
                 ?>
                 <tr>
                     <td><?php echo $this->t('{oauth2server:oauth2server:token_expire_time}'); ?></td>
-                    <td><?php echo htmlspecialchars(date("Y/m/d H:i:s", $token['expire'])); ?></td>
+                    <td><?php echo htmlspecialchars(date("Y-m-d H:i:s", $token['expire'])); ?></td>
                 </tr>
             </table>
             <p>
