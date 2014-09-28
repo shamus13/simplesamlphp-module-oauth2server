@@ -172,6 +172,20 @@ foreach ($client['scope'] as $scope => $required) {
     }
 }
 
+$authSourcesConf = SimpleSAML_Configuration::getOptionalConfig('authsources.php');
+
+$authSourceConf = $authSourcesConf->getArray($config->getValue('authsource'));
+
+if(array_key_exists(0, $authSourceConf) || $authSourceConf[0] === 'saml:SP') {
+
+    $metadataHandler = SimpleSAML_Metadata_MetaDataStorageHandler::getMetadataHandler();
+
+    $idpRemoteMetadata = $metadataHandler->getList('saml20-idp-remote');
+
+    SimpleSAML_Logger::debug(var_export($idpRemoteMetadata,true));
+
+}
+
 $t->includeInlineTranslation('{oauth2server:oauth2server:client_description_text}', $client['description']);
 
 $t->data['editable'] = $ownedByMe;
