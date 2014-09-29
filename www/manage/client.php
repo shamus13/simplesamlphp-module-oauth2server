@@ -172,20 +172,6 @@ foreach ($client['scope'] as $scope => $required) {
     }
 }
 
-$authSourcesConf = SimpleSAML_Configuration::getOptionalConfig('authsources.php');
-
-$authSourceConf = $authSourcesConf->getArray($config->getValue('authsource'));
-
-if(array_key_exists(0, $authSourceConf) || $authSourceConf[0] === 'saml:SP') {
-
-    $metadataHandler = SimpleSAML_Metadata_MetaDataStorageHandler::getMetadataHandler();
-
-    $idpRemoteMetadata = $metadataHandler->getList('saml20-idp-remote');
-
-    SimpleSAML_Logger::debug(var_export($idpRemoteMetadata,true));
-
-}
-
 $t->includeInlineTranslation('{oauth2server:oauth2server:client_description_text}', $client['description']);
 
 $t->data['editable'] = $ownedByMe;
@@ -203,5 +189,21 @@ $t->data['password'] = $ownedByMe && isset($client['password']) ? $client['passw
 $t->data['alternativePassword'] = $ownedByMe && isset($client['alternative_password']) ? $client['alternative_password'] : '';
 
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/client.php');
+
+$t->data['idpList'] = array();
+
+$authSourcesConf = SimpleSAML_Configuration::getOptionalConfig('authsources.php');
+
+$authSourceConf = $authSourcesConf->getArray($config->getValue('authsource'));
+
+if(array_key_exists(0, $authSourceConf) && $authSourceConf[0] === 'saml:SP') {
+    $metadataHandler = SimpleSAML_Metadata_MetaDataStorageHandler::getMetadataHandler();
+
+    $idpRemoteMetadata = $metadataHandler->getList('saml20-idp-remote');
+
+    if(count($idpRemoteMetadata) > 0) {
+        $t->data['idpList'] = $idpRemoteMetadata;
+    }
+}
 
 $t->show();

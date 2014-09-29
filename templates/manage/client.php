@@ -23,6 +23,17 @@
 $this->data['header'] = $this->t('{oauth2server:oauth2server:client_header}');
 
 $this->includeAtTemplateBase('includes/header.php');
+
+foreach ($this->data['idpList'] AS $idpentry) {
+	if (isset($idpentry['UIInfo']['DisplayName'])) {
+		$this->includeInlineTranslation('idpname_' . $idpentry['entityid'], $idpentry['UIInfo']['DisplayName']);
+	} elseif (isset($idpentry['name'])) {
+		$this->includeInlineTranslation('idpname_' . $idpentry['entityid'], $idpentry['name']);
+	} elseif (isset($idpentry['OrganizationDisplayName'])) {
+		$this->includeInlineTranslation('idpname_' . $idpentry['entityid'], $idpentry['OrganizationDisplayName']);
+	}
+}
+
 ?>
     <form action="<?php echo htmlspecialchars($this->data['form']); ?>" method="post">
         <input name="language" type="text" hidden=""
@@ -97,6 +108,17 @@ $this->includeAtTemplateBase('includes/header.php');
                         ?></textarea>
                 </td>
             </tr>
+            <?php
+                foreach($this->data['idpList'] as $idp) {
+                ?>
+                    <tr>
+                        <td></td>
+                        <td><?php echo htmlspecialchars($this->t('idpname_' . $idp['entityid'])) ?></td>
+
+                    </tr>
+                <?php
+                }
+            ?>
             <tr>
                 <td><?php echo $this->t('{oauth2server:oauth2server:client_expire}'); ?></td>
                 <td><?php echo isset($this->data['expire']) ?
