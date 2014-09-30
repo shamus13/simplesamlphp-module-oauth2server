@@ -25,13 +25,13 @@ $this->data['header'] = $this->t('{oauth2server:oauth2server:client_header}');
 $this->includeAtTemplateBase('includes/header.php');
 
 foreach ($this->data['idpList'] AS $idpentry) {
-	if (isset($idpentry['UIInfo']['DisplayName'])) {
-		$this->includeInlineTranslation('idpname_' . $idpentry['entityid'], $idpentry['UIInfo']['DisplayName']);
-	} elseif (isset($idpentry['name'])) {
-		$this->includeInlineTranslation('idpname_' . $idpentry['entityid'], $idpentry['name']);
-	} elseif (isset($idpentry['OrganizationDisplayName'])) {
-		$this->includeInlineTranslation('idpname_' . $idpentry['entityid'], $idpentry['OrganizationDisplayName']);
-	}
+    if (isset($idpentry['UIInfo']['DisplayName'])) {
+        $this->includeInlineTranslation('idpname_' . $idpentry['entityid'], $idpentry['UIInfo']['DisplayName']);
+    } elseif (isset($idpentry['name'])) {
+        $this->includeInlineTranslation('idpname_' . $idpentry['entityid'], $idpentry['name']);
+    } elseif (isset($idpentry['OrganizationDisplayName'])) {
+        $this->includeInlineTranslation('idpname_' . $idpentry['entityid'], $idpentry['OrganizationDisplayName']);
+    }
 }
 
 ?>
@@ -109,15 +109,19 @@ foreach ($this->data['idpList'] AS $idpentry) {
                 </td>
             </tr>
             <?php
-                foreach($this->data['idpList'] as $idp) {
+            foreach ($this->data['idpList'] as $idp) {
                 ?>
-                    <tr>
-                        <td></td>
-                        <td><?php echo htmlspecialchars($this->t('idpname_' . $idp['entityid'])) ?></td>
-
-                    </tr>
-                <?php
-                }
+                <tr>
+                    <td></td>
+                    <td><?php echo htmlspecialchars($this->t('idpname_' . $idp['entityid'])) ?></td>
+                    <td><input type="checkbox"<?php
+                        if ($this->data['idpListSelection'][$idp['entityid']]) {
+                            echo ' checked="checked"';
+                        }
+                        ?>></td>
+                </tr>
+            <?php
+            }
             ?>
             <tr>
                 <td><?php echo $this->t('{oauth2server:oauth2server:client_expire}'); ?></td>

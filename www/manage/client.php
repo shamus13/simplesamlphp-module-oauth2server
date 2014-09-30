@@ -192,16 +192,28 @@ $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/manage/client.p
 
 $t->data['idpList'] = array();
 
+$t->data['idpListSelection'] = array();
+
 $authSourcesConf = SimpleSAML_Configuration::getOptionalConfig('authsources.php');
 
 $authSourceConf = $authSourcesConf->getArray($config->getValue('authsource'));
 
-if(array_key_exists(0, $authSourceConf) && $authSourceConf[0] === 'saml:SP') {
+if (array_key_exists(0, $authSourceConf) && $authSourceConf[0] === 'saml:SP') {
     $metadataHandler = SimpleSAML_Metadata_MetaDataStorageHandler::getMetadataHandler();
 
     $idpRemoteMetadata = $metadataHandler->getList('saml20-idp-remote');
 
-    if(count($idpRemoteMetadata) > 0) {
+    foreach ($idpRemoteMetadata as $idp) {
+        $t->data['idpListSelection'][$idp['entityid']] = false;
+    }
+
+    if (isset($client['IDPList']) && is_array($client['IDPList'])) {
+        foreach ($client['IDPList'] as $entityId) {
+            $t->data['idpListSelection'][$entityId] = true;
+        }
+    }
+
+    if (count($idpRemoteMetadata) > 0) {
         $t->data['idpList'] = $idpRemoteMetadata;
     }
 }
