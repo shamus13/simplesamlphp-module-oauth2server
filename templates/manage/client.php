@@ -114,9 +114,14 @@ foreach ($this->data['idpList'] AS $idpentry) {
                 <tr>
                     <td></td>
                     <td><?php echo htmlspecialchars($this->t('idpname_' . $idp['entityid'])) ?></td>
-                    <td><input type="checkbox"<?php
+                    <td><input type="checkbox" name="IDPList[]"
+                               value="<?php echo htmlspecialchars($idp['entityid']) ?>" <?php
                         if ($this->data['idpListSelection'][$idp['entityid']]) {
                             echo ' checked="checked"';
+                        }
+
+                        if (!$this->data['editable']) {
+                            echo ' disabled';
                         }
                         ?>></td>
                 </tr>

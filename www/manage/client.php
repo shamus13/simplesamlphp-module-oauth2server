@@ -59,6 +59,16 @@ if (!isset($client) || !is_array($client)) {
     );
 }
 
+$authSourcesConf = SimpleSAML_Configuration::getOptionalConfig('authsources.php');
+
+$authSourceConf = $authSourcesConf->getArray($config->getValue('authsource'));
+
+if (array_key_exists(0, $authSourceConf) && $authSourceConf[0] === 'saml:SP') {
+    $metadataHandler = SimpleSAML_Metadata_MetaDataStorageHandler::getMetadataHandler();
+
+    $idpRemoteMetadata = $metadataHandler->getList('saml20-idp-remote');
+}
+
 $ownedByMe = isset($client['owner']) && $client['owner'] === $id;
 
 if ($ownedByMe && isset($_POST['update'])) {
@@ -100,6 +110,18 @@ if ($ownedByMe && isset($_POST['update'])) {
         } else {
             unset($client['alternative_password']);
         }
+    }
+
+    if (isset($_POST['IDPList']) && isset($idpRemoteMetadata)) {
+        $entityIds = array();
+
+        foreach ($idpRemoteMetadata as $idp) {
+            $entityIds[] = $idp['entityid'];
+        }
+
+        $client['IDPList'] = array_intersect($_POST['IDPList'], $entityIds);
+    } else {
+        unset($client['IDPList']);
     }
 
     $client['expire'] = time() + $clientGracePeriod;
@@ -198,11 +220,7 @@ $authSourcesConf = SimpleSAML_Configuration::getOptionalConfig('authsources.php'
 
 $authSourceConf = $authSourcesConf->getArray($config->getValue('authsource'));
 
-if (array_key_exists(0, $authSourceConf) && $authSourceConf[0] === 'saml:SP') {
-    $metadataHandler = SimpleSAML_Metadata_MetaDataStorageHandler::getMetadataHandler();
-
-    $idpRemoteMetadata = $metadataHandler->getList('saml20-idp-remote');
-
+if (isset($idpRemoteMetadata)) {
     foreach ($idpRemoteMetadata as $idp) {
         $t->data['idpListSelection'][$idp['entityid']] = false;
     }
