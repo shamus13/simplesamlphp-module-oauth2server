@@ -109,10 +109,11 @@ foreach ($this->data['idpList'] AS $idpentry) {
                 </td>
             </tr>
             <?php
+            $header = true;
             foreach ($this->data['idpList'] as $idp) {
                 ?>
                 <tr>
-                    <td></td>
+                    <td><?php echo $header ? $this->t('{oauth2server:oauth2server:client_idp_scopes}') : ''; ?></td>
                     <td><?php echo htmlspecialchars($this->t('idpname_' . $idp['entityid'])) ?></td>
                     <td><input type="checkbox" name="IDPList[]"
                                value="<?php echo htmlspecialchars($idp['entityid']) ?>" <?php
@@ -126,6 +127,7 @@ foreach ($this->data['idpList'] AS $idpentry) {
                         ?>></td>
                 </tr>
             <?php
+                $header = false;
             }
             ?>
             <tr>

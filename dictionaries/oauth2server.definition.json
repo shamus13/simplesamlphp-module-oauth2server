@@ -101,6 +101,9 @@
     "client_uri": {
         "en": "Redirect URI's"
     },
+    "client_idp_scopes": {
+        "en": "Login choices"
+    },
     "client_expire": {
         "en": "Expires"
     },
