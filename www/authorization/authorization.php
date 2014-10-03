@@ -88,7 +88,9 @@ if (isset($client)) {
             $invalidScopes = array_diff($requestedScopes, array_keys($definedScopes));
 
             if (count($invalidScopes) == 0) {
-                if (isset($_REQUEST['response_type']) && $_REQUEST['response_type'] === 'code') {
+                if (isset($_REQUEST['response_type']) &&
+                    ($_REQUEST['response_type'] === 'code' || $_REQUEST['response_type'] === 'token')
+                ) {
 
                     $state = array('clientId' => $_REQUEST['client_id'],
                         'redirectUri' => (isset($_REQUEST['redirect_uri'])) ? $_REQUEST['redirect_uri'] : null,
