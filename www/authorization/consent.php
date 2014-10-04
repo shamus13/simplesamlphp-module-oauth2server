@@ -46,51 +46,19 @@ if (array_key_exists('IDPList', $client)) {
 
 $as->requireAuth($params);
 
-$refreshTokenTTLs = $config->getValue('refresh_token_time_to_live');
+$tokenTTLs = $config->getValue('refresh_token_time_to_live');
 
-if (empty($refreshTokenTTLs)) {
-    array_push($refreshTokenTTLs, 3600);
+if (empty($tokenTTLs)) {
+    array_push($tokenTTLs, 3600);
 }
 
 if (array_key_exists('grant', $_REQUEST)) {
 
-    if (array_key_exists('ttl', $_REQUEST) && array_key_exists($_REQUEST['ttl'], $refreshTokenTTLs)) {
-        $refreshTokenTTL = $_REQUEST['ttl'];
+    if (array_key_exists('ttl', $_REQUEST) && array_key_exists($_REQUEST['ttl'], $tokenTTLs)) {
+        $tokenTTL = $_REQUEST['ttl'];
     } else {
-        $refreshTokenTTL = $refreshTokenTTLs[array_keys($refreshTokenTTLs)[0]];
+        $tokenTTL = $tokenTTLs[array_keys($tokenTTLs)[0]];
     }
-
-    $authorizationCodeFactory =
-        new sspmod_oauth2server_OAuth2_TokenFactory(
-            $config->getValue('authorization_code_time_to_live', 300),
-            $config->getValue('access_token_time_to_live', 300),
-            $refreshTokenTTL
-        );
-
-    $idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
-
-    $codeEntry = $authorizationCodeFactory->createAuthorizationCode($state['clientId'],
-        $state['redirectUri'], array(), $as->getAttributes()[$idAttribute][0]);
-
-    if (isset($_REQUEST['grantedScopes'])) {
-        $scopesTemp = $_REQUEST['grantedScopes'];
-    } else {
-        $scopesTemp = array();
-    }
-
-    foreach ($client['scope'] as $scope => $required) {
-        if ($required) {
-            array_push($scopesTemp, $scope);
-        }
-    }
-
-    $codeEntry['scopes'] = array_intersect($state['requestedScopes'], $scopesTemp);
-
-    $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore($config);
-
-    $tokenStore->addAuthorizationCode($codeEntry);
-
-    $userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
 
     if (isset($client['expire'])) {
         $clientGracePeriod = $config->getValue('client_grace_period', 30 * 24 * 60 * 60);
@@ -104,23 +72,69 @@ if (array_key_exists('grant', $_REQUEST)) {
         }
     }
 
-    $user = $userStore->getUser($codeEntry['userId']);
+    $authorizationCodeFactory = new sspmod_oauth2server_OAuth2_TokenFactory($tokenTTL, $tokenTTL, $tokenTTL);
+
+    $idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
+
+    if ($state['response_type'] === 'code') {
+        $token = $authorizationCodeFactory->createAuthorizationCode($state['clientId'],
+            $state['redirectUri'], array(), $as->getAttributes()[$idAttribute][0]);
+    } else {
+        $token = $authorizationCodeFactory->createBearerAccessToken($state['clientId'],
+            $state['redirectUri'], array(), $as->getAttributes()[$idAttribute][0]);
+    }
+
+    if (isset($_REQUEST['grantedScopes'])) {
+        $scopesTemp = $_REQUEST['grantedScopes'];
+    } else {
+        $scopesTemp = array();
+    }
+
+    foreach ($client['scope'] as $scope => $required) {
+        if ($required) {
+            array_push($scopesTemp, $scope);
+        }
+    }
+
+    $token['scopes'] = array_intersect($state['requestedScopes'], $scopesTemp);
+
+    $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore($config);
+
+    if ($state['response_type'] === 'code') {
+        $tokenStore->addAuthorizationCode($token);
+    } else {
+        $tokenStore->addAccessToken($token);
+    }
+
+    $userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
+
+    $user = $userStore->getUser($token['userId']);
 
     if (is_array($user)) {
         $user['attributes'] = $as->getAttributes();
 
-        $liveTokens = array($codeEntry['id']);
+        $liveTokens = array($token['id']);
 
-        foreach ($user['authorizationCodes'] as $tokenId) {
-            if (!is_null($tokenStore->getAuthorizationCode($tokenId))) {
-                array_push($liveTokens, $tokenId);
+        if ($state['response_type'] === 'code') {
+            foreach ($user['authorizationCodes'] as $tokenId) {
+                if (!is_null($tokenStore->getAuthorizationCode($tokenId))) {
+                    array_push($liveTokens, $tokenId);
+                }
             }
+
+            $user['authorizationCodes'] = $liveTokens;
+        } else {
+            foreach ($user['accessTokens'] as $tokenId) {
+                if (!is_null($tokenStore->getAccessToken($tokenId))) {
+                    array_push($liveTokens, $tokenId);
+                }
+            }
+
+            $user['accessTokens'] = $liveTokens;
         }
 
-        $user['authorizationCodes'] = $liveTokens;
-
-        if ($codeEntry['expire'] > $user['expire']) {
-            $user['expire'] = $codeEntry['expire'];
+        if ($token['expire'] > $user['expire']) {
+            $user['expire'] = $token['expire'];
         }
 
         if (isset($client['expire']) && $client['expire'] > $user['expire']) {
@@ -129,24 +143,35 @@ if (array_key_exists('grant', $_REQUEST)) {
 
         $userStore->updateUser($user);
     } else {
-        $expire = isset($client['expire']) && $client['expire'] > $codeEntry['expire'] ?
-            $client['expire'] : $codeEntry['expire'];
+        $expire = isset($client['expire']) && $client['expire'] > $token['expire'] ?
+            $client['expire'] : $token['expire'];
 
-        $userStore->addUser(array('id' => $codeEntry['userId'], 'attributes' => $as->getAttributes(),
-            'authorizationCodes' => array($codeEntry['id']), 'refreshTokens' => array(), 'accessTokens' => array(),
-            'clients' => array(), 'expire' => $expire));
+        $user = array('id' => $token['userId'], 'attributes' => $as->getAttributes(),
+            'authorizationCodes' => array(), 'refreshTokens' => array(), 'accessTokens' => array(),
+            'clients' => array(), 'expire' => $expire);
+
+        if ($state['response_type'] === 'code') {
+            array_push($user['authorizationCodes'], $token['id']);
+        } else {
+            array_push($user['accessTokens'], $token['id']);
+        }
+
+        $userStore->addUser($user);
     }
 
-    $response = array('code' => $codeEntry['id']);
+    if ($state['response_type'] === 'code') {
+        $response = array('code' => $token['id']);
 
-    if (array_key_exists('state', $state)) {
-        $response['state'] = $state['state'];
+        if (array_key_exists('state', $state)) {
+            $response['state'] = $state['state'];
+        }
+
+        // build return uri with authorization code and redirect
+
+        sspmod_oauth2server_Utility_Uri::redirectUri(sspmod_oauth2server_Utility_Uri::addQueryParametersToUrl($state['returnUri'], $response));
+    } else {
+        //todo: handle accessToken response
     }
-
-    // build return uri with authorization code and redirect
-
-    sspmod_oauth2server_Utility_Uri::redirectUri(sspmod_oauth2server_Utility_Uri::addQueryParametersToUrl($state['returnUri'], $response));
-
 } else if (array_key_exists('deny', $_REQUEST)) {
 
     $errorState = array('error' => 'access_denied',
@@ -190,11 +215,11 @@ foreach ($state['requestedScopes'] as $scope) {
 
 $t->data['form'] = SimpleSAML_Module::getModuleURL('oauth2server/authorization/consent.php');
 
-foreach ($refreshTokenTTLs as $ttl => $translations) {
+foreach ($tokenTTLs as $ttl => $translations) {
     $t->includeInlineTranslation('{oauth2server:oauth2server:ttl_' . $ttl . '}', $translations);
 }
 
-$t->data['ttlChoices'] = array_keys($refreshTokenTTLs);
+$t->data['ttlChoices'] = array_keys($tokenTTLs);
 $t->data['ttlDefault'] = $t->data['ttlChoices'][0];
 sort($t->data['ttlChoices'], SORT_NUMERIC);
 

@@ -95,7 +95,7 @@ if (isset($client)) {
                     $state = array('clientId' => $_REQUEST['client_id'],
                         'redirectUri' => (isset($_REQUEST['redirect_uri'])) ? $_REQUEST['redirect_uri'] : null,
                         'requestedScopes' => array_unique($requestedScopes),
-                        'returnUri' => $returnUri);
+                        'returnUri' => $returnUri, 'response_type' => $_REQUEST['response_type']);
 
                     if (array_key_exists('state', $_REQUEST)) {
                         $state['state'] = $_REQUEST['state'];
