@@ -170,7 +170,19 @@ if (array_key_exists('grant', $_REQUEST)) {
 
         sspmod_oauth2server_Utility_Uri::redirectUri(sspmod_oauth2server_Utility_Uri::addQueryParametersToUrl($state['returnUri'], $response));
     } else {
-        //todo: handle accessToken response
+        $fragment = '#access_token=' . $token['id'] . '&token_type=bearer&expires_in=' . ($token['expire'] - time());
+
+        if (count($token['scopes']) > 0) {
+            $fragment .= '&scope=';
+            $fragment .= urlencode(trim(implode(' ', $token['scopes'])));
+        }
+
+        if (array_key_exists('state', $state)) {
+            $fragment .= '&state=';
+            $fragment .= $state['state'];
+        }
+
+        sspmod_oauth2server_Utility_Uri::redirectUri($state['returnUri'] . $fragment);
     }
 } else if (array_key_exists('deny', $_REQUEST)) {
 
