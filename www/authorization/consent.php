@@ -81,7 +81,7 @@ if (array_key_exists('grant', $_REQUEST)) {
             $state['redirectUri'], array(), $as->getAttributes()[$idAttribute][0]);
     } else {
         $token = $authorizationCodeFactory->createBearerAccessToken($state['clientId'],
-            $state['redirectUri'], array(), $as->getAttributes()[$idAttribute][0]);
+            array(), $as->getAttributes()[$idAttribute][0]);
     }
 
     if (isset($_REQUEST['grantedScopes'])) {
