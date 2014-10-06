@@ -78,7 +78,7 @@ if (!is_null($user)) {
 
         if (!is_null($token)) {
             if (isset($_REQUEST['tokenId']) && $id === $_REQUEST['tokenId']) {
-                $tokenStore->removeAuthorizationCode($id);
+                $tokenStore->removeAccessToken($id);
             } else {
                 array_push($accessTokens, $token);
                 array_push($liveAccessTokens, $token['id']);
