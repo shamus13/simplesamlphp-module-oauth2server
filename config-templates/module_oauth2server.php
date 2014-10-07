@@ -54,7 +54,7 @@ $config = array(
 
     //Definition of static oauth2 clients
     'clients' => array(
-        'client_id' => array(
+        'client_id' => array( // standard oauth2 client
             'redirect_uri' => array('uri1', 'uri2'), // Registered redirection end points. Allow any query parameters.
             'scope' => array('scope1', 'scope2'), // Available scopes for this client. No default scope exists.
             'scopeRequired' => array('scope1'), // Mandatory scopes for this client. Defaults to none.
@@ -68,6 +68,16 @@ $config = array(
                 'entityID2',
             ),
         ),
+      'android' => array( // android oauth2 client using intent redirect uri for apps relying on an external browser
+          'redirect_uri' => array('intent://example.com/#Intent;scheme=oauth2;package=com.examle.oauth2_app;end'),
+          'scope' => array('USER_ID', 'USER_NAME'), // Available scopes for this client. No default scope exists.
+          'scopeRequired' => array(), // Mandatory scopes for this client. Defaults to none.
+          'password' => 'password', // Optional password to be used for basic authentication of confidential clients.
+          'description' => array(
+             'en' => 'OAuth2 test app',
+             'da' => 'Oauth2 test app',
+          ),
+      ),
     ),
 
     //Configuration of dynamic clients
