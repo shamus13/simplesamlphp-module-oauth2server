@@ -143,18 +143,34 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
 
     public function removeObject($id)
     {
-        $connection = ldap_connect($this->ldapUrl); //todo: check errors
+        if ($connection = ldap_connect($this->ldapUrl)) {
+            if (ldap_set_option($connection, LDAP_OPT_PROTOCOL_VERSION, 3)) {
+                if ($this->enableTLS) {
+                    if (!ldap_start_tls($connection)) {
+                        $error = 'failed to enable TLS';
+                    }
+                }
 
-        ldap_set_option($connection, LDAP_OPT_PROTOCOL_VERSION, 3); //todo: check errors
+                if (!isset($error)) {
+                    if (ldap_bind($connection, $this->ldapUsername, $this->ldapPassword)) {
+                        if (!ldap_delete($connection, "cn={$id},{$this->searchBase}")) {
+                            $error = 'failed to delete object';
+                        }
+                    } else {
+                        $error = 'failed to bind to ldap';
+                    }
+                }
+            } else {
+                $error = 'failed to enable protocol version 3';
+            }
 
-        if ($this->enableTLS) {
-            ldap_start_tls($connection); //todo: check errors
+            ldap_close($connection);
+        } else {
+            $error = 'failed to connect to ldap';
         }
 
-        ldap_bind($connection, $this->ldapUsername, $this->ldapPassword); //todo: check errors
-
-        ldap_delete($connection, "cn={$id},{$this->searchBase}");
-
-        ldap_close($connection);
+        if (isset($error)) {
+            throw new Exception($error);
+        }
     }
 }
