@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>OAuth2 authorization code grant javascript client</title>
+</head>
+<body onload="init()">
+
+<p>
+    This page demonstrates a javascript client using the authorization code grant flow.
+</p>
+
+<div>
+    <button id="token">Get Token</button>
+</div>
+<div>
+    <button id="attributes">Get Attributes</button>
+    <textarea id="attributesReply" readonly></textarea>
+</div>
+
+<script type="text/javascript">
+
+    function init() {
+        var authorizationServer = 'https://example.com';
+
+        var attributeService = authorizationServer + '/module.php/oauth2server/resource/owner.php';
+        var authorizationEndPoint = authorizationServer + '/module.php/oauth2server/authorization/authorization.php';
+        var tokenEndPoint = authorizationServer + '/module.php/oauth2server/authorization/token.php';
+
+        checkForAuthorizationCodeGrant(tokenEndPoint);
+
+        setupAuthorization(authorizationEndPoint);
+
+        setupAttributesButton(attributeService);
+    }
+
+    function setupAuthorization(authorizationEndPoint) {
+        var token = document.getElementById('token');
+
+        var clientId = 'javascript';
+        var responseType = 'code';
+        var redirectUri;
+        var scope = 'USER_ID USER_NAME';
+        var state = new Date().getDate().toString();
+
+        if (document.URL.indexOf('?') > 0) {
+            redirectUri = document.URL.substring(0, document.URL.indexOf('?'));
+        } else {
+            redirectUri = document.URL;
+        }
+
+        token.onclick = (function (endPoint) {
+            return function () {
+                document.location = endPoint + '?response_type=' + responseType + '&client_id=' + clientId +
+                        '&redirect_uri=' + encodeURI(redirectUri) + '&scope=' + encodeURI(scope) + '&state=' + encodeURI(state);
+            };
+        })(authorizationEndPoint);
+    }
+
+    function setupAttributesButton(attributeService) {
+        var attributes = document.getElementById('attributes');
+        var reply = document.getElementById('attributesReply');
+
+        var r = new XMLHttpRequest();
+        r.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if (this.getResponseHeader('Content-Type').valueOf().contains('application/json')) {
+                    reply.value = this.responseText;
+                } else {
+                    console.log('error');
+                }
+            }
+        };
+
+        attributes.onclick = (function (request) {
+            return function () {
+                r.open("GET", attributeService, true);
+                r.setRequestHeader('Authorization', 'Bearer ' + btoa(accessTokenId));
+
+                r.send();
+            }
+        })(r);
+    }
+
+    function checkForAuthorizationCodeGrant(tokenEndpoint) {
+        var grant;
+
+        grant = parseAuthorizationResponse();
+
+        if (grant['code'] != undefined) {
+            getAccessToken(tokenEndpoint, grant['code'], null);
+        }
+    }
+
+    function parseAuthorizationResponse() {
+        var parameters;
+        var result = {};
+        var kv;
+        var i;
+
+        if (document.URL.contains('?')) {
+            if (document.URL.contains('#')) {
+                parameters = document.URL.substring(document.URL.indexOf('?') + 1,
+                        document.URL.indexOf('#')).split('&');
+            } else {
+                parameters = this.document.URL.substring(document.URL.indexOf('?') + 1,
+                        document.URL.length).split('&');
+            }
+
+            for (i = 0; i < parameters.length; ++i) {
+                kv = parameters[i].split('=');
+
+                result[kv[0]] = kv[1];
+            }
+        }
+
+        return result;
+    }
+
+    function getAccessToken(tokenEndPoint, authorizationCode, refreshToken) {
+        var clientId = 'javascript';
+        var redirectUri;
+        var scope = 'USER_ID USER_NAME';
+        var parameters;
+        var r = new XMLHttpRequest();
+        var token;
+
+        if (authorizationCode != null) {
+            parameters = 'grant_type=authorization_code&code=' + encodeURI(authorizationCode);
+        } else {
+            parameters = 'grant_type=refresh_token&refresh_token=' + encodeURI(refreshToken);
+        }
+
+        if (document.URL.indexOf('?') > 0) {
+            redirectUri = document.URL.substring(0, document.URL.indexOf('?'));
+        } else {
+            redirectUri = document.URL;
+        }
+
+        parameters += '&client_id=' + clientId + '&redirect_uri=' + encodeURI(redirectUri)
+                + '&scope=' + encodeURI(scope);
+
+        r.open("POST", tokenEndPoint, true);
+        r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        r.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if (this.getResponseHeader('Content-Type').valueOf().contains('application/json')) {
+                    token = JSON.parse(this.responseText);
+
+                    window.accessTokenId = token['access_token'];
+                    window.refreshTokenId = token['refresh_token'];
+
+                    console.log('access token retrieved')
+                } else {
+                    console.log('error');
+                }
+            }
+        };
+
+        r.send(parameters);
+    }
+</script>
+</body>
+</html>
