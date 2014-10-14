@@ -21,7 +21,6 @@
 
 Bjørn Rohde Jensen <brj@statsbiblioteket.dk>
 
-//TODO: add support storing tokens etc in memcached
 //TODO: add support storing tokens etc in redis
 //TODO: add support for HMAC tokens
 
