@@ -18,6 +18,7 @@ $config = array(
     ),
     */
 
+    /*
     'store' => array(
         'class' => 'oauth2server:LDAPStore',
 
@@ -26,6 +27,11 @@ $config = array(
         'username' => 'cn=Manager,dc=example,dc=com',
         'password' => 'secret',
         'base' => 'dc=store,dc=example,dc=com'
+    ),
+    */
+    'store' => array(
+        'class' => 'oauth2server:MemCacheTicketStore',
+        'prefix' => 'some_prefix',
     ),
 
     //Definition of available scopes and descriptions
