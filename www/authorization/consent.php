@@ -46,6 +46,8 @@ if (array_key_exists('IDPList', $client)) {
 
 $as->requireAuth($params);
 
+$authorizationCodeTTL = $config->getValue('authorization_code_time_to_live');
+$accessTokenTTL = $config->getValue('access_token_time_to_live');
 $tokenTTLs = $config->getValue('refresh_token_time_to_live');
 
 if (empty($tokenTTLs)) {
@@ -72,14 +74,17 @@ if (array_key_exists('grant', $_REQUEST)) {
         }
     }
 
-    $authorizationCodeFactory = new sspmod_oauth2server_OAuth2_TokenFactory($tokenTTL, $tokenTTL, $tokenTTL);
 
     $idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
 
     if ($state['response_type'] === 'code') {
+        $authorizationCodeFactory = new sspmod_oauth2server_OAuth2_TokenFactory($authorizationCodeTTL,
+            $accessTokenTTL, $tokenTTL);
         $token = $authorizationCodeFactory->createAuthorizationCode($state['clientId'],
             $state['redirectUri'], array(), $as->getAttributes()[$idAttribute][0]);
     } else {
+        $authorizationCodeFactory = new sspmod_oauth2server_OAuth2_TokenFactory($authorizationCodeTTL,
+            $tokenTTL, $tokenTTL);
         $token = $authorizationCodeFactory->createBearerAccessToken($state['clientId'],
             array(), $as->getAttributes()[$idAttribute][0]);
     }
