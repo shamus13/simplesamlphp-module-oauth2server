@@ -27,6 +27,7 @@ $config = array(
         'username' => 'cn=Manager,dc=example,dc=com',
         'password' => 'secret',
         'base' => 'dc=store,dc=example,dc=com'
+        'deref' => LDAP_DEREF_NEVER, // or one of LDAP_DEREF_SEARCHING, LDAP_DEREF_FINDING, LDAP_DEREF_ALWAYS
     ),
     */
     'store' => array(

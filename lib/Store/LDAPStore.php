@@ -27,6 +27,7 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
     private $ldapUsername;
     private $ldapPassword;
     private $searchBase;
+    private $deref;
 
     public function __construct($config)
     {
@@ -35,6 +36,11 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
         $this->ldapUsername = $config['username'];
         $this->ldapPassword = $config['password'];
         $this->searchBase = $config['base'];
+        if(array_key_exists('deref', $config)) {
+            $this->deref = $config['deref'];
+        } else {
+            $this->deref = LDAP_DEREF_NEVER;
+        }
     }
 
     public function removeExpiredObjects()
@@ -157,6 +163,7 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
     private function bindToLdap()
     {
         if ($connection = ldap_connect($this->ldapUrl)) {
+            ldap_set_option($connection, LDAP_OPT_DEREF, $this->deref);
             if (ldap_set_option($connection, LDAP_OPT_PROTOCOL_VERSION, 3)) {
                 if ($this->enableTLS) {
                     if (!ldap_start_tls($connection)) {
