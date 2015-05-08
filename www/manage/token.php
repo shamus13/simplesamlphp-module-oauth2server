@@ -38,7 +38,9 @@ $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore($config);
 
 $userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
 
-$user = $userStore->getUser($as->getAttributes()[$idAttribute][0]);
+$attributes = $as->getAttributes();
+
+$user = $userStore->getUser($attributes[$idAttribute][0]);
 
 if (!is_null($user) && isset($_REQUEST['tokenId'])) {
     if (array_search($_REQUEST['tokenId'], $user['authorizationCodes']) !== false) {

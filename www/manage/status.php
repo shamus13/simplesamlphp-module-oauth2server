@@ -34,7 +34,9 @@ $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore($config);
 $clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
 $userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
 
-$user = $userStore->getUser($as->getAttributes()[$idAttribute][0]);
+$attributes = $as->getAttributes();
+
+$user = $userStore->getUser($attributes[$idAttribute][0]);
 
 $globalConfig = SimpleSAML_Configuration::getInstance();
 

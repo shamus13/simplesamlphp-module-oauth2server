@@ -34,7 +34,9 @@ if (!$config->getValue('enable_client_registration', false)) {
 
 $idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
 
-$id = $as->getAttributes()[$idAttribute][0];
+$attributes = $as->getAttributes();
+
+$id = $attributes[$idAttribute][0];
 
 $clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
 
