@@ -1,0 +1,11 @@
+{
+    "name": "simplesamlphp/simplesamlphp-module-oauth2server",
+    "description": "OAuth 2.0 server module supporting Bearer tokens for simpleSAMLphp",
+    "keywords": [ "oauth", "server", "oauth2","oauth2.0" ],
+    "homepage": "https://github.com/simplesamlphp/simplesamlphp-module-oauth2server",
+    "license": "LGPL-2.1",
+    "type": "simplesamlphp-module",
+    "require": {
+        "simplesamlphp/composer-module-installer": "~1.0"
+    }
+}
