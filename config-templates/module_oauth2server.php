@@ -75,16 +75,16 @@ $config = array(
                 'entityID2',
             ),
         ),
-      'android' => array( // android oauth2 client using intent redirect uri for apps relying on an external browser
-          'redirect_uri' => array('intent://example.com/#Intent;scheme=oauth2;package=com.examle.oauth2_app;end'),
-          'scope' => array('USER_ID', 'USER_NAME'), // Available scopes for this client. No default scope exists.
-          'scopeRequired' => array(), // Mandatory scopes for this client. Defaults to none.
-          'password' => 'password', // Optional password to be used for basic authentication of confidential clients.
-          'description' => array(
-             'en' => 'OAuth2 test app',
-             'da' => 'Oauth2 test app',
-          ),
-      ),
+        'android' => array( // android oauth2 client using intent redirect uri for apps relying on an external browser
+            'redirect_uri' => array('intent://example.com/#Intent;scheme=oauth2;package=com.examle.oauth2_app;end'),
+            'scope' => array('USER_ID', 'USER_NAME'), // Available scopes for this client. No default scope exists.
+            'scopeRequired' => array(), // Mandatory scopes for this client. Defaults to none.
+            'password' => 'password', // Optional password to be used for basic authentication of confidential clients.
+            'description' => array(
+                'en' => 'OAuth2 test app',
+                'da' => 'Oauth2 test app',
+            ),
+        ),
     ),
 
     //Configuration of dynamic clients
@@ -111,5 +111,27 @@ $config = array(
         'USER_NAME' => array('cn', 'gn', 'sn'), // multiple named attributes
         'USER_AFFILIATION' => array('eduPersonScopeAffiliation'),
         'FULL_ACCESS' => null, // all attributes
+    ),
+
+    //proxy service properties
+    'proxy_end_points' => array(
+        'relative_path' => array(
+            'target' => 'http://example.com:1234/abc/{attributeName}/def?x=1&y=2&z=3',
+            'attribute_to_query_parameter_mapping' => array(
+                'eduPersonPrincipalName' => 'userId',
+                'schacHomeOrganization' => 'org',
+            ),
+            'query_parameter_mapping' => array(
+                'a' => 'x',
+                'b' => 'y',
+                'c' => 'z',
+            ),
+            'scope_required' => array(
+                'DELETE' => array('X', 'Y'),
+                'GET' => array(),
+                'POST' => array('A', 'B'),
+                'PUT' => array('A', 'B'),
+            ),
+        ),
     ),
 );
