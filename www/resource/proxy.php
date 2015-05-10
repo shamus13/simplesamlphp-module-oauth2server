@@ -23,8 +23,6 @@
 */
 session_cache_limiter('nocache');
 
-header('Content-Type: application/json; charset=utf-8');
-
 //headers to support javascript ajax clients
 header('Access-Control-Allow-Origin: *'); //allow cross domain
 header('Access-Control-Allow-Headers: Authorization'); //allow custom header
@@ -57,28 +55,104 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                 }
 
                 if (isset($user) && $user != null) {
-                    $configuredProxyScopes = $config->getValue('resource_proxy_service_scopes', array());
+                    $proxyEndPoints = $config->getValue('proxy_end_points', array());
 
-                    $authorizingScopes = array_intersect($accessToken['scopes'], array_keys($configuredProxyScopes));
+                    if(array_key_exists($_SERVER['PATH_INFO'], $proxyEndPoints)) {
+                        $proxyEndPoint = $proxyEndPoints[$_SERVER['PATH_INFO']];
 
-                    if (count($authorizingScopes) > 0) {
-                        $response = array();
+                        //check access right
+                        if(array_key_exists($_SERVER['REQUEST_METHOD'],$proxyEndPoint['scope_required'])) {
+                            $authorizingScopes = array_intersect($accessToken['scopes'],
+                                $proxyEndPoint['scope_required'][$_SERVER['REQUEST_METHOD']]);
 
-                        $_SERVER['PATH_INFO']; // path elements to be used to locate the proxied resource
+                            if(count($authorizingScopes) === 0) {
+                                $errorCode = 403;
+
+                                $response = array('error' => 'insufficient_scope',
+                                    'error_description' => 'The token does not have the scopes required for access.');
+
+                                $response['scope'] = trim(implode(' ',
+                                    $proxyEndPoint['scope_required'][$_SERVER['REQUEST_METHOD']]));
+
+                                $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
+                                    SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
+                                    array('error_code_internal' => 'INSUFFICIENT_SCOPE',
+                                        'error_parameters_internal' => array('SCOPES' => $response['scope'])));
+
+                            }
+                        }
+
+                        if($errorCode === 200) {
+                            //build target url
+                            $target = $proxyEndPoint['target'];
+
+                            foreach($user['attributes'] as $name => $values) {
+                                if(count($values) > 0) {
+                                    $target = str_replace('{'.$name.'}', $values[0], $target);
+                                }
+                            }
+
+                            $parameters = array();
+
+                            foreach($proxyEndPoint['additional_parameters'] as $name => $values) {
+                                $newValues = array();
+
+                                foreach($values as $value) {
+                                    if(substr($value,0,1) === '{' && substr($value, strlen($value) - 1, 1) === '}') {
+                                        $key = substr($value,1,-1);
+
+                                        if(array_key_exists($key, $user['attributes'])) {
+                                            $newValues = array_merge($newValues, $user['attributes'][$key]);
+                                        }
+                                    } else {
+                                        $newValues[] = $value;
+                                    }
+                                }
+
+                                $parameters[$name] = $newValues;
+                            }
+
+                            //need to use php://input instead of $_request
+
+                            foreach($proxyEndPoint['parameter_mapping'] as $from =>$to) {
+                                if(array_key_exists($from, $_REQUEST)) {
+                                    $values = $_REQUEST{$from};
+
+                                    if(is_null($values)) {
+                                        $values = array('');
+                                    } elseif (!is_array($values)) {
+                                        $values = array($values);
+                                    }
+
+                                    if(array_key_exists($to, $parameters)) {
+                                        $parameters[$to] = array_merge($parameters[$to], $values);
+                                    } else {
+                                        $parameters[$to] = $values;
+                                    }
+                                }
+                            }
+
+                            if($_SERVER['REQUEST_METHOD' == 'GET']) {
+
+                            } else {
+
+                            }
+
+                            //add query parameters
+
+                            //access remote resource
+
+                            //return response
+                            $response = array(
+                                'target' => $target,
+                                'parameters' => $parameters,
+                            );
+                        }
+
                     } else {
-                        $errorCode = 403;
-
-                        $response = array('error' => 'insufficient_scope',
-                            'error_description' => 'The token does not have the scopes required for access.');
-
-                        $response['scope'] = trim(implode(' ', array_keys($configuredProxyScopes)));
-
-                        $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
-                            SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                            array('error_code_internal' => 'INSUFFICIENT_SCOPE',
-                                'error_parameters_internal' => array('SCOPES' => $response['scope'])));
-
+                        $errorCode = 404;
                     }
+
                 } else {
                     // no such token, token expired or revoked
                     $errorCode = 401;
@@ -124,7 +198,11 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
 header('X-PHP-Response-Code: ' . $errorCode, true, $errorCode);
 
-if ($errorCode !== 200) {
+if($errorCode === 200) {
+    header('Content-Type: application/json; charset=utf-8');
+
+    echo count($response) > 0 ? json_encode($response) : '{}';
+} else if ($errorCode !== 404) {
     $authHeader = "WWW-Authenticate: Bearer ";
 
     if (array_key_exists('error', $response)) {
@@ -137,6 +215,4 @@ if ($errorCode !== 200) {
     }
 
     header($authHeader, true, $errorCode);
-} else {
-    echo count($response) > 0 ? json_encode($response) : '{}';
 }

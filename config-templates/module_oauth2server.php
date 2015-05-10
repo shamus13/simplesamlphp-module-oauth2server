@@ -116,12 +116,12 @@ $config = array(
     //proxy service properties
     'proxy_end_points' => array(
         'relative_path' => array(
-            'target' => 'http://example.com:1234/abc/{attributeName}/def?x=1&y=2&z=3',
-            'attribute_to_query_parameter_mapping' => array(
-                'eduPersonPrincipalName' => 'userId',
-                'schacHomeOrganization' => 'org',
+            'target' => 'http://example.com:1234/abc/{attributeName}/def',
+            'additional_parameters' => array(
+                'userId' => array('{eduPersonPrincipalName}'),
+                'org' => array('acme'),
             ),
-            'query_parameter_mapping' => array(
+            'parameter_mapping' => array(
                 'a' => 'x',
                 'b' => 'y',
                 'c' => 'z',
