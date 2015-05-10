@@ -92,55 +92,13 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                                 }
                             }
 
-                            $parameters = array();
+                            //read raw request
 
-                            foreach($proxyEndPoint['additional_parameters'] as $name => $values) {
-                                $newValues = array();
+                            //add extra headers
 
-                                foreach($values as $value) {
-                                    if(substr($value,0,1) === '{' && substr($value, strlen($value) - 1, 1) === '}') {
-                                        $key = substr($value,1,-1);
+                            //forward request to target
 
-                                        if(array_key_exists($key, $user['attributes'])) {
-                                            $newValues = array_merge($newValues, $user['attributes'][$key]);
-                                        }
-                                    } else {
-                                        $newValues[] = $value;
-                                    }
-                                }
-
-                                $parameters[$name] = $newValues;
-                            }
-
-                            //need to use php://input instead of $_request
-
-                            foreach($proxyEndPoint['parameter_mapping'] as $from =>$to) {
-                                if(array_key_exists($from, $_REQUEST)) {
-                                    $values = $_REQUEST{$from};
-
-                                    if(is_null($values)) {
-                                        $values = array('');
-                                    } elseif (!is_array($values)) {
-                                        $values = array($values);
-                                    }
-
-                                    if(array_key_exists($to, $parameters)) {
-                                        $parameters[$to] = array_merge($parameters[$to], $values);
-                                    } else {
-                                        $parameters[$to] = $values;
-                                    }
-                                }
-                            }
-
-                            if($_SERVER['REQUEST_METHOD' == 'GET']) {
-
-                            } else {
-
-                            }
-
-                            //add query parameters
-
-                            //access remote resource
+                            //forward response from target
 
                             //return response
                             $response = array(

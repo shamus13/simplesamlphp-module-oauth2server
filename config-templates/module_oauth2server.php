@@ -117,15 +117,6 @@ $config = array(
     'proxy_end_points' => array(
         'relative_path' => array(
             'target' => 'http://example.com:1234/abc/{attributeName}/def',
-            'additional_parameters' => array(
-                'userId' => array('{eduPersonPrincipalName}'),
-                'org' => array('acme'),
-            ),
-            'parameter_mapping' => array(
-                'a' => 'x',
-                'b' => 'y',
-                'c' => 'z',
-            ),
             'scope_required' => array(
                 'DELETE' => array('X', 'Y'),
                 'GET' => array(),
