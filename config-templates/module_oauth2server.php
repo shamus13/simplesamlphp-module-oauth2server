@@ -115,13 +115,18 @@ $config = array(
 
     //proxy service properties
     'proxy_end_points' => array(
-        'relative_path' => array(
-            'target' => 'http://example.com:1234/abc/{attributeName}/def',
+        array(
+            'path' => '/a/{x}/b/{y}',
+            'target' => 'http://example.com:1234/abc/{attributeName}/def/{y}/{x}',
             'scope_required' => array(
                 'DELETE' => array('X', 'Y'),
                 'GET' => array(),
                 'POST' => array('A', 'B'),
                 'PUT' => array('A', 'B'),
+            ),
+            'additional_headers' => array(
+                'realm' => 'acme',
+                'user-id' => '{eduPersonPrincipalName}'
             ),
         ),
     ),

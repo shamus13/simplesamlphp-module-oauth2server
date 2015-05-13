@@ -55,62 +55,82 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                 }
 
                 if (isset($user) && $user != null) {
-                    $proxyEndPoints = $config->getValue('proxy_end_points', array());
+                    foreach($config->getValue('proxy_end_points', array()) as $proxyEndPoint) {
 
-                    if(array_key_exists($_SERVER['PATH_INFO'], $proxyEndPoints)) {
-                        $proxyEndPoint = $proxyEndPoints[$_SERVER['PATH_INFO']];
+                        $pathMapping = array_combine(explode('/', $proxyEndPoint['path']),
+                            explode('/', $_SERVER['PATH_INFO']));
 
-                        //check access right
-                        if(array_key_exists($_SERVER['REQUEST_METHOD'],$proxyEndPoint['scope_required'])) {
-                            $authorizingScopes = array_intersect($accessToken['scopes'],
-                                $proxyEndPoint['scope_required'][$_SERVER['REQUEST_METHOD']]);
+                        $matches = $pathMapping != false;
 
-                            if(count($authorizingScopes) === 0) {
-                                $errorCode = 403;
+                        $pathVariables = array();
 
-                                $response = array('error' => 'insufficient_scope',
-                                    'error_description' => 'The token does not have the scopes required for access.');
-
-                                $response['scope'] = trim(implode(' ',
-                                    $proxyEndPoint['scope_required'][$_SERVER['REQUEST_METHOD']]));
-
-                                $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
-                                    SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                                    array('error_code_internal' => 'INSUFFICIENT_SCOPE',
-                                        'error_parameters_internal' => array('SCOPES' => $response['scope'])));
-
+                        if ($matches) {
+                            foreach ($pathMapping as $k => $v) {
+                                if(strlen($v) > 0 && preg_match('/\{.*?\}/', $k)) {
+                                    $pathVariables[$k] = $v;
+                                } else {
+                                    $matches &= $k === $v;
+                                }
                             }
                         }
 
-                        if($errorCode === 200) {
-                            //build target url
-                            $target = $proxyEndPoint['target'];
+                        if ($matches) {
+                            //check access right
+                            if (array_key_exists($_SERVER['REQUEST_METHOD'], $proxyEndPoint['scope_required'])) {
+                                $authorizingScopes = array_intersect($accessToken['scopes'],
+                                    $proxyEndPoint['scope_required'][$_SERVER['REQUEST_METHOD']]);
 
-                            foreach($user['attributes'] as $name => $values) {
-                                if(count($values) > 0) {
-                                    $target = str_replace('{'.$name.'}', $values[0], $target);
+                                if (count($authorizingScopes) === 0) {
+                                    $errorCode = 403;
+
+                                    $response = array('error' => 'insufficient_scope',
+                                        'error_description' => 'The token does not have the scopes required for access.');
+
+                                    $response['scope'] = trim(implode(' ',
+                                        $proxyEndPoint['scope_required'][$_SERVER['REQUEST_METHOD']]));
+
+                                    $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
+                                        SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
+                                        array('error_code_internal' => 'INSUFFICIENT_SCOPE',
+                                            'error_parameters_internal' => array('SCOPES' => $response['scope'])));
+
                                 }
                             }
 
-                            //read raw request
+                            if ($errorCode === 200) {
+                                //build target url
+                                $target = $proxyEndPoint['target'];
 
-                            //add extra headers
+                                foreach ($user['attributes'] as $name => $values) {
+                                    if (count($values) > 0) {
+                                        $target = str_replace('{' . $name . '}', $values[0], $target);
+                                    }
+                                }
 
-                            //forward request to target
+                                foreach($pathVariables as $name => $value) {
+                                    $target = str_replace($name, $value, $target);
+                                }
 
-                            //forward response from target
+                                //read raw request
 
-                            //return response
-                            $response = array(
-                                'target' => $target,
-                                'parameters' => $parameters,
-                            );
+                                //add extra headers
+
+                                //forward request to target
+
+                                //forward response from target
+
+                                //return response
+                                $response = array(
+                                    'path' => $proxyEndPoint['path'],
+                                    'target' => $target,
+                                    'mapping' => $pathMapping
+                                );
+                            }
+
+                        } else {
+                            $errorCode = 404;
                         }
-
-                    } else {
-                        $errorCode = 404;
                     }
-
                 } else {
                     // no such token, token expired or revoked
                     $errorCode = 401;
