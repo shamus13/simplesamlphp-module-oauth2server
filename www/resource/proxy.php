@@ -141,36 +141,36 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                     } else {
                         $errorCode = 404;;
                     }
+                } else {
+                    // no such token, token expired or revoked
+                    $errorCode = 401;
+
+                    $response = array('error' => 'invalid_token',
+                        'error_description' => 'The token does not exist. It may have been revoked or expired.');
+
+                    $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
+                        SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
+                        array('error_code_internal' => 'INVALID_ACCESS_TOKEN',
+                            'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
                 }
             } else {
-                // no such token, token expired or revoked
+                // wrong token type
                 $errorCode = 401;
 
                 $response = array('error' => 'invalid_token',
-                    'error_description' => 'The token does not exist. It may have been revoked or expired.');
+                    'error_description' => 'Only Bearer tokens are supported');
 
                 $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
                     SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                    array('error_code_internal' => 'INVALID_ACCESS_TOKEN',
+                    array('error_code_internal' => 'UNSUPPORTED_ACCESS_TOKEN',
                         'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
             }
         } else {
-            // wrong token type
+            // error missing token
             $errorCode = 401;
 
-            $response = array('error' => 'invalid_token',
-                'error_description' => 'Only Bearer tokens are supported');
-
-            $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
-                SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                array('error_code_internal' => 'UNSUPPORTED_ACCESS_TOKEN',
-                    'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
+            $response = array();
         }
-    } else {
-        // error missing token
-        $errorCode = 401;
-
-        $response = array();
     }
 } else {
     $errorCode = 403;
