@@ -29,7 +29,7 @@ header('Access-Control-Allow-Headers: Authorization'); //allow custom header
 
 $config = SimpleSAML_Configuration::getConfig('module_oauth2server.php');
 
-$errorCode = 200;
+$errorCode = 404;
 $response = null;
 
 if ($config->getValue('enable_resource_owner_service', false)) {
@@ -128,7 +128,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                             }
 
                         } else {
-                            $errorCode = 404;
+                            break;
                         }
                     }
                 } else {
