@@ -59,7 +59,9 @@ if (array_key_exists('grant', $_REQUEST)) {
     if (array_key_exists('ttl', $_REQUEST) && array_key_exists($_REQUEST['ttl'], $tokenTTLs)) {
         $tokenTTL = $_REQUEST['ttl'];
     } else {
-        $tokenTTL = $tokenTTLs[array_keys($tokenTTLs)[0]];
+        $ttlNames = array_keys($tokenTTLs);
+
+        $tokenTTL = $tokenTTLs[$ttlNames[0]];
     }
 
     if (isset($client['expire'])) {
@@ -76,17 +78,18 @@ if (array_key_exists('grant', $_REQUEST)) {
 
 
     $idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
+    $attributes = $as->getAttributes();
 
     if ($state['response_type'] === 'code') {
         $authorizationCodeFactory = new sspmod_oauth2server_OAuth2_TokenFactory($authorizationCodeTTL,
             $accessTokenTTL, $tokenTTL);
         $token = $authorizationCodeFactory->createAuthorizationCode($state['clientId'],
-            $state['redirectUri'], array(), $as->getAttributes()[$idAttribute][0]);
+            $state['redirectUri'], array(), $attributes[$idAttribute][0]);
     } else {
         $authorizationCodeFactory = new sspmod_oauth2server_OAuth2_TokenFactory($authorizationCodeTTL,
             $tokenTTL, $tokenTTL);
         $token = $authorizationCodeFactory->createBearerAccessToken($state['clientId'],
-            array(), $as->getAttributes()[$idAttribute][0]);
+            array(), $attributes[$idAttribute][0]);
     }
 
     if (isset($_REQUEST['grantedScopes'])) {
