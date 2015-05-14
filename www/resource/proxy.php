@@ -85,9 +85,9 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
                     if ($matchingEndpoint != null) {
                         //check access right
-                        if (array_key_exists($_SERVER['REQUEST_METHOD'], $proxyEndPoint['scope_required'])) {
+                        if (array_key_exists($_SERVER['REQUEST_METHOD'], $matchingEndpoint['scope_required'])) {
                             $authorizingScopes = array_intersect($accessToken['scopes'],
-                                $proxyEndPoint['scope_required'][$_SERVER['REQUEST_METHOD']]);
+                                $matchingEndpoint['scope_required'][$_SERVER['REQUEST_METHOD']]);
 
                             if (count($authorizingScopes) === 0) {
                                 $errorCode = 403;
@@ -96,7 +96,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                                     'error_description' => 'The token does not have the scopes required for access.');
 
                                 $response['scope'] = trim(implode(' ',
-                                    $proxyEndPoint['scope_required'][$_SERVER['REQUEST_METHOD']]));
+                                    $matchingEndpoint['scope_required'][$_SERVER['REQUEST_METHOD']]));
 
                                 $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
                                     SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
@@ -108,7 +108,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
                         if ($errorCode === 200) {
                             //build target url
-                            $target = $proxyEndPoint['target'];
+                            $target = $matchingEndpoint['target'];
 
                             foreach ($user['attributes'] as $name => $values) {
                                 if (count($values) > 0) {
@@ -134,9 +134,9 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                                 }
                             }
 
-                            $info = array();
-                            $reply = array();
+                            //TODO: add extra headers from endpoint configuration if needed
 
+                            $info = array();
                             $options = array(
                                 CURLOPT_URL => $target,
                                 CURLOPT_HEADER => 1,
@@ -144,6 +144,8 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                                 CURLOPT_RETURNTRANSFER => TRUE,
                                 CURLOPT_TIMEOUT => 4
                             );
+
+                            //TODO: use file_get_contents('php://input') to get body since it should work for delete as well
 
                             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 $options[CURLOPT_POST] = 1;
@@ -181,7 +183,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
                             curl_close($curl);
 
-                            //add extra headers
+                            //TODO: add extra headers
                             $contentTypeHeader = array();
                             if(preg_match('/(Content-Type:.*?)\r\n/', $header, $contentTypeHeader)) {
                                 header($contentTypeHeader[1]);
@@ -191,9 +193,6 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                                 header('Content-Length: ' . $contentLength);
                             }
 
-                            //forward response from target
-
-                            //return response
                             $response = substr($result, $header_size);
                         }
 
