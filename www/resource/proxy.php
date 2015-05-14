@@ -179,7 +179,10 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
                             curl_close($curl);
 
+
                             //add extra headers
+                            $contentTypeHeader = preg_match('/Content-Type:.*?$/', $headers);
+                            header($contentTypeHeader);
 
                             //forward response from target
 
@@ -236,8 +239,6 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 header('X-PHP-Response-Code: ' . $errorCode, true, $errorCode);
 
 if ($errorCode === 200) {
-    header('Content-Type: application/json; charset=utf-8');
-
     echo $response;
 } else if ($errorCode !== 404) {
     $authHeader = "WWW-Authenticate: Bearer ";
