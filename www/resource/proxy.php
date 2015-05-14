@@ -128,11 +128,12 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                             $info = array();
                             $reply = array();
 
+                            $curl = curl_init();
+
                             if($_SERVER['REQUEST_METHOD'] === 'POST') {
                             } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
                             } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
                             } else {
-                                $reply = http_get($target, $headers, $info);
                             }
 
                             //add extra headers
