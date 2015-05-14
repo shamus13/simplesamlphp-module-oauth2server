@@ -29,7 +29,7 @@ header('Access-Control-Allow-Headers: Authorization'); //allow custom header
 
 $config = SimpleSAML_Configuration::getConfig('module_oauth2server.php');
 
-$errorCode = 404;
+$errorCode = 200;
 $response = null;
 
 if ($config->getValue('enable_resource_owner_service', false)) {
@@ -55,115 +55,122 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                 }
 
                 if (isset($user) && $user != null) {
-                    foreach($config->getValue('proxy_end_points', array()) as $proxyEndPoint) {
+                    $matchingEndpoint = null;
 
+                    foreach ($config->getValue('proxy_end_points', array()) as $proxyEndPoint) {
                         $pathMapping = array_combine(explode('/', $proxyEndPoint['path']),
                             explode('/', $_SERVER['PATH_INFO']));
 
-                        $matches = $pathMapping != false;
-
                         $pathVariables = array();
 
-                        if ($matches) {
+                        if ($pathMapping != false) {
+                            $matches = true;
+
                             foreach ($pathMapping as $k => $v) {
-                                if(strlen($v) > 0 && preg_match('/\{.*?\}/', $k)) {
+                                if (strlen($v) > 0 && preg_match('/\{.*?\}/', $k)) {
                                     $pathVariables[$k] = $v;
                                 } else {
                                     $matches &= $k === $v;
                                 }
                             }
-                        }
 
-                        if ($matches) {
-                            //check access right
-                            if (array_key_exists($_SERVER['REQUEST_METHOD'], $proxyEndPoint['scope_required'])) {
-                                $authorizingScopes = array_intersect($accessToken['scopes'],
-                                    $proxyEndPoint['scope_required'][$_SERVER['REQUEST_METHOD']]);
+                            if ($matches) {
+                                $matchingEndpoint = $proxyEndPoint;
 
-                                if (count($authorizingScopes) === 0) {
-                                    $errorCode = 403;
-
-                                    $response = array('error' => 'insufficient_scope',
-                                        'error_description' => 'The token does not have the scopes required for access.');
-
-                                    $response['scope'] = trim(implode(' ',
-                                        $proxyEndPoint['scope_required'][$_SERVER['REQUEST_METHOD']]));
-
-                                    $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
-                                        SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                                        array('error_code_internal' => 'INSUFFICIENT_SCOPE',
-                                            'error_parameters_internal' => array('SCOPES' => $response['scope'])));
-
-                                }
+                                break;
                             }
-
-                            if ($errorCode === 200) {
-                                //build target url
-                                $target = $proxyEndPoint['target'];
-
-                                foreach ($user['attributes'] as $name => $values) {
-                                    if (count($values) > 0) {
-                                        $target = str_replace('{' . $name . '}', $values[0], $target);
-                                    }
-                                }
-
-                                foreach($pathVariables as $name => $value) {
-                                    $target = str_replace($name, $value, $target);
-                                }
-
-                                if($_SERVER['QUERY_STRING'] !== '') {
-                                    $target .= '?' . $_SERVER['QUERY_STRING'];
-                                }
-                                //read raw request
-
-                                //add extra headers
-
-                                //forward request to target
-
-                                //forward response from target
-
-                                //return response
-                                $response = array(
-                                    'path' => $proxyEndPoint['path'],
-                                    'target' => $target,
-                                    'mapping' => $pathMapping
-                                );
-                            }
-
-                        } else {
-                            break;
                         }
                     }
-                } else {
-                    // no such token, token expired or revoked
-                    $errorCode = 401;
 
-                    $response = array('error' => 'invalid_token',
-                        'error_description' => 'The token does not exist. It may have been revoked or expired.');
+                    if ($matchingEndpoint != null) {
+                        //check access right
+                        if (array_key_exists($_SERVER['REQUEST_METHOD'], $proxyEndPoint['scope_required'])) {
+                            $authorizingScopes = array_intersect($accessToken['scopes'],
+                                $proxyEndPoint['scope_required'][$_SERVER['REQUEST_METHOD']]);
 
-                    $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
-                        SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                        array('error_code_internal' => 'INVALID_ACCESS_TOKEN',
-                            'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
+                            if (count($authorizingScopes) === 0) {
+                                $errorCode = 403;
+
+                                $response = array('error' => 'insufficient_scope',
+                                    'error_description' => 'The token does not have the scopes required for access.');
+
+                                $response['scope'] = trim(implode(' ',
+                                    $proxyEndPoint['scope_required'][$_SERVER['REQUEST_METHOD']]));
+
+                                $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
+                                    SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
+                                    array('error_code_internal' => 'INSUFFICIENT_SCOPE',
+                                        'error_parameters_internal' => array('SCOPES' => $response['scope'])));
+
+                            }
+                        }
+
+                        if ($errorCode === 200) {
+                            //build target url
+                            $target = $proxyEndPoint['target'];
+
+                            foreach ($user['attributes'] as $name => $values) {
+                                if (count($values) > 0) {
+                                    $target = str_replace('{' . $name . '}', $values[0], $target);
+                                }
+                            }
+
+                            foreach ($pathVariables as $name => $value) {
+                                $target = str_replace($name, $value, $target);
+                            }
+
+                            if ($_SERVER['QUERY_STRING'] !== '') {
+                                $target .= '?' . $_SERVER['QUERY_STRING'];
+                            }
+                            //read raw request
+
+                            //add extra headers
+
+                            //forward request to target
+
+                            //forward response from target
+
+                            //return response
+                            $response = array(
+                                'path' => $proxyEndPoint['path'],
+                                'target' => $target,
+                                'mapping' => $pathMapping
+                            );
+                        }
+
+                    } else {
+                        $errorCode = 404;;
+                    }
                 }
             } else {
-                // wrong token type
+                // no such token, token expired or revoked
                 $errorCode = 401;
 
                 $response = array('error' => 'invalid_token',
-                    'error_description' => 'Only Bearer tokens are supported');
+                    'error_description' => 'The token does not exist. It may have been revoked or expired.');
 
                 $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
                     SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                    array('error_code_internal' => 'UNSUPPORTED_ACCESS_TOKEN',
+                    array('error_code_internal' => 'INVALID_ACCESS_TOKEN',
                         'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
             }
         } else {
-            // error missing token
+            // wrong token type
             $errorCode = 401;
 
-            $response = array();
+            $response = array('error' => 'invalid_token',
+                'error_description' => 'Only Bearer tokens are supported');
+
+            $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
+                SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
+                array('error_code_internal' => 'UNSUPPORTED_ACCESS_TOKEN',
+                    'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
         }
+    } else {
+        // error missing token
+        $errorCode = 401;
+
+        $response = array();
     }
 } else {
     $errorCode = 403;
@@ -179,7 +186,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
 header('X-PHP-Response-Code: ' . $errorCode, true, $errorCode);
 
-if($errorCode === 200) {
+if ($errorCode === 200) {
     header('Content-Type: application/json; charset=utf-8');
 
     echo count($response) > 0 ? json_encode($response) : '{}';
