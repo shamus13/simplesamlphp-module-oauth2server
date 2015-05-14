@@ -135,6 +135,25 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                                 CURLOPT_TIMEOUT => 4
                             );
 
+                            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                                $options[CURLOPT_POST] = 1;
+                                $options[CURLOPT_FRESH_CONNECT] = 1;
+                                $options[CURLOPT_RETURNTRANSFER] = 1;
+                                $options[CURLOPT_FORBID_REUSE] = 1;
+                            } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+                                $options[CURLOPT_PUT] = 1;
+                                $options[CURLOPT_FRESH_CONNECT] = 1;
+                                $options[CURLOPT_RETURNTRANSFER] = 1;
+                                $options[CURLOPT_FORBID_REUSE] = 1;
+                            } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+                                $options[CURLOPT_CUSTOMREQUEST] = 'DELETE';
+                                $options[CURLOPT_FRESH_CONNECT] = 1;
+                                $options[CURLOPT_RETURNTRANSFER] = 1;
+                                $options[CURLOPT_FORBID_REUSE] = 1;
+                            } else { // GET
+
+                            }
+
                             $curl = curl_init();
 
                             curl_setopt_array($curl, $options);
@@ -145,23 +164,12 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
                             curl_close($curl);
 
-                            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                            } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-                            } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-                            } else {
-
-                            }
-
                             //add extra headers
 
                             //forward response from target
 
                             //return response
-                            $response = array(
-                                'path' => $proxyEndPoint['path'],
-                                'target' => $target,
-                                'response' => $result
-                            );
+                            $response = $result;
                         }
 
                     } else {
@@ -215,7 +223,7 @@ header('X-PHP-Response-Code: ' . $errorCode, true, $errorCode);
 if ($errorCode === 200) {
     header('Content-Type: application/json; charset=utf-8');
 
-    echo count($response) > 0 ? json_encode($response) : '{}';
+    echo $response;
 } else if ($errorCode !== 404) {
     $authHeader = "WWW-Authenticate: Bearer ";
 
