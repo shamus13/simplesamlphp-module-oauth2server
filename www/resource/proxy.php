@@ -174,6 +174,9 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                                 trigger_error(curl_error($curl));
                             }
 
+                            $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+                            $header = substr($result, 0, $header_size);
+
                             curl_close($curl);
 
                             //add extra headers
@@ -181,7 +184,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                             //forward response from target
 
                             //return response
-                            $response = $result;
+                            $response = substr($result, $header_size);
                         }
 
                     } else {
