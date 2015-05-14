@@ -111,6 +111,9 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                                     $target = str_replace($name, $value, $target);
                                 }
 
+                                if($_SERVER['QUERY_STRING'] !== '') {
+                                    $target .= '?' . $_SERVER['QUERY_STRING'];
+                                }
                                 //read raw request
 
                                 //add extra headers

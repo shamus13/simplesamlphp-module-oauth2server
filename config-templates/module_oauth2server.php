@@ -116,7 +116,7 @@ $config = array(
     //proxy service properties
     'proxy_end_points' => array(
         array(
-            'path' => '/a/{x}/b/{y}',
+            'path' => '/a/{x}/b/{y}',//no query parameters allowed for path or target
             'target' => 'http://example.com:1234/abc/{attributeName}/def/{y}/{x}',
             'scope_required' => array(
                 'DELETE' => array('X', 'Y'),
