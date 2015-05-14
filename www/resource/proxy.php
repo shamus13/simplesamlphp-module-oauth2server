@@ -58,15 +58,16 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                     $matchingEndpoint = null;
 
                     foreach ($config->getValue('proxy_end_points', array()) as $proxyEndPoint) {
-                        $pathMapping = array_combine(explode('/', $proxyEndPoint['path']),
-                            explode('/', $_SERVER['PATH_INFO']));
+
+                        $explodedPatternPath = explode('/', $proxyEndPoint['path']);
+                        $explodedRequestPath = explode('/', $_SERVER['PATH_INFO']);
 
                         $pathVariables = array();
 
-                        if ($pathMapping != false) {
+                        if (count($explodedPatternPath) === count($explodedRequestPath)) {
                             $matches = true;
 
-                            foreach ($pathMapping as $k => $v) {
+                            foreach (array_combine($explodedPatternPath, $explodedRequestPath) as $k => $v) {
                                 if (strlen($v) > 0 && preg_match('/\{.*?\}/', $k)) {
                                     $pathVariables[$k] = $v;
                                 } else {
