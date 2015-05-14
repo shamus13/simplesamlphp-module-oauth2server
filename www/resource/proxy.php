@@ -179,10 +179,11 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
                             curl_close($curl);
 
-
                             //add extra headers
-                            $contentTypeHeader = preg_match('/Content-Type:.*?$/', $headers);
-                            header($contentTypeHeader);
+                            $contentTypeHeader = array();
+                            if(preg_match('/(Content-Type:.*?)\r\n/', $header, $contentTypeHeader)) {
+                                header($contentTypeHeader[1]);
+                            }
 
                             //forward response from target
 
