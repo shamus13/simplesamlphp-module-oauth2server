@@ -126,7 +126,7 @@ $config = array(
             ),
             'additional_headers' => array(
                 'realm' => 'acme',
-                'user-id' => '{eduPersonPrincipalName}'
+                'user-id' => '{attributeName}'
             ),
         ),
     ),
