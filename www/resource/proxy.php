@@ -125,12 +125,22 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                             }
 
                             $headers = array();
+
+                            foreach($_SERVER as $key => $value) {
+                                if (substr($key, 0, 5) === 'HTTP_') {
+                                    $header = str_replace(' ', '-',
+                                        ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
+                                    $headers[$header] = $value;
+                                }
+                            }
+
                             $info = array();
                             $reply = array();
 
                             $options = array(
                                 CURLOPT_URL => $target,
-                                CURLOPT_HEADER => 0,
+                                CURLOPT_HEADER => 1,
+                                CURLOPT_HTTPHEADER => $headers,
                                 CURLOPT_RETURNTRANSFER => TRUE,
                                 CURLOPT_TIMEOUT => 4
                             );
@@ -140,11 +150,13 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                                 $options[CURLOPT_FRESH_CONNECT] = 1;
                                 $options[CURLOPT_RETURNTRANSFER] = 1;
                                 $options[CURLOPT_FORBID_REUSE] = 1;
+                                $options[CURLOPT_POSTFIELDS] = http_get_request_body();
                             } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
                                 $options[CURLOPT_PUT] = 1;
                                 $options[CURLOPT_FRESH_CONNECT] = 1;
                                 $options[CURLOPT_RETURNTRANSFER] = 1;
                                 $options[CURLOPT_FORBID_REUSE] = 1;
+                                $options[CURLOPT_POSTFIELDS] = http_get_request_body();
                             } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
                                 $options[CURLOPT_CUSTOMREQUEST] = 'DELETE';
                                 $options[CURLOPT_FRESH_CONNECT] = 1;
