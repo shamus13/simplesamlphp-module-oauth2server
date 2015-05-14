@@ -122,11 +122,23 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                             if ($_SERVER['QUERY_STRING'] !== '') {
                                 $target .= '?' . $_SERVER['QUERY_STRING'];
                             }
-                            //read raw request
+
+                            if($_SERVER['REQUEST_METHOD'] === 'POST') {
+                                $method = HttpRequest::METH_POST;
+                            } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+                                $method = HttpRequest::METH_PUT;
+                            } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+                                $method = HttpRequest::METH_DELETE;
+                            } else {
+                                $method = HttpRequest::METH_GET;
+                            }
+
+                            $request = new HttpRequest($target, HttpRequest::METH_GET);
+                            $request->setBody(http_get_request_body());
 
                             //add extra headers
 
-                            //forward request to target
+                            $response = $request->send();
 
                             //forward response from target
 
@@ -134,7 +146,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                             $response = array(
                                 'path' => $proxyEndPoint['path'],
                                 'target' => $target,
-                                'mapping' => $pathMapping
+                                'response' => $response->getBody()
                             );
                         }
 
