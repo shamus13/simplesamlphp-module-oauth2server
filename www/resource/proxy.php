@@ -175,6 +175,8 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                             }
 
                             $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+                            $errorCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                            $contentLength = curl_getinfo($curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
                             $header = substr($result, 0, $header_size);
 
                             curl_close($curl);
@@ -183,6 +185,10 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                             $contentTypeHeader = array();
                             if(preg_match('/(Content-Type:.*?)\r\n/', $header, $contentTypeHeader)) {
                                 header($contentTypeHeader[1]);
+                            }
+
+                            if($contentLength != false) {
+                                header('Content-Length: ' . $contentLength);
                             }
 
                             //forward response from target
