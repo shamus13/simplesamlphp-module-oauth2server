@@ -128,12 +128,28 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                             $info = array();
                             $reply = array();
 
+                            $options = array(
+                                CURLOPT_URL => $target,
+                                CURLOPT_HEADER => 0,
+                                CURLOPT_RETURNTRANSFER => TRUE,
+                                CURLOPT_TIMEOUT => 4
+                            );
+
                             $curl = curl_init();
 
-                            if($_SERVER['REQUEST_METHOD'] === 'POST') {
+                            curl_setopt_array($curl, $options);
+
+                            if (!$result = curl_exec($curl)) {
+                                trigger_error(curl_error($curl));
+                            }
+
+                            curl_close($curl);
+
+                            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
                             } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
                             } else {
+
                             }
 
                             //add extra headers
@@ -144,7 +160,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                             $response = array(
                                 'path' => $proxyEndPoint['path'],
                                 'target' => $target,
-                                'response' => $reply
+                                'response' => $result
                             );
                         }
 
