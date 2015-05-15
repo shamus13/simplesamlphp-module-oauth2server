@@ -136,29 +136,28 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
                             //TODO: add extra headers from endpoint configuration if needed
 
+                            $body = file_get_contents('php://input');
+
                             $info = array();
                             $options = array(
                                 CURLOPT_URL => $target,
                                 CURLOPT_HEADER => 1,
                                 CURLOPT_HTTPHEADER => $headers,
                                 CURLOPT_RETURNTRANSFER => TRUE,
-                                CURLOPT_TIMEOUT => 4
+                                CURLOPT_TIMEOUT => 4,
+                                CURLOPT_POSTFIELDS => $body
                             );
-
-                            //TODO: use file_get_contents('php://input') to get body since it should work for delete as well
 
                             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 $options[CURLOPT_POST] = 1;
                                 $options[CURLOPT_FRESH_CONNECT] = 1;
                                 $options[CURLOPT_RETURNTRANSFER] = 1;
                                 $options[CURLOPT_FORBID_REUSE] = 1;
-                                $options[CURLOPT_POSTFIELDS] = http_get_request_body();
                             } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
                                 $options[CURLOPT_PUT] = 1;
                                 $options[CURLOPT_FRESH_CONNECT] = 1;
                                 $options[CURLOPT_RETURNTRANSFER] = 1;
                                 $options[CURLOPT_FORBID_REUSE] = 1;
-                                $options[CURLOPT_POSTFIELDS] = http_get_request_body();
                             } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
                                 $options[CURLOPT_CUSTOMREQUEST] = 'DELETE';
                                 $options[CURLOPT_FRESH_CONNECT] = 1;
