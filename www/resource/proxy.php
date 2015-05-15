@@ -134,7 +134,17 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                                 }
                             }
 
-                            //TODO: add extra headers from endpoint configuration if needed
+                            foreach($matchingEndpoint['additional_headers'] as $k => $v) {
+                                if($v != null) {
+                                    foreach ($user['attributes'] as $name => $values) {
+                                        if (count($values) > 0) {
+                                            $v = str_replace('{' . $name . '}', $values[0], $v);
+                                        }
+                                    }
+                                }
+
+                                header($k . ': ' . $v);
+                            }
 
                             $body = file_get_contents('php://input');
 
@@ -182,7 +192,6 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
                             curl_close($curl);
 
-                            //TODO: add extra headers
                             $contentTypeHeader = array();
                             if(preg_match('/(Content-Type:.*?)\r\n/', $header, $contentTypeHeader)) {
                                 header($contentTypeHeader[1]);
