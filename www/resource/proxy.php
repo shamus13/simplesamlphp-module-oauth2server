@@ -143,7 +143,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                                     }
                                 }
 
-                                header($k . ': ' . $v);
+                                $headers[$k] = $v;
                             }
 
                             $body = file_get_contents('php://input');
