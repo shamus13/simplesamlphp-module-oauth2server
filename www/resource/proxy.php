@@ -155,7 +155,6 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                                 CURLOPT_HTTPHEADER => $headers,
                                 CURLOPT_RETURNTRANSFER => TRUE,
                                 CURLOPT_TIMEOUT => 4,
-                                CURLOPT_POSTFIELDS => $body
                             );
 
                             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -163,16 +162,19 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                                 $options[CURLOPT_FRESH_CONNECT] = 1;
                                 $options[CURLOPT_RETURNTRANSFER] = 1;
                                 $options[CURLOPT_FORBID_REUSE] = 1;
+                                $options[CURLOPT_POSTFIELDS] = $body;
                             } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
                                 $options[CURLOPT_PUT] = 1;
                                 $options[CURLOPT_FRESH_CONNECT] = 1;
                                 $options[CURLOPT_RETURNTRANSFER] = 1;
                                 $options[CURLOPT_FORBID_REUSE] = 1;
+                                $options[CURLOPT_POSTFIELDS] = $body;
                             } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
                                 $options[CURLOPT_CUSTOMREQUEST] = 'DELETE';
                                 $options[CURLOPT_FRESH_CONNECT] = 1;
                                 $options[CURLOPT_RETURNTRANSFER] = 1;
                                 $options[CURLOPT_FORBID_REUSE] = 1;
+                                $options[CURLOPT_POSTFIELDS] = $body;
                             } else { // GET
 
                             }
@@ -252,12 +254,10 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
 header('X-PHP-Response-Code: ' . $errorCode, true, $errorCode);
 
-if ($errorCode === 200) {
-    echo $response;
-} else if ($errorCode !== 404) {
+if (is_array($response)) { // we encountered a local error, return diagnostics header
     $authHeader = "WWW-Authenticate: Bearer ";
 
-    if (array_key_exists('error', $response)) {
+    if (is_array($response) && array_key_exists('error', $response)) {
         $authHeader .= 'error="' . $response['error'] . '",error_description="' .
             $response['error_description'] . '",' . 'error_uri="' . urlencode($response['error_uri']) . '"';
 
@@ -267,4 +267,6 @@ if ($errorCode === 200) {
     }
 
     header($authHeader, true, $errorCode);
+} else { // return the response from the matched proxy
+    echo $response;
 }
