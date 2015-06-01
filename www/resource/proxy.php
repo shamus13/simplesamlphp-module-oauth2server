@@ -112,12 +112,12 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
                             foreach ($user['attributes'] as $name => $values) {
                                 if (count($values) > 0) {
-                                    $target = str_replace('{' . $name . '}', $values[0], $target);
+                                    $target = str_replace('{' . $name . '}', urlencode($values[0]), $target);
                                 }
                             }
 
                             foreach ($pathVariables as $name => $value) {
-                                $target = str_replace($name, $value, $target);
+                                $target = str_replace($name, urlencode($value), $target);
                             }
 
                             if ($_SERVER['QUERY_STRING'] !== '') {
