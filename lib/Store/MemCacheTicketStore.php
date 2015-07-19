@@ -39,7 +39,13 @@ class sspmod_oauth2server_Store_MemCacheTicketStore extends sspmod_oauth2server_
     {
         $scopedId = $this->scopeId($id);
 
-        return SimpleSAML_Memcache::get($scopedId);
+        $object = SimpleSAML_Memcache::get($scopedId);
+
+        if(is_array($object) && (!array_key_exists('expire', $object) || $object['expire'] >= time())) {
+            return $object;
+        } else {
+            return null;
+        }
     }
 
     public function addObject($object)
