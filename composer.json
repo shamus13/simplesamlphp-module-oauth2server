@@ -1,5 +1,5 @@
 {
-    "name": "simplesamlphp/simplesamlphp-module-oauth2server",
+    "name": "shamus13/simplesamlphp-module-oauth2server",
     "description": "OAuth 2.0 server module supporting Bearer tokens for simpleSAMLphp",
     "keywords": [ "oauth", "server", "oauth2","oauth2.0" ],
     "homepage": "https://github.com/simplesamlphp/simplesamlphp-module-oauth2server",
