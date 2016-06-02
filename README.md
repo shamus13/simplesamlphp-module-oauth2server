@@ -1,4 +1,4 @@
-simpleSAMLphp-oauth2server
+simplesamlphp-module-oauth2server
 =========================
 
 OAuth 2.0 server module for simpleSAMLphp
