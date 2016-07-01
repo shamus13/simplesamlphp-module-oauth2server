@@ -94,7 +94,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
                         $response['scope'] = trim(implode(' ', array_keys($configuredAttributeScopes)));
 
-                        $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
+                        $response['error_uri'] = SimpleSAML\Utils\HTTP::addURLParameters(
                             SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
                             array('error_code_internal' => 'INSUFFICIENT_SCOPE',
                                 'error_parameters_internal' => array('SCOPES' => $response['scope'])));
@@ -107,7 +107,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                     $response = array('error' => 'invalid_token',
                         'error_description' => 'The token does not exist. It may have been revoked or expired.');
 
-                    $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
+                    $response['error_uri'] = SimpleSAML\Utils\HTTP::addURLParameters(
                         SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
                         array('error_code_internal' => 'INVALID_ACCESS_TOKEN',
                             'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
@@ -119,7 +119,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                 $response = array('error' => 'invalid_token',
                     'error_description' => 'Only Bearer tokens are supported');
 
-                $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
+                $response['error_uri'] = SimpleSAML\Utils\HTTP::addURLParameters(
                     SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
                     array('error_code_internal' => 'UNSUPPORTED_ACCESS_TOKEN',
                         'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
@@ -137,7 +137,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
     $response = array('error' => 'invalid_request',
         'error_description' => 'resource owner end point not enabled');
 
-    $response['error_uri'] = SimpleSAML_Utilities::addURLparameter(
+    $response['error_uri'] = SimpleSAML\Utils\HTTP::addURLParameters(
         SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
         array('error_code_internal' => 'DISABLED',
             'error_parameters_internal' => array()));

@@ -145,7 +145,7 @@ if ($ownedByMe && isset($_POST['update'])) {
     if ($client['id'] != '') {
         $clientStore->updateClient($client);
     } else {
-        $client['id'] = 'CL' . substr(SimpleSAML_Utilities::generateID(), 1);
+        $client['id'] = 'CL' . substr(SimpleSAML\Utils\Random::generateID(), 1);
 
         $clientStore->addClient($client);
     }
@@ -171,11 +171,11 @@ if ($ownedByMe && isset($_POST['update'])) {
         }
     }
 } else if (isset($_POST['cancel'])) {
-    SimpleSAML_Utilities::redirect(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
+    SimpleSAML\Utils\HTTP::redirectTrustedURL(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
 } else if ($ownedByMe && isset($_POST['delete'])) {
     $clientStore->removeClient($client['id']);
 
-    SimpleSAML_Utilities::redirect(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
+    SimpleSAML\Utils\HTTP::redirectTrustedURL(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
 }
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:manage/client.php');

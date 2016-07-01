@@ -104,11 +104,11 @@ if (isset($client)) {
                     $stateId = SimpleSAML_Auth_State::saveState($state, 'oauth2server:authorization/consent');
 
                     $consentUri =
-                        SimpleSAML_Utilities::addURLparameter(
+                        SimpleSAML\Utils\HTTP::addURLParameters(
                             SimpleSAML_Module::getModuleURL('oauth2server/authorization/consent.php'),
                             array('stateId' => $stateId));
 
-                    SimpleSAML_Utilities::redirect($consentUri);
+                    SimpleSAML\Utils\HTTP::redirectTrustedURL($consentUri);
 
                 } else if (!isset($_REQUEST['response_type'])) {
                     $error = 'invalid_request';
@@ -137,7 +137,7 @@ if (isset($client)) {
             $responseParameters['error_description'] = $error_description;
 
             $error_uri =
-                SimpleSAML_Utilities::addURLparameter(
+                SimpleSAML\Utils\HTTP::addURLParameters(
                     SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'),
                     array('error' => $error, 'error_description' => $error_description,
                         'error_code_internal' => $error_code_internal, 'error_parameters_internal' => $error_parameters_internal));
@@ -185,7 +185,7 @@ $responseParameters['error_description'] = $error_description;
 $responseParameters['error_code_internal'] = $error_code_internal;
 $responseParameters['error_parameters_internal'] = $error_parameters_internal;
 
-$error_uri = SimpleSAML_Utilities::addURLparameter(
+$error_uri = SimpleSAML\Utils\HTTP::addURLParameters(
     SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $responseParameters);
 
-SimpleSAML_Utilities::redirect($error_uri);
+SimpleSAML\Utils\HTTP::redirectTrustedURL($error_uri);

@@ -200,7 +200,7 @@ if (array_key_exists('grant', $_REQUEST)) {
         'error_parameters_internal' => array(),
     );
 
-    $error_uri = SimpleSAML_Utilities::addURLparameter(
+    $error_uri = SimpleSAML\Utils\HTTP::addURLParameters(
         SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $errorState);
 
     $response = array('error' => $errorState['error'], 'error_description' => $errorState['error_description'],

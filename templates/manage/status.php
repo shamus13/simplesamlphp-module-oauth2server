@@ -41,13 +41,13 @@ $this->includeAtTemplateBase('includes/header.php');
                 ?>
                 <tr>
                     <td>
-                        <a href="<?php echo htmlentities(SimpleSAML_Utilities::addURLparameter($this->data['tokenForm'],
+                        <a href="<?php echo htmlentities(SimpleSAML\Utils\HTTP::addURLParameters($this->data['tokenForm'],
                             array('tokenId' => $token['id'])));?>">
                             <?php echo htmlspecialchars($token['id']); ?>
                         </a>
                     </td>
                     <td>
-                        <a href="<?php echo htmlentities(SimpleSAML_Utilities::addURLparameter($this->data['clientForm'],
+                        <a href="<?php echo htmlentities(SimpleSAML\Utils\HTTP::addURLParameters($this->data['clientForm'],
                             array('clientId' => $token['clientId'])));?>">
                             <?php echo htmlspecialchars($token['clientId']); ?>
                         </a>
@@ -79,13 +79,13 @@ $this->includeAtTemplateBase('includes/header.php');
                 ?>
                 <tr>
                     <td>
-                        <a href="<?php echo htmlentities(SimpleSAML_Utilities::addURLparameter($this->data['tokenForm'],
+                        <a href="<?php echo htmlentities(SimpleSAML\Utils\HTTP::addURLParameters($this->data['tokenForm'],
                             array('tokenId' => $token['id'])));?>">
                             <?php echo htmlspecialchars($token['id']); ?>
                         </a>
                     </td>
                     <td>
-                        <a href="<?php echo htmlentities(SimpleSAML_Utilities::addURLparameter($this->data['clientForm'],
+                        <a href="<?php echo htmlentities(SimpleSAML\Utils\HTTP::addURLParameters($this->data['clientForm'],
                             array('clientId' => $token['clientId'])));?>">
                             <?php echo htmlspecialchars($token['clientId']); ?>
                         </a>
@@ -117,13 +117,13 @@ $this->includeAtTemplateBase('includes/header.php');
                 ?>
                 <tr>
                     <td>
-                        <a href="<?php echo htmlentities(SimpleSAML_Utilities::addURLparameter($this->data['tokenForm'],
+                        <a href="<?php echo htmlentities(SimpleSAML\Utils\HTTP::addURLParameters($this->data['tokenForm'],
                             array('tokenId' => $token['id'])));?>">
                             <?php echo htmlspecialchars($token['id']); ?>
                         </a>
                     </td>
                     <td>
-                        <a href="<?php echo htmlentities(SimpleSAML_Utilities::addURLparameter($this->data['clientForm'],
+                        <a href="<?php echo htmlentities(SimpleSAML\Utils\HTTP::addURLParameters($this->data['clientForm'],
                             array('clientId' => $token['clientId'])));?>">
                             <?php echo htmlspecialchars($token['clientId']); ?>
                         </a>
@@ -156,7 +156,7 @@ $this->includeAtTemplateBase('includes/header.php');
                 ?>
                 <tr>
                     <td>
-                        <a href="<?php echo htmlentities(SimpleSAML_Utilities::addURLparameter($this->data['clientForm'],
+                        <a href="<?php echo htmlentities(SimpleSAML\Utils\HTTP::addURLParameters($this->data['clientForm'],
                             array('clientId' => $client['id'])));?>">
                             <?php echo htmlspecialchars($client['id']); ?>
                         </a>
