@@ -1,5 +1,7 @@
 simplesamlphp-module-oauth2server
 =================================
+[![Build Status](https://travis-ci.org/shamus13/simplesamlphp-module-oauth2server.svg?branch=master)]
+(https://travis-ci.org/shamus13/simplesamlphp-module-oauth2server)
 [![Code Climate](https://codeclimate.com/github/shamus13/simplesamlphp-module-oauth2server/badges/gpa.svg)]
 (https://codeclimate.com/github/shamus13/simplesamlphp-module-oauth2server)
 [![Test Coverage](https://codeclimate.com/github/shamus13/simplesamlphp-module-oauth2server/badges/coverage.svg)]
