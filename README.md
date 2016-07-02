@@ -1,8 +1,9 @@
 simplesamlphp-module-oauth2server
 =========================
 [![Build Status](https://travis-ci.org/shamus13/simplesamlphp-module-oauth2server.svg?branch=master)]
-(https://travis-ci.org/shamus13/simplesamlphp-module-oauth2server) [![Coverage Status](https://img.shields.io/coveralls/shamus13/simplesamlphp-module-oauth2server.svg)] 
-(https://coveralls.io/r/shamus13/simplesamlphp-module-oauth2server)
+(https://travis-ci.org/shamus13/simplesamlphp-module-oauth2server)
+[![Coverage Status](https://coveralls.io/repos/github/shamus13/simplesamlphp-module-oauth2server/badge.svg?branch=master)]
+(https://coveralls.io/github/shamus13/simplesamlphp-module-oauth2server?branch=master)
 
 OAuth 2.0 server module for simpleSAMLphp
 
