@@ -1,4 +1,5 @@
 <?php
+
 /*
 *    simpleSAMLphp-oauth2server is an OAuth 2.0 authorization and resource server in the form of a simpleSAMLphp module
 *
@@ -45,7 +46,8 @@ class sspmod_oauth2server_OAuth2_TokenFactory
             'authorizationCodeTTL' => $this->authorizationCodeTimeToLive,
             'refreshTokenTTL' => $this->refreshTokenTimeToLive,
             'accessTokenTTL' => $this->accessTokenTimeToLive,
-            'userId' => $userId);
+            'userId' => $userId
+        );
     }
 
     public function createRefreshToken($clientId, $redirectUri, $scopes, $userId)
@@ -60,7 +62,8 @@ class sspmod_oauth2server_OAuth2_TokenFactory
             'authorizationCodeTTL' => $this->authorizationCodeTimeToLive,
             'refreshTokenTTL' => $this->refreshTokenTimeToLive,
             'accessTokenTTL' => $this->accessTokenTimeToLive,
-            'userId' => $userId);
+            'userId' => $userId
+        );
     }
 
     public function createBearerAccessToken($clientId, $scopes, $userId)
@@ -74,7 +77,8 @@ class sspmod_oauth2server_OAuth2_TokenFactory
             'authorizationCodeTTL' => $this->authorizationCodeTimeToLive,
             'refreshTokenTTL' => $this->refreshTokenTimeToLive,
             'accessTokenTTL' => $this->accessTokenTimeToLive,
-            'userId' => $userId);
+            'userId' => $userId
+        );
     }
 
     private function generateID($prefix)

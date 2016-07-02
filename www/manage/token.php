@@ -51,21 +51,25 @@ if (!is_null($user) && isset($_REQUEST['tokenId'])) {
 
             SimpleSAML\Utils\HTTP::redirectTrustedURL(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
         }
-    } else if (array_search($_REQUEST['tokenId'], $user['refreshTokens']) !== false) {
-        $token = $tokenStore->getRefreshToken($_REQUEST['tokenId']);
+    } else {
+        if (array_search($_REQUEST['tokenId'], $user['refreshTokens']) !== false) {
+            $token = $tokenStore->getRefreshToken($_REQUEST['tokenId']);
 
-        if (is_array($token) && isset($_POST['revoke'])) {
-            $tokenStore->removeRefreshToken($_REQUEST['tokenId']);
+            if (is_array($token) && isset($_POST['revoke'])) {
+                $tokenStore->removeRefreshToken($_REQUEST['tokenId']);
 
-            SimpleSAML\Utils\HTTP::redirectTrustedURL(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
-        }
-    } else if (array_search($_REQUEST['tokenId'], $user['accessTokens']) !== false) {
-        $token = $tokenStore->getAccessToken($_REQUEST['tokenId']);
+                SimpleSAML\Utils\HTTP::redirectTrustedURL(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
+            }
+        } else {
+            if (array_search($_REQUEST['tokenId'], $user['accessTokens']) !== false) {
+                $token = $tokenStore->getAccessToken($_REQUEST['tokenId']);
 
-        if (is_array($token) && isset($_POST['revoke'])) {
-            $tokenStore->removeAccessToken($_REQUEST['tokenId']);
+                if (is_array($token) && isset($_POST['revoke'])) {
+                    $tokenStore->removeAccessToken($_REQUEST['tokenId']);
 
-            SimpleSAML\Utils\HTTP::redirectTrustedURL(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
+                    SimpleSAML\Utils\HTTP::redirectTrustedURL(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
+                }
+            }
         }
     }
 }

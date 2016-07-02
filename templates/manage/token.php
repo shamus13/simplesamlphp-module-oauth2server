@@ -73,7 +73,7 @@ $this->includeAtTemplateBase('includes/header.php');
                 <input name="revoke" type="submit"
                        value="<?php echo $this->t('{oauth2server:oauth2server:token_revoke}'); ?>"/>
             </p>
-        <?php
+            <?php
         }
         ?>
     </form>

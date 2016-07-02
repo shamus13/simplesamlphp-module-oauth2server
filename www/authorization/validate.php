@@ -82,12 +82,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['access_token']) &&
 
     $errorCode = 401;
     $status = 'invalid_resource';
-} else if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW'])) {
-    $errorCode = 401;
-    $status = 'invalid_resource';
 } else {
-    $errorCode = 400;
-    $status = 'invalid_request';
+    if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW'])) {
+        $errorCode = 401;
+        $status = 'invalid_resource';
+    } else {
+        $errorCode = 400;
+        $status = 'invalid_request';
+    }
 }
 
 header('X-PHP-Response-Code: ' . $errorCode, true, $errorCode);

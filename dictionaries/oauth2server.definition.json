@@ -1,128 +1,128 @@
 {
-    "consent_header": {
-        "en": "Client authorization request"
-    },
-    "consent_client_id": {
-        "en": "Client Id:"
-    },
-    "consent_scope_header": {
-        "en": "The client has requested:"
-    },
-    "consent_deny_description": {
-        "en": "Refuse"
-    },
-    "consent_grant_description": {
-        "en": "Grant"
-    },
-    "consent_scope_name": {
-        "en": "Permission"
-    },
-    "consent_scope_grant": {
-        "en": "Consent"
-    },
-    "consent_refresh_token_ttl": {
-        "en": "Authorization last for"
-    },
-    "consent_redirection_insecure": {
-        "en": "Warning. This client uses an insecure endpoint."
-    },
-    "consent_redirection_unknown": {
-        "en": "Warning. This client uses a non standard endpoint."
-    },
-    "status_header": {
-        "en": "Currently active tokens"
-    },
-    "status_authorization_code_header": {
-        "en": "Authorization Codes"
-    },
-    "status_refresh_token_header": {
-        "en": "Refresh Tokens"
-    },
-    "status_access_token_header": {
-        "en": "Access Tokens"
-    },
-    "status_clients_header": {
-        "en": "Registered clients"
-    },
-    "token_header": {
-        "en": "Token details"
-    },
-    "token_not_found": {
-        "en": "No such token"
-    },
-    "token_id": {
-        "en": "Token id"
-    },
-    "token_scope": {
-        "en": "Scope"
-    },
-    "client_description": {
-        "en": "Client description"
-    },
-    "client_id": {
-        "en": "Client Id"
-    },
-    "token_type": {
-        "en": "Token Type"
-    },
-    "token_expire_time": {
-        "en": "Expires"
-    },
-    "token_back": {
-        "en": "Back"
-    },
-    "token_revoke": {
-        "en": "Revoke"
-    },
-    "client_header": {
-        "en": "Client Details"
-    },
-    "client_owner": {
-        "en": "Owner"
-    },
-    "client_password": {
-        "en": "Password"
-    },
-    "client_alternative_password": {
-        "en": "New Password"
-    },
-    "client_token_scope": {
-        "en": "Scopes"
-    },
-    "client_token_scope_REQUIRED": {
-        "en": "Required"
-    },
-    "client_token_scope_ALLOWED": {
-        "en": "Allowed"
-    },
-    "client_token_scope_NOT_ALLOWED": {
-        "en": "Not allowed"
-    },
-    "client_uri": {
-        "en": "Redirect URI's"
-    },
-    "client_idp_scopes": {
-        "en": "Login choices"
-    },
-    "client_expire": {
-        "en": "Expires"
-    },
-    "client_back": {
-        "en": "Back"
-    },
-    "client_edit": {
-        "en": "Edit"
-    },
-    "client_delete": {
-        "en": "Delete"
-    },
-    "client_cancel": {
-        "en": "back"
-    },
-    "client_create": {
-        "en": "Create"
-    },
-    "client_update": {
-        "en": "Update"
-    }
+  "consent_header": {
+    "en": "Client authorization request"
+  },
+  "consent_client_id": {
+    "en": "Client Id:"
+  },
+  "consent_scope_header": {
+    "en": "The client has requested:"
+  },
+  "consent_deny_description": {
+    "en": "Refuse"
+  },
+  "consent_grant_description": {
+    "en": "Grant"
+  },
+  "consent_scope_name": {
+    "en": "Permission"
+  },
+  "consent_scope_grant": {
+    "en": "Consent"
+  },
+  "consent_refresh_token_ttl": {
+    "en": "Authorization last for"
+  },
+  "consent_redirection_insecure": {
+    "en": "Warning. This client uses an insecure endpoint."
+  },
+  "consent_redirection_unknown": {
+    "en": "Warning. This client uses a non standard endpoint."
+  },
+  "status_header": {
+    "en": "Currently active tokens"
+  },
+  "status_authorization_code_header": {
+    "en": "Authorization Codes"
+  },
+  "status_refresh_token_header": {
+    "en": "Refresh Tokens"
+  },
+  "status_access_token_header": {
+    "en": "Access Tokens"
+  },
+  "status_clients_header": {
+    "en": "Registered clients"
+  },
+  "token_header": {
+    "en": "Token details"
+  },
+  "token_not_found": {
+    "en": "No such token"
+  },
+  "token_id": {
+    "en": "Token id"
+  },
+  "token_scope": {
+    "en": "Scope"
+  },
+  "client_description": {
+    "en": "Client description"
+  },
+  "client_id": {
+    "en": "Client Id"
+  },
+  "token_type": {
+    "en": "Token Type"
+  },
+  "token_expire_time": {
+    "en": "Expires"
+  },
+  "token_back": {
+    "en": "Back"
+  },
+  "token_revoke": {
+    "en": "Revoke"
+  },
+  "client_header": {
+    "en": "Client Details"
+  },
+  "client_owner": {
+    "en": "Owner"
+  },
+  "client_password": {
+    "en": "Password"
+  },
+  "client_alternative_password": {
+    "en": "New Password"
+  },
+  "client_token_scope": {
+    "en": "Scopes"
+  },
+  "client_token_scope_REQUIRED": {
+    "en": "Required"
+  },
+  "client_token_scope_ALLOWED": {
+    "en": "Allowed"
+  },
+  "client_token_scope_NOT_ALLOWED": {
+    "en": "Not allowed"
+  },
+  "client_uri": {
+    "en": "Redirect URI's"
+  },
+  "client_idp_scopes": {
+    "en": "Login choices"
+  },
+  "client_expire": {
+    "en": "Expires"
+  },
+  "client_back": {
+    "en": "Back"
+  },
+  "client_edit": {
+    "en": "Edit"
+  },
+  "client_delete": {
+    "en": "Delete"
+  },
+  "client_cancel": {
+    "en": "back"
+  },
+  "client_create": {
+    "en": "Create"
+  },
+  "client_update": {
+    "en": "Update"
+  }
 }

@@ -77,7 +77,7 @@ foreach ($this->data['idpList'] AS $idpentry) {
                             for="<?php echo htmlentities($scope) ?>"><?php echo $this->t('{oauth2server:oauth2server:' . $scope . '}') ?></label>
                     </td>
                     <td><select name="<?php echo htmlentities($scope) ?>" id="<?php echo htmlentities($scope) ?>" <?php
-                        echo $this->data['editable'] ? '' : 'disabled="disabled"'?>>
+                        echo $this->data['editable'] ? '' : 'disabled="disabled"' ?>>
                             <option value="<?php echo htmlentities('REQUIRED') ?>" <?php
                             echo $permission === 'REQUIRED' ? 'selected="selected"' : ''
                             ?>>
@@ -126,7 +126,7 @@ foreach ($this->data['idpList'] AS $idpentry) {
                         }
                         ?>></td>
                 </tr>
-            <?php
+                <?php
                 $header = false;
             }
             ?>
@@ -145,10 +145,12 @@ foreach ($this->data['idpList'] AS $idpentry) {
                        value="<?php echo $this->t('{oauth2server:oauth2server:client_update}'); ?>"/>
                 <input name="delete" type="submit"
                        value="<?php echo $this->t('{oauth2server:oauth2server:client_delete}'); ?>"/>
-            <?php } else if ($this->data['editable'] && $this->data['id'] == '') { ?>
-                <input name="update" type="submit"
-                       value="<?php echo $this->t('{oauth2server:oauth2server:client_create}'); ?>"/>
-            <?php } ?>
+            <?php } else {
+                if ($this->data['editable'] && $this->data['id'] == '') { ?>
+                    <input name="update" type="submit"
+                           value="<?php echo $this->t('{oauth2server:oauth2server:client_create}'); ?>"/>
+                <?php }
+            } ?>
         </p>
     </form>
 <?php

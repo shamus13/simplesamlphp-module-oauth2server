@@ -1,4 +1,5 @@
 <?php
+
 /*
 *    simpleSAMLphp-oauth2server is an OAuth 2.0 authorization and resource server in the form of a simpleSAMLphp module
 *
@@ -57,7 +58,7 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         $query = $this->pdo->prepare($query);
         $query->execute(array(':id' => $id));
 
-        if (($row = $query->fetch(PDO::FETCH_ASSOC)) != FALSE) {
+        if (($row = $query->fetch(PDO::FETCH_ASSOC)) != false) {
             if ($row['expire'] > time()) {
                 $value = $row['value'];
 
@@ -84,7 +85,8 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
 
         $preparedInsertStatement = $this->pdo->prepare($insertStatement);
 
-        $preparedInsertStatement->execute(array(':id' => $object['id'],
+        $preparedInsertStatement->execute(array(
+            ':id' => $object['id'],
             ':value' => rawurlencode(serialize($object)),
             ':expire' => $object['expire']
         ));
@@ -98,7 +100,8 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
 
         $preparedUpdateStatement = $this->pdo->prepare($updateStatement);
 
-        $preparedUpdateStatement->execute(array(':id' => $object['id'],
+        $preparedUpdateStatement->execute(array(
+            ':id' => $object['id'],
             ':value' => rawurlencode(serialize($object)),
             ':expire' => $object['expire']
         ));

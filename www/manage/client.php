@@ -86,10 +86,12 @@ if ($ownedByMe && isset($_POST['update'])) {
         if (array_key_exists($scope, $_POST)) {
             if ('REQUIRED' === $_POST[$scope]) {
                 $client['scope'][$scope] = true;
-            } else if ('ALLOWED' === $_POST[$scope]) {
-                $client['scope'][$scope] = false;
             } else {
-                unset($client['scope'][$scope]);
+                if ('ALLOWED' === $_POST[$scope]) {
+                    $client['scope'][$scope] = false;
+                } else {
+                    unset($client['scope'][$scope]);
+                }
             }
         }
     }
@@ -133,9 +135,14 @@ if ($ownedByMe && isset($_POST['update'])) {
     $user = $userStore->getUser($id);
 
     if (is_null($user)) {
-        $user = array('attributes' => $as->getAttributes(), 'authorizationCodes' => array(),
-            'refreshTokens' => array(), 'accessTokens' => array(),
-            'clients' => array(), 'expire' => $client['expire']);
+        $user = array(
+            'attributes' => $as->getAttributes(),
+            'authorizationCodes' => array(),
+            'refreshTokens' => array(),
+            'accessTokens' => array(),
+            'clients' => array(),
+            'expire' => $client['expire']
+        );
 
         $userModified = true;
     } else {
@@ -170,12 +177,16 @@ if ($ownedByMe && isset($_POST['update'])) {
             $userStore->addUser($user);
         }
     }
-} else if (isset($_POST['cancel'])) {
-    SimpleSAML\Utils\HTTP::redirectTrustedURL(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
-} else if ($ownedByMe && isset($_POST['delete'])) {
-    $clientStore->removeClient($client['id']);
+} else {
+    if (isset($_POST['cancel'])) {
+        SimpleSAML\Utils\HTTP::redirectTrustedURL(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
+    } else {
+        if ($ownedByMe && isset($_POST['delete'])) {
+            $clientStore->removeClient($client['id']);
 
-    SimpleSAML\Utils\HTTP::redirectTrustedURL(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
+            SimpleSAML\Utils\HTTP::redirectTrustedURL(SimpleSAML_Module::getModuleURL('oauth2server/manage/status.php'));
+        }
+    }
 }
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:manage/client.php');

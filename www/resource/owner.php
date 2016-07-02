@@ -89,40 +89,52 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                     } else {
                         $errorCode = 403;
 
-                        $response = array('error' => 'insufficient_scope',
-                            'error_description' => 'The token does not have the scopes required for access.');
+                        $response = array(
+                            'error' => 'insufficient_scope',
+                            'error_description' => 'The token does not have the scopes required for access.'
+                        );
 
                         $response['scope'] = trim(implode(' ', array_keys($configuredAttributeScopes)));
 
                         $response['error_uri'] = SimpleSAML\Utils\HTTP::addURLParameters(
                             SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                            array('error_code_internal' => 'INSUFFICIENT_SCOPE',
-                                'error_parameters_internal' => array('SCOPES' => $response['scope'])));
+                            array(
+                                'error_code_internal' => 'INSUFFICIENT_SCOPE',
+                                'error_parameters_internal' => array('SCOPES' => $response['scope'])
+                            ));
 
                     }
                 } else {
                     // no such token, token expired or revoked
                     $errorCode = 401;
 
-                    $response = array('error' => 'invalid_token',
-                        'error_description' => 'The token does not exist. It may have been revoked or expired.');
+                    $response = array(
+                        'error' => 'invalid_token',
+                        'error_description' => 'The token does not exist. It may have been revoked or expired.'
+                    );
 
                     $response['error_uri'] = SimpleSAML\Utils\HTTP::addURLParameters(
                         SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                        array('error_code_internal' => 'INVALID_ACCESS_TOKEN',
-                            'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
+                        array(
+                            'error_code_internal' => 'INVALID_ACCESS_TOKEN',
+                            'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)
+                        ));
                 }
             } else {
                 // wrong token type
                 $errorCode = 401;
 
-                $response = array('error' => 'invalid_token',
-                    'error_description' => 'Only Bearer tokens are supported');
+                $response = array(
+                    'error' => 'invalid_token',
+                    'error_description' => 'Only Bearer tokens are supported'
+                );
 
                 $response['error_uri'] = SimpleSAML\Utils\HTTP::addURLParameters(
                     SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                    array('error_code_internal' => 'UNSUPPORTED_ACCESS_TOKEN',
-                        'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
+                    array(
+                        'error_code_internal' => 'UNSUPPORTED_ACCESS_TOKEN',
+                        'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)
+                    ));
             }
         } else {
             // error missing token
@@ -134,13 +146,17 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 } else {
     $errorCode = 403;
 
-    $response = array('error' => 'invalid_request',
-        'error_description' => 'resource owner end point not enabled');
+    $response = array(
+        'error' => 'invalid_request',
+        'error_description' => 'resource owner end point not enabled'
+    );
 
     $response['error_uri'] = SimpleSAML\Utils\HTTP::addURLParameters(
         SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-        array('error_code_internal' => 'DISABLED',
-            'error_parameters_internal' => array()));
+        array(
+            'error_code_internal' => 'DISABLED',
+            'error_parameters_internal' => array()
+        ));
 }
 
 header('X-PHP-Response-Code: ' . $errorCode, true, $errorCode);

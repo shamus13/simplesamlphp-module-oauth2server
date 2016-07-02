@@ -39,8 +39,10 @@ $params = array();
 if (array_key_exists('IDPList', $client)) {
     if (sizeof($client['IDPList']) > 1) {
         $params['saml:IDPList'] = $client['IDPList'];
-    } else if (sizeof($client['IDPList']) === 1) {
-        $params['saml:idp'] = $client['IDPList'][0];
+    } else {
+        if (sizeof($client['IDPList']) === 1) {
+            $params['saml:idp'] = $client['IDPList'][0];
+        }
     }
 }
 
@@ -154,9 +156,15 @@ if (array_key_exists('grant', $_REQUEST)) {
         $expire = isset($client['expire']) && $client['expire'] > $token['expire'] ?
             $client['expire'] : $token['expire'];
 
-        $user = array('id' => $token['userId'], 'attributes' => $as->getAttributes(),
-            'authorizationCodes' => array(), 'refreshTokens' => array(), 'accessTokens' => array(),
-            'clients' => array(), 'expire' => $expire);
+        $user = array(
+            'id' => $token['userId'],
+            'attributes' => $as->getAttributes(),
+            'authorizationCodes' => array(),
+            'refreshTokens' => array(),
+            'accessTokens' => array(),
+            'clients' => array(),
+            'expire' => $expire
+        );
 
         if ($state['response_type'] === 'code') {
             array_push($user['authorizationCodes'], $token['id']);
@@ -176,7 +184,8 @@ if (array_key_exists('grant', $_REQUEST)) {
 
         // build return uri with authorization code and redirect
 
-        sspmod_oauth2server_Utility_Uri::redirectUri(sspmod_oauth2server_Utility_Uri::addQueryParametersToUrl($state['returnUri'], $response));
+        sspmod_oauth2server_Utility_Uri::redirectUri(sspmod_oauth2server_Utility_Uri::addQueryParametersToUrl($state['returnUri'],
+            $response));
     } else {
         $fragment = '#access_token=' . $token['id'] . '&token_type=bearer&expires_in=' . ($token['expire'] - time());
 
@@ -192,25 +201,32 @@ if (array_key_exists('grant', $_REQUEST)) {
 
         sspmod_oauth2server_Utility_Uri::redirectUri($state['returnUri'] . $fragment);
     }
-} else if (array_key_exists('deny', $_REQUEST)) {
+} else {
+    if (array_key_exists('deny', $_REQUEST)) {
 
-    $errorState = array('error' => 'access_denied',
-        'error_description' => 'request denied by resource owner',
-        'error_code_internal' => 'CONSENT_NOT_GRANTED',
-        'error_parameters_internal' => array(),
-    );
+        $errorState = array(
+            'error' => 'access_denied',
+            'error_description' => 'request denied by resource owner',
+            'error_code_internal' => 'CONSENT_NOT_GRANTED',
+            'error_parameters_internal' => array(),
+        );
 
-    $error_uri = SimpleSAML\Utils\HTTP::addURLParameters(
-        SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $errorState);
+        $error_uri = SimpleSAML\Utils\HTTP::addURLParameters(
+            SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $errorState);
 
-    $response = array('error' => $errorState['error'], 'error_description' => $errorState['error_description'],
-        'error_uri' => $error_uri);
+        $response = array(
+            'error' => $errorState['error'],
+            'error_description' => $errorState['error_description'],
+            'error_uri' => $error_uri
+        );
 
-    if (array_key_exists('state', $state)) {
-        $response['state'] = $state['state'];
+        if (array_key_exists('state', $state)) {
+            $response['state'] = $state['state'];
+        }
+
+        sspmod_oauth2server_Utility_Uri::redirectUri(sspmod_oauth2server_Utility_Uri::addQueryParametersToUrl($state['returnUri'],
+            $response));
     }
-
-    sspmod_oauth2server_Utility_Uri::redirectUri(sspmod_oauth2server_Utility_Uri::addQueryParametersToUrl($state['returnUri'], $response));
 }
 
 $t = new SimpleSAML_XHTML_Template($globalConfig, 'oauth2server:authorization/consent.php');

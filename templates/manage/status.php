@@ -42,13 +42,13 @@ $this->includeAtTemplateBase('includes/header.php');
                 <tr>
                     <td>
                         <a href="<?php echo htmlentities(SimpleSAML\Utils\HTTP::addURLParameters($this->data['tokenForm'],
-                            array('tokenId' => $token['id'])));?>">
+                            array('tokenId' => $token['id']))); ?>">
                             <?php echo htmlspecialchars($token['id']); ?>
                         </a>
                     </td>
                     <td>
                         <a href="<?php echo htmlentities(SimpleSAML\Utils\HTTP::addURLParameters($this->data['clientForm'],
-                            array('clientId' => $token['clientId'])));?>">
+                            array('clientId' => $token['clientId']))); ?>">
                             <?php echo htmlspecialchars($token['clientId']); ?>
                         </a>
                     </td>
@@ -59,7 +59,7 @@ $this->includeAtTemplateBase('includes/header.php');
                         </button>
                     </td>
                 </tr>
-            <?php
+                <?php
             }
             ?>
         </table>
@@ -80,13 +80,13 @@ $this->includeAtTemplateBase('includes/header.php');
                 <tr>
                     <td>
                         <a href="<?php echo htmlentities(SimpleSAML\Utils\HTTP::addURLParameters($this->data['tokenForm'],
-                            array('tokenId' => $token['id'])));?>">
+                            array('tokenId' => $token['id']))); ?>">
                             <?php echo htmlspecialchars($token['id']); ?>
                         </a>
                     </td>
                     <td>
                         <a href="<?php echo htmlentities(SimpleSAML\Utils\HTTP::addURLParameters($this->data['clientForm'],
-                            array('clientId' => $token['clientId'])));?>">
+                            array('clientId' => $token['clientId']))); ?>">
                             <?php echo htmlspecialchars($token['clientId']); ?>
                         </a>
                     </td>
@@ -97,7 +97,7 @@ $this->includeAtTemplateBase('includes/header.php');
                         </button>
                     </td>
                 </tr>
-            <?php
+                <?php
             }
             ?>
         </table>
@@ -118,13 +118,13 @@ $this->includeAtTemplateBase('includes/header.php');
                 <tr>
                     <td>
                         <a href="<?php echo htmlentities(SimpleSAML\Utils\HTTP::addURLParameters($this->data['tokenForm'],
-                            array('tokenId' => $token['id'])));?>">
+                            array('tokenId' => $token['id']))); ?>">
                             <?php echo htmlspecialchars($token['id']); ?>
                         </a>
                     </td>
                     <td>
                         <a href="<?php echo htmlentities(SimpleSAML\Utils\HTTP::addURLParameters($this->data['clientForm'],
-                            array('clientId' => $token['clientId'])));?>">
+                            array('clientId' => $token['clientId']))); ?>">
                             <?php echo htmlspecialchars($token['clientId']); ?>
                         </a>
                     </td>
@@ -135,7 +135,7 @@ $this->includeAtTemplateBase('includes/header.php');
                         </button>
                     </td>
                 </tr>
-            <?php
+                <?php
             }
             ?>
 
@@ -157,17 +157,17 @@ $this->includeAtTemplateBase('includes/header.php');
                 <tr>
                     <td>
                         <a href="<?php echo htmlentities(SimpleSAML\Utils\HTTP::addURLParameters($this->data['clientForm'],
-                            array('clientId' => $client['id'])));?>">
+                            array('clientId' => $client['id']))); ?>">
                             <?php echo htmlspecialchars($client['id']); ?>
                         </a>
                     </td>
                     <td>
                         <?php echo $this->t('{oauth2server:oauth2server:client_description_' .
-                        $client['id'] . '}'); ?>
+                            $client['id'] . '}'); ?>
                     </td>
                     <td><?php echo htmlspecialchars(date("Y-m-d H:i:s", $client['expire'])); ?></td>
                 </tr>
-            <?php
+                <?php
             }
             }
             ?>

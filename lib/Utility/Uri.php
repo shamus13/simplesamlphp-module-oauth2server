@@ -1,4 +1,5 @@
 <?php
+
 /*
 *    simpleSAMLphp-oauth2server is an OAuth 2.0 authorization and resource server in the form of a simpleSAMLphp module
 *
@@ -27,7 +28,7 @@ class sspmod_oauth2server_Utility_Uri
     {
         $fragmentStart = strpos($url, '#');
 
-        if ($fragmentStart !== FALSE) { //strip fragment if any
+        if ($fragmentStart !== false) { //strip fragment if any
             $fragment = substr($url, $fragmentStart);
             $url = substr($url, 0, $fragmentStart);
         } else {
@@ -36,7 +37,7 @@ class sspmod_oauth2server_Utility_Uri
 
         $queryStart = strpos($url, '?');
 
-        if ($queryStart !== FALSE) { //strip query if any
+        if ($queryStart !== false) { //strip query if any
             $query = SimpleSAML_Utilities::parseQueryString(substr($url, $queryStart + 1));
             $url = substr($url, 0, $queryStart);
         } else {
@@ -67,7 +68,7 @@ class sspmod_oauth2server_Utility_Uri
         }
 
         /* Set the location header. */
-        header('Location: ' . $url, TRUE, $code);
+        header('Location: ' . $url, true, $code);
 
         /* Disable caching of this response. */
         header('Pragma: no-cache');

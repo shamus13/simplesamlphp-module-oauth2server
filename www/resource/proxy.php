@@ -92,16 +92,20 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                             if (count($authorizingScopes) === 0) {
                                 $errorCode = 403;
 
-                                $response = array('error' => 'insufficient_scope',
-                                    'error_description' => 'The token does not have the scopes required for access.');
+                                $response = array(
+                                    'error' => 'insufficient_scope',
+                                    'error_description' => 'The token does not have the scopes required for access.'
+                                );
 
                                 $response['scope'] = trim(implode(' ',
                                     $matchingEndpoint['scope_required'][$_SERVER['REQUEST_METHOD']]));
 
                                 $response['error_uri'] = SimpleSAML\Utils\HTTP::addURLParameters(
                                     SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                                    array('error_code_internal' => 'INSUFFICIENT_SCOPE',
-                                        'error_parameters_internal' => array('SCOPES' => $response['scope'])));
+                                    array(
+                                        'error_code_internal' => 'INSUFFICIENT_SCOPE',
+                                        'error_parameters_internal' => array('SCOPES' => $response['scope'])
+                                    ));
 
                             }
                         }
@@ -126,7 +130,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 
                             $headers = array();
 
-                            foreach($_SERVER as $key => $value) {
+                            foreach ($_SERVER as $key => $value) {
                                 if (substr($key, 0, 5) === 'HTTP_') {
                                     $header = str_replace(' ', '-',
                                         ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
@@ -134,8 +138,8 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                                 }
                             }
 
-                            foreach($matchingEndpoint['additional_headers'] as $k => $v) {
-                                if($v != null) {
+                            foreach ($matchingEndpoint['additional_headers'] as $k => $v) {
+                                if ($v != null) {
                                     foreach ($user['attributes'] as $name => $values) {
                                         if (count($values) > 0) {
                                             $v = str_replace('{' . $name . '}', $values[0], $v);
@@ -153,7 +157,7 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                                 CURLOPT_URL => $target,
                                 CURLOPT_HEADER => 1,
                                 CURLOPT_HTTPHEADER => $headers,
-                                CURLOPT_RETURNTRANSFER => TRUE,
+                                CURLOPT_RETURNTRANSFER => true,
                                 CURLOPT_TIMEOUT => 4,
                             );
 
@@ -195,11 +199,11 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                             curl_close($curl);
 
                             $contentTypeHeader = array();
-                            if(preg_match('/(Content-Type:.*?)\r\n/', $header, $contentTypeHeader)) {
+                            if (preg_match('/(Content-Type:.*?)\r\n/', $header, $contentTypeHeader)) {
                                 header($contentTypeHeader[1]);
                             }
 
-                            if($contentLength != false) {
+                            if ($contentLength != false) {
                                 header('Content-Length: ' . $contentLength);
                             }
 
@@ -213,25 +217,33 @@ if ($config->getValue('enable_resource_owner_service', false)) {
                     // no such token, token expired or revoked
                     $errorCode = 401;
 
-                    $response = array('error' => 'invalid_token',
-                        'error_description' => 'The token does not exist. It may have been revoked or expired.');
+                    $response = array(
+                        'error' => 'invalid_token',
+                        'error_description' => 'The token does not exist. It may have been revoked or expired.'
+                    );
 
                     $response['error_uri'] = SimpleSAML\Utils\HTTP::addURLParameters(
                         SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                        array('error_code_internal' => 'INVALID_ACCESS_TOKEN',
-                            'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
+                        array(
+                            'error_code_internal' => 'INVALID_ACCESS_TOKEN',
+                            'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)
+                        ));
                 }
             } else {
                 // wrong token type
                 $errorCode = 401;
 
-                $response = array('error' => 'invalid_token',
-                    'error_description' => 'Only Bearer tokens are supported');
+                $response = array(
+                    'error' => 'invalid_token',
+                    'error_description' => 'Only Bearer tokens are supported'
+                );
 
                 $response['error_uri'] = SimpleSAML\Utils\HTTP::addURLParameters(
                     SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-                    array('error_code_internal' => 'UNSUPPORTED_ACCESS_TOKEN',
-                        'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)));
+                    array(
+                        'error_code_internal' => 'UNSUPPORTED_ACCESS_TOKEN',
+                        'error_parameters_internal' => array('TOKEN_ID' => $accessTokenId)
+                    ));
             }
         } else {
             // error missing token
@@ -243,13 +255,17 @@ if ($config->getValue('enable_resource_owner_service', false)) {
 } else {
     $errorCode = 403;
 
-    $response = array('error' => 'invalid_request',
-        'error_description' => 'resource owner end point not enabled');
+    $response = array(
+        'error' => 'invalid_request',
+        'error_description' => 'resource owner end point not enabled'
+    );
 
     $response['error_uri'] = SimpleSAML\Utils\HTTP::addURLParameters(
         SimpleSAML_Module::getModuleURL('oauth2server/resource/error.php'),
-        array('error_code_internal' => 'DISABLED',
-            'error_parameters_internal' => array()));
+        array(
+            'error_code_internal' => 'DISABLED',
+            'error_parameters_internal' => array()
+        ));
 }
 
 header('X-PHP-Response-Code: ' . $errorCode, true, $errorCode);

@@ -1,4 +1,5 @@
 <?php
+
 /*
 *    simpleSAMLphp-oauth2server is an OAuth 2.0 authorization and resource server in the form of a simpleSAMLphp module
 *
@@ -36,7 +37,7 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
         $this->ldapUsername = $config['username'];
         $this->ldapPassword = $config['password'];
         $this->searchBase = $config['base'];
-        if(array_key_exists('deref', $config)) {
+        if (array_key_exists('deref', $config)) {
             $this->deref = $config['deref'];
         } else {
             $this->deref = LDAP_DEREF_NEVER;
@@ -100,10 +101,12 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
 
         if (isset($error)) {
             throw new Exception($error);
-        } else if (isset($value) && $value['expire'] > time()) {
-            return $value;
         } else {
-            return null;
+            if (isset($value) && $value['expire'] > time()) {
+                return $value;
+            } else {
+                return null;
+            }
         }
     }
 
@@ -112,9 +115,11 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
         $connection = $this->bindToLdap();
 
         if (!ldap_add($connection, "cn={$object['id']},{$this->searchBase}",
-            array('jsonString' => array(json_encode($object)),
+            array(
+                'jsonString' => array(json_encode($object)),
                 'expireTime' => array(strval($object['expire'])),
-                'objectClass' => array('jsonObject')))
+                'objectClass' => array('jsonObject')
+            ))
         ) {
             $error = 'failed to add object';
         }
@@ -131,9 +136,11 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
         $connection = $this->bindToLdap();
 
         if (!ldap_modify($connection, "cn={$object['id']},{$this->searchBase}",
-            array('jsonString' => array(json_encode($object)),
+            array(
+                'jsonString' => array(json_encode($object)),
                 'expireTime' => array(strval($object['expire'])),
-                'objectClass' => array('jsonObject')))
+                'objectClass' => array('jsonObject')
+            ))
         ) {
             $error = 'failed to update object';
         }

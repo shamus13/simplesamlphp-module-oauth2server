@@ -1,4 +1,5 @@
 <?php
+
 /*
 *    simpleSAMLphp-oauth2server is an OAuth 2.0 authorization and resource server in the form of a simpleSAMLphp module
 *
@@ -41,7 +42,7 @@ class sspmod_oauth2server_Store_MemCacheTicketStore extends sspmod_oauth2server_
 
         $object = SimpleSAML_Memcache::get($scopedId);
 
-        if(is_array($object) && (!array_key_exists('expire', $object) || $object['expire'] >= time())) {
+        if (is_array($object) && (!array_key_exists('expire', $object) || $object['expire'] >= time())) {
             return $object;
         } else {
             return null;

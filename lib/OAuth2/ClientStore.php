@@ -1,4 +1,5 @@
 <?php
+
 /*
 *    simpleSAMLphp-oauth2server is an OAuth 2.0 authorization and resource server in the form of a simpleSAMLphp module
 *
@@ -64,8 +65,10 @@ class sspmod_oauth2server_OAuth2_ClientStore
 
         if (array_key_exists($clientId, $this->configuredClients)) {
             $client = $this->configuredClients[$clientId];
-        } else if ($this->registrationEnabled) {
-            $client = $this->store->getObject($clientId);
+        } else {
+            if ($this->registrationEnabled) {
+                $client = $this->store->getObject($clientId);
+            }
         }
 
         if (!is_null($client)) {
