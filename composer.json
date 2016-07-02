@@ -13,6 +13,9 @@
   "require": {
     "simplesamlphp/composer-module-installer": "~1.0"
   },
+  "autoload-dev": {
+      "classmap": ["lib/"]
+  },
   "require-dev": {
     "simplesamlphp/simplesamlphp": "1.14",
     "phpunit/phpunit": "~3.7",
