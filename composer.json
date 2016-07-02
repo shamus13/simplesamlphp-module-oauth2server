@@ -10,7 +10,7 @@
     },
     "require-dev": {
         "simplesamlphp/simplesamlphp": "1.14",
-        "phpunit/phpunit": "5.3.*",
+        "phpunit/phpunit": "4.8.*",
         "satooshi/php-coveralls": "^1.0",
         "guzzlehttp/guzzle": "~6.0"
     }
