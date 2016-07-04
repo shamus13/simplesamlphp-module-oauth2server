@@ -19,3 +19,5 @@ after_script:
 addons:
     code_climate:
         repo_token: b7d516a1ddf338de68ccee9895de17e7d362a0b2923f61111ac4c446a0fab6b8
+services:
+  - memcached
