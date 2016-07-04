@@ -10,7 +10,7 @@ sudo: required
 matrix:
   allow_failures:
   - php: hhvm
-before_script: composer update --dev
+before_script: composer update --dev && phpenv config-add tools/myphp.ini
 script:
 - php vendor/phpunit/phpunit/phpunit.php --configuration tools/phpunit
 after_success:
