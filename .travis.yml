@@ -14,7 +14,7 @@ before_install:
  - phpenv config-add tools/myphp.ini
 before_script:
  - composer update --dev
- - php -i
+ - cat ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 script:
 - php vendor/phpunit/phpunit/phpunit.php --configuration tools/phpunit
 after_success:
