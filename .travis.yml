@@ -17,12 +17,10 @@ matrix:
   allow_failures:
   - php: hhvm
 before_install:
-- phpenv config-add tools/myphp.ini
 install:
 - composer update --dev
 before_script:
-- echo 'extension = "memcached.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-- ls ~/.phpenv/versions/$(phpenv version-name)/etc/
+- phpenv config-add tools/myphp.ini
 script:
 - php vendor/phpunit/phpunit/phpunit.php --configuration tools/phpunit
 after_success:
