@@ -1,4 +1,10 @@
 language: php
+env:
+  global:
+    - MEMCACHE_HOST=127.0.0.1
+    - MEMCACHE_PORT=11211
+services:
+  - memcached
 php:
 - 5.3
 - 5.4
@@ -11,19 +17,18 @@ matrix:
   allow_failures:
   - php: hhvm
 before_install:
- - phpenv config-add tools/myphp.ini
+- phpenv config-add tools/myphp.ini
+install:
+- composer update --dev
 before_script:
- - composer update --dev
- - pecl install memcache
- - ls ~/.phpenv/versions/$(phpenv version-name)/etc/
+- echo 'extension = "memcached.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+- ls ~/.phpenv/versions/$(phpenv version-name)/etc/
 script:
 - php vendor/phpunit/phpunit/phpunit.php --configuration tools/phpunit
 after_success:
 - if [[ "$TRAVIS_PHP_VERSION" == "5.6" ]]; then php vendor/bin/coveralls -v; fi
 after_script:
-  - vendor/bin/test-reporter
+- vendor/bin/test-reporter
 addons:
     code_climate:
         repo_token: b7d516a1ddf338de68ccee9895de17e7d362a0b2923f61111ac4c446a0fab6b8
-services:
-  - memcached
