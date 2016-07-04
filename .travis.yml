@@ -14,7 +14,8 @@ before_install:
  - phpenv config-add tools/myphp.ini
 before_script:
  - composer update --dev
- - cat ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+ - pecl install memcached
+ - ls ~/.phpenv/versions/$(phpenv version-name)/etc/
 script:
 - php vendor/phpunit/phpunit/phpunit.php --configuration tools/phpunit
 after_success:
