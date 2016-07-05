@@ -20,8 +20,9 @@ before_install:
 install:
 - composer update --dev
 before_script:
-- phpenv config-add tools/myphp.ini
+- echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 script:
+- php -i |grep -e memcache
 - php vendor/phpunit/phpunit/phpunit.php --configuration tools/phpunit
 after_success:
 - if [[ "$TRAVIS_PHP_VERSION" == "5.6" ]]; then php vendor/bin/coveralls -v; fi
