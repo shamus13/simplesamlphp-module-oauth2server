@@ -8,7 +8,7 @@ class sspmod_oauth2server_Store_MemCacheTicketStoreTest extends \PHPUnit_Framewo
     {
         parent::setUpBeforeClass();
 
-        $configDirectory =  (dirname(__DIR__) . '/../../vendor/simplesamlphp/simplesamlphp/config/');
+        $configDirectory = (dirname(__DIR__) . '/../../vendor/simplesamlphp/simplesamlphp/config/');
 
         $file = fopen($configDirectory . 'config.php', 'w');
 
@@ -47,6 +47,69 @@ $config = array(
         $store = new \sspmod_oauth2server_Store_MemCacheTicketStore(array('prefix' => 'dummy'));
 
         $object = $store->getObject('test');
+
+        $this->assertNull($object);
+    }
+
+    public function testAddObject()
+    {
+        $store = new \sspmod_oauth2server_Store_MemCacheTicketStore(array('prefix' => 'dummy'));
+
+        $object = array('id' => 'dummy', 'test' => 'x', 'expire' => (time() + 1000));
+
+        $store->addObject($object);
+
+        $object = $store->getObject('dummy');
+
+        $this->assertNotNull($object);
+        $this->assertEquals('dummy', $object['id']);
+        $this->assertEquals('x', $object['test']);
+    }
+
+    public function testUpdateObject()
+    {
+        $store = new \sspmod_oauth2server_Store_MemCacheTicketStore(array('prefix' => 'dummy'));
+
+        $object = array('id' => 'dummy', 'test' => 'x', 'expire' => (time() + 1000));
+
+        $store->addObject($object);
+
+        $object = $store->getObject('dummy');
+
+        $this->assertNotNull($object);
+        $this->assertEquals('dummy', $object['id']);
+        $this->assertEquals('x', $object['test']);
+
+        $object = array('id' => 'dummy', 'tset' => 'y', 'expire' => (time() + 1000));
+
+        $store->updateObject($object);
+
+        $object = $store->getObject('dummy');
+
+        $this->assertNotNull($object);
+        $this->assertEquals('dummy', $object['id']);
+        $this->assertEquals('y', $object['tset']);
+    }
+
+    public function testRemoveObject()
+    {
+        $store = new \sspmod_oauth2server_Store_MemCacheTicketStore(array('prefix' => 'dummy'));
+
+        $object = array('id' => 'dummy', 'test' => 'x', 'expire' => (time() + 1000));
+
+        $store->addObject($object);
+
+        $object = $store->getObject('dummy');
+
+        $this->assertNotNull($object);
+        $this->assertEquals('dummy', $object['id']);
+        $this->assertEquals('x', $object['test']);
+
+        $object = array('id' => 'dummy', 'tset' => 'y', 'expire' => (time() + 1000));
+
+        $store->removeObject($object['id']);
+
+        $object = $store->getObject('dummy');
 
         $this->assertNull($object);
     }
