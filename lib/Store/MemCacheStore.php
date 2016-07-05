@@ -70,7 +70,7 @@ class sspmod_oauth2server_Store_MemCacheStore extends sspmod_oauth2server_Store_
         SimpleSAML_Memcache::delete($scopedId);
     }
 
-    private function scopeId($identity
+    private function scopeId($identity)
     {
         return $this->prefix . '.' . $identity;
     }
