@@ -31,7 +31,7 @@ $config = array(
     ),
     */
     'store' => array(
-        'class' => 'oauth2server:MemCacheTicketStore',
+        'class' => 'oauth2server:MemCacheStore',
         'prefix' => 'some_prefix',
     ),
 

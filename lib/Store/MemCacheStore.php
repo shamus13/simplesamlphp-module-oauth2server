@@ -21,7 +21,7 @@
 *
 */
 
-class sspmod_oauth2server_Store_MemCacheTicketStore extends sspmod_oauth2server_Store_Store
+class sspmod_oauth2server_Store_MemCacheStore extends sspmod_oauth2server_Store_Store
 {
     private $prefix = '';
 
