@@ -22,8 +22,6 @@ before_script:
 script:
 - php vendor/phpunit/phpunit/phpunit.php --configuration tools/phpunit
 after_success:
-- if [[ "$TRAVIS_PHP_VERSION" == "5.6" ]]; then php vendor/bin/coveralls -v; fi
-after_script:
 - vendor/bin/test-reporter
 addons:
     code_climate:
