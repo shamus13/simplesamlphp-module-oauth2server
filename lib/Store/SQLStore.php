@@ -51,12 +51,12 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         $preparedCleanUpStatement->execute(array(':expire' => time() + 60));
     }
 
-    public function getObject($id)
+    public function getObject($identity)
     {
         $query = 'select id, value, expire from OAuth2 where id = :id';
 
         $query = $this->pdo->prepare($query);
-        $query->execute(array(':id' => $id));
+        $query->execute(array(':id' => $identity));
 
         if (($row = $query->fetch(PDO::FETCH_ASSOC)) != false) {
             if ($row['expire'] > time()) {

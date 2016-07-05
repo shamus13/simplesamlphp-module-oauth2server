@@ -78,11 +78,11 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
         }
     }
 
-    public function getObject($id)
+    public function getObject($identity)
     {
         $connection = $this->bindToLdap();
 
-        if ($resultSet = ldap_search($connection, $this->searchBase, "(&(cn=$id)(objectClass=jsonObject))")) {
+        if ($resultSet = ldap_search($connection, $this->searchBase, "(&(cn=$identity)(objectClass=jsonObject))")) {
             if ($results = ldap_get_entries($connection, $resultSet)) {
                 if ($results['count'] > 0) {
                     $value = json_decode($results[0]['jsonstring'][0], true);

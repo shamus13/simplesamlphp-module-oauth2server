@@ -36,9 +36,9 @@ class sspmod_oauth2server_Store_MemCacheStore extends sspmod_oauth2server_Store_
     {
     }
 
-    public function getObject($id)
+    public function getObject($identity)
     {
-        $scopedId = $this->scopeId($id);
+        $scopedId = $this->scopeId($identity);
 
         $object = SimpleSAML_Memcache::get($scopedId);
 
@@ -63,15 +63,15 @@ class sspmod_oauth2server_Store_MemCacheStore extends sspmod_oauth2server_Store_
         SimpleSAML_Memcache::set($scopedId, $object, $object['expire']);
     }
 
-    public function removeObject($ticketId)
+    public function removeObject($identity)
     {
-        $scopedId = $this->scopeId($ticketId);
+        $scopedId = $this->scopeId($identity);
 
         SimpleSAML_Memcache::delete($scopedId);
     }
 
-    private function scopeId($Id)
+    private function scopeId($identity
     {
-        return $this->prefix . '.' . $Id;
+        return $this->prefix . '.' . $identity;
     }
 }

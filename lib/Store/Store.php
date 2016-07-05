@@ -25,7 +25,7 @@ abstract class sspmod_oauth2server_Store_Store
 {
     public abstract function removeExpiredObjects();
 
-    public abstract function getObject($id);
+    public abstract function getObject($identity);
 
     public abstract function addObject($object);
 
