@@ -1,6 +1,6 @@
 create table OAuth2 (
-  id string primary key,
-  value string not null,
+  id varchar(64) primary key,
+  value varchar(1024) not null,
   expire int not null
 );
 

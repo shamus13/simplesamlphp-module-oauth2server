@@ -22,7 +22,6 @@ install:
 before_script:
 - psql -c 'create database oauth2server_test;' -U postgres
 - psql -U postgres -d oauth2server_test <docs/store.sql
-- echo "extension = php_pgsql.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 script:
 - php vendor/phpunit/phpunit/phpunit.php --configuration tools/phpunit
