@@ -2,7 +2,7 @@
 
 namespace SimpleSAML\Oauth2Server;
 
-class sspmod_oauth2server_Store_MemCacheTicketStoreTest extends \PHPUnit_Framework_TestCase
+class sspmod_oauth2server_Store_MemCacheStoreTest extends \PHPUnit_Framework_TestCase
 {
     public static function setUpBeforeClass()
     {
