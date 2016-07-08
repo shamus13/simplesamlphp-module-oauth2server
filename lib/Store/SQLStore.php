@@ -58,14 +58,9 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         $query = $this->pdo->prepare($query);
         $query->execute(array(':id' => $identity));
 
-        if (($row = $query->fetch(PDO::FETCH_ASSOC)) != false) {
+        if (($row = $query->fetch(PDO::FETCH_ASSOC)) !== false) {
             if ($row['expire'] > time()) {
                 $value = $row['value'];
-
-                if (is_resource($value)) {
-                    $value = stream_get_contents($value);
-                }
-
                 $value = urldecode($value);
                 $value = unserialize($value);
 
