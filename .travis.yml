@@ -21,7 +21,7 @@ install:
 - composer update --dev
 before_script:
 - psql -c 'create database oauth2server_test;' -U postgres
-- psql -U postgres -b oauth2server_test <docs/store.sql
+- psql -U postgres -d oauth2server_test <docs/store.sql
 - echo "extension = php_pgsql.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 script:
