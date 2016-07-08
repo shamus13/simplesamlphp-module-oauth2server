@@ -151,18 +151,18 @@ $config = array(
         $username = $this->config['username'];
         $password = $this->config['password'];
 
-        $this->pdo = new PDO($dsn, $username, $password);
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new \PDO($dsn, $username, $password);
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-        $this->driver = $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $driver = $pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
 
-        if ($this->driver === 'mysql') {
-            $this->pdo->exec('SET time_zone = "+00:00"');
+        if ($driver === 'mysql') {
+            $pdo->exec('SET time_zone = "+00:00"');
         }
 
         $insertStatement = "insert into OAuth2 values(:id, :value, :expire)";
 
-        $preparedInsertStatement = $this->pdo->prepare($insertStatement);
+        $preparedInsertStatement = $pdo->prepare($insertStatement);
 
         $preparedInsertStatement->execute(array(
             ':id' => $id,
