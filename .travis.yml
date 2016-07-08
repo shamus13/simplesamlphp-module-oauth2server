@@ -5,6 +5,7 @@ env:
     - MEMCACHE_PORT=11211
 services:
   - memcached
+  - postgresql
 php:
 - 5.3
 - 5.4
@@ -16,8 +17,12 @@ matrix:
   - php: hhvm
 before_install:
 install:
+- pecl install pdo_pgsql
 - composer update --dev
 before_script:
+- psql -c 'create database oauth2server_test;' -U postgres
+- psql -U postgres -b oauth2server_test <store.sql
+- echo "extension = php_pgsql.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 script:
 - php vendor/phpunit/phpunit/phpunit.php --configuration tools/phpunit
