@@ -57,11 +57,11 @@ $config = array(
     {
         $store = new \sspmod_oauth2server_Store_SQLStore($this->config);
 
-        $object = array('id' => 'dummy', 'test' => 'x', 'expire' => (time() - 1000));
+        $object = array('id' => $this->getId(), 'test' => 'x', 'expire' => (time() - 1000));
 
         $store->addObject($object);
 
-        $object = $store->getObject('dummy');
+        $object = $store->getObject($object['id']);
 
         $this->assertNull($object);
     }
@@ -70,15 +70,15 @@ $config = array(
     {
         $store = new \sspmod_oauth2server_Store_SQLStore($this->config);
 
-        $object = array('id' => 'dummy', 'test' => 'x');
+        $object = array('id' => $this->getId(), 'test' => 'x');
 
         \SimpleSAML_Memcache::set('dummy.' . $object['id'], $object, time() + 1000);
 
-        $object = $store->getObject('dummy');
+        $object2 = $store->getObject($object['id']);
 
-        $this->assertNotNull($object);
-        $this->assertEquals('dummy', $object['id']);
-        $this->assertEquals('x', $object['test']);
+        $this->assertNotNull($object2);
+        $this->assertEquals($object['id'], $object2['id']);
+        $this->assertEquals('x', $object2['test']);
     }
 
     public function testGetNonObject()
@@ -98,62 +98,66 @@ $config = array(
     {
         $store = new \sspmod_oauth2server_Store_SQLStore($this->config);
 
-        $object = array('id' => 'dummy', 'test' => 'x', 'expire' => (time() + 1000));
+        $object = array('id' => $this->getId(), 'test' => 'x', 'expire' => (time() + 1000));
 
         $store->addObject($object);
 
-        $object = $store->getObject('dummy');
+        $object2 = $store->getObject($object['id']);
 
-        $this->assertNotNull($object);
-        $this->assertEquals('dummy', $object['id']);
-        $this->assertEquals('x', $object['test']);
+        $this->assertNotNull($object2);
+        $this->assertEquals($object['id'], $object2['id']);
+        $this->assertEquals('x', $object2['test']);
     }
 
     public function testUpdateObject()
     {
         $store = new \sspmod_oauth2server_Store_SQLStore($this->config);
 
-        $object = array('id' => 'dummy', 'test' => 'x', 'expire' => (time() + 1000));
+        $object = array('id' => $this->getId(), 'test' => 'x', 'expire' => (time() + 1000));
 
         $store->addObject($object);
 
-        $object = $store->getObject('dummy');
+        $object2 = $store->getObject($object['id']);
 
-        $this->assertNotNull($object);
-        $this->assertEquals('dummy', $object['id']);
-        $this->assertEquals('x', $object['test']);
+        $this->assertNotNull($object2);
+        $this->assertEquals($object['id'], $object2['id']);
+        $this->assertEquals('x', $object2['test']);
 
-        $object = array('id' => 'dummy', 'tset' => 'y', 'expire' => (time() + 1000));
+        $object3 = array('id' => $this->getId(), 'tset' => 'y', 'expire' => (time() + 1000));
 
-        $store->updateObject($object);
+        $store->updateObject($object3);
 
-        $object = $store->getObject('dummy');
+        $object4 = $store->getObject($object3['id']);
 
-        $this->assertNotNull($object);
-        $this->assertEquals('dummy', $object['id']);
-        $this->assertEquals('y', $object['tset']);
+        $this->assertNotNull($object4);
+        $this->assertEquals($object3['id'], $object4['id']);
+        $this->assertEquals('y', $object4['tset']);
     }
 
     public function testRemoveObject()
     {
         $store = new \sspmod_oauth2server_Store_SQLStore($this->config);
 
-        $object = array('id' => 'dummy', 'test' => 'x', 'expire' => (time() + 1000));
+        $object = array('id' => $this->getId(), 'test' => 'x', 'expire' => (time() + 1000));
 
         $store->addObject($object);
 
-        $object = $store->getObject('dummy');
+        $object2 = $store->getObject($object['id']);
 
-        $this->assertNotNull($object);
-        $this->assertEquals('dummy', $object['id']);
-        $this->assertEquals('x', $object['test']);
+        $this->assertNotNull($object2);
+        $this->assertEquals($object['id'], $object2['id']);
+        $this->assertEquals('x', $object2['test']);
 
-        $object = array('id' => 'dummy', 'tset' => 'y', 'expire' => (time() + 1000));
+        $object3 = array('id' => $object2['id'], 'tset' => 'y', 'expire' => (time() + 1000));
 
-        $store->removeObject($object['id']);
+        $store->removeObject($object3['id']);
 
-        $object = $store->getObject('dummy');
+        $object4 = $store->getObject($object3['id']);
 
-        $this->assertNull($object);
+        $this->assertNull($object4);
+    }
+
+    private function getId() {
+        return \SimpleSAML\Utils\Random::generateID();
     }
 }
