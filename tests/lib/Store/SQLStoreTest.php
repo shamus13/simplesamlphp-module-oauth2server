@@ -72,7 +72,7 @@ $config = array(
 
         $object = array('id' => $this->getId(), 'test' => 'x');
 
-        \SimpleSAML_Memcache::set('dummy.' . $object['id'], $object, time() + 1000);
+        \SimpleSAML_Memcache::set($object['id'], $object, time() + 1000);
 
         $object2 = $store->getObject($object['id']);
 
@@ -87,7 +87,7 @@ $config = array(
 
         $object = 'blah';
 
-        \SimpleSAML_Memcache::set('dummy.blah', $object, time() + 1000);
+        \SimpleSAML_Memcache::set('blah', $object, time() + 1000);
 
         $object = $store->getObject('blah');
 
