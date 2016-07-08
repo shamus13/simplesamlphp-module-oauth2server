@@ -6,6 +6,7 @@ env:
 services:
   - memcached
   - postgresql
+  - mysql
 php:
 - 5.3
 - 5.4
@@ -18,10 +19,13 @@ matrix:
 before_install:
 install:
 - pecl install pdo_pgsql
+- pecl install pdo_mysql
 - composer update --dev
 before_script:
 - psql -c 'create database oauth2server_test;' -U postgres
 - psql -U postgres -d oauth2server_test <docs/store.sql
+- mysql -e 'create database oauth2server_test;' -u travis
+- mysql -u travis oauth2server_test <docs/store.sql
 - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 script:
 - php vendor/phpunit/phpunit/phpunit.php --configuration tools/phpunit

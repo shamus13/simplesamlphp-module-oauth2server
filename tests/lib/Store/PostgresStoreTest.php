@@ -2,7 +2,7 @@
 
 namespace SimpleSAML\Oauth2Server;
 
-class sspmod_oauth2server_Store_SQLStoreTest extends \PHPUnit_Framework_TestCase
+class sspmod_oauth2server_Store_PostgresStoreTest extends \PHPUnit_Framework_TestCase
 {
     private $config = array(
         'class' => 'oauth2server:SQLStore',
@@ -142,11 +142,11 @@ $config = array(
         $this->assertNull($object4);
     }
 
-    private function getId() {
+    public function getId() {
         return \SimpleSAML\Utils\Random::generateID();
     }
 
-    private function evilObjectCreator($id) {
+    public function evilObjectCreator($id) {
         $dsn = $this->config['dsn'];
         $username = $this->config['username'];
         $password = $this->config['password'];
@@ -155,10 +155,6 @@ $config = array(
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
         $driver = $pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
-
-        if ($driver === 'mysql') {
-            $pdo->exec('SET time_zone = "+00:00"');
-        }
 
         $insertStatement = "insert into OAuth2 values(:id, :value, :expire)";
 
