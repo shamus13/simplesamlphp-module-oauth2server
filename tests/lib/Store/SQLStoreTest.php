@@ -66,32 +66,17 @@ $config = array(
         $this->assertNull($object);
     }
 
-    public function testGetObjectMissingExpire()
-    {
-        $store = new \sspmod_oauth2server_Store_SQLStore($this->config);
-
-        $object = array('id' => $this->getId(), 'test' => 'x');
-
-        \SimpleSAML_Memcache::set($object['id'], $object, time() + 1000);
-
-        $object2 = $store->getObject($object['id']);
-
-        $this->assertNotNull($object2);
-        $this->assertEquals($object['id'], $object2['id']);
-        $this->assertEquals('x', $object2['test']);
-    }
-
     public function testGetNonObject()
     {
         $store = new \sspmod_oauth2server_Store_SQLStore($this->config);
 
         $object = 'blah';
 
-        \SimpleSAML_Memcache::set('blah', $object, time() + 1000);
+        $this->evilObjectCreator($object);
 
-        $object = $store->getObject('blah');
+        $object2 = $store->getObject($object);
 
-        $this->assertNull($object);
+        $this->assertNull($object2);
     }
 
     public function testAddObject()
@@ -159,5 +144,30 @@ $config = array(
 
     private function getId() {
         return \SimpleSAML\Utils\Random::generateID();
+    }
+
+    private function evilObjectCreator($id) {
+        $dsn = $this->config['dsn'];
+        $username = $this->config['username'];
+        $password = $this->config['password'];
+
+        $this->pdo = new PDO($dsn, $username, $password);
+        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $this->driver = $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+
+        if ($this->driver === 'mysql') {
+            $this->pdo->exec('SET time_zone = "+00:00"');
+        }
+
+        $insertStatement = "insert into OAuth2 values(:id, :value, :expire)";
+
+        $preparedInsertStatement = $this->pdo->prepare($insertStatement);
+
+        $preparedInsertStatement->execute(array(
+            ':id' => $id,
+            ':value' => rawurlencode(serialize('dummy')),
+            ':expire' => time() + 1000
+        ));
     }
 }
