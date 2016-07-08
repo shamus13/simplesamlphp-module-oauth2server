@@ -123,7 +123,7 @@ $config = array(
         $this->assertEquals($object['id'], $object2['id']);
         $this->assertEquals('x', $object2['test']);
 
-        $object3 = array('id' => $this->getId(), 'tset' => 'y', 'expire' => (time() + 1000));
+        $object3 = array('id' => $object['id'], 'tset' => 'y', 'expire' => (time() + 1000));
 
         $store->updateObject($object3);
 
