@@ -1,0 +1,6 @@
+dn: cn=Manager,dc=example,dc=com
+cn: Manager
+sn: Manager
+objectclass: top
+objectclass: person
+userPassword: secret
