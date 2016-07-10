@@ -30,11 +30,18 @@ $config = array(
         fclose($file);
     }
 
+
+    /**
+     * @group integration
+     */
     public function testConstructor()
     {
         new \sspmod_oauth2server_Store_MemCacheStore(array('prefix' => 'dummy'));
     }
 
+    /**
+     * @group integration
+     */
     public function testRemoveExpiredObjects()
     {
         $store = new \sspmod_oauth2server_Store_MemCacheStore(array('prefix' => 'dummy'));
@@ -42,6 +49,9 @@ $config = array(
         $store->removeExpiredObjects();
     }
 
+    /**
+     * @group integration
+     */
     public function testGetNonExistingObject()
     {
         $store = new \sspmod_oauth2server_Store_MemCacheStore(array('prefix' => 'dummy'));
@@ -51,6 +61,9 @@ $config = array(
         $this->assertNull($object);
     }
 
+    /**
+     * @group integration
+     */
     public function testGetExpiredObject()
     {
         $store = new \sspmod_oauth2server_Store_MemCacheStore(array('prefix' => 'dummy'));
@@ -64,6 +77,9 @@ $config = array(
         $this->assertNull($object);
     }
 
+    /**
+     * @group integration
+     */
     public function testGetObjectMissingExpire()
     {
         $store = new \sspmod_oauth2server_Store_MemCacheStore(array('prefix' => 'dummy'));
@@ -79,6 +95,9 @@ $config = array(
         $this->assertEquals('x', $object['test']);
     }
 
+    /**
+     * @group integration
+     */
     public function testGetNonObject()
     {
         $store = new \sspmod_oauth2server_Store_MemCacheStore(array('prefix' => 'dummy'));
@@ -92,6 +111,9 @@ $config = array(
         $this->assertNull($object);
     }
 
+    /**
+     * @group integration
+     */
     public function testAddObject()
     {
         $store = new \sspmod_oauth2server_Store_MemCacheStore(array('prefix' => 'dummy'));
@@ -107,6 +129,9 @@ $config = array(
         $this->assertEquals('x', $object['test']);
     }
 
+    /**
+     * @group integration
+     */
     public function testUpdateObject()
     {
         $store = new \sspmod_oauth2server_Store_MemCacheStore(array('prefix' => 'dummy'));
@@ -132,6 +157,9 @@ $config = array(
         $this->assertEquals('y', $object['tset']);
     }
 
+    /**
+     * @group integration
+     */
     public function testRemoveObject()
     {
         $store = new \sspmod_oauth2server_Store_MemCacheStore(array('prefix' => 'dummy'));

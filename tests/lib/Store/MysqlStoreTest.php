@@ -32,11 +32,17 @@ $config = array(
         fclose($file);
     }
 
+    /**
+     * @group integration
+     */
     public function testConstructor()
     {
         new \sspmod_oauth2server_Store_SQLStore($this->config);
     }
 
+    /**
+     * @group integration
+     */
     public function testRemoveExpiredObjects()
     {
         $store = new \sspmod_oauth2server_Store_SQLStore($this->config);
@@ -44,6 +50,9 @@ $config = array(
         $store->removeExpiredObjects();
     }
 
+    /**
+     * @group integration
+     */
     public function testGetNonExistingObject()
     {
         $store = new \sspmod_oauth2server_Store_SQLStore($this->config);
@@ -53,6 +62,9 @@ $config = array(
         $this->assertNull($object);
     }
 
+    /**
+     * @group integration
+     */
     public function testGetExpiredObject()
     {
         $store = new \sspmod_oauth2server_Store_SQLStore($this->config);
@@ -66,6 +78,9 @@ $config = array(
         $this->assertNull($object);
     }
 
+    /**
+     * @group integration
+     */
     public function testGetNonObject()
     {
         $store = new \sspmod_oauth2server_Store_SQLStore($this->config);
@@ -79,6 +94,9 @@ $config = array(
         $this->assertNull($object2);
     }
 
+    /**
+     * @group integration
+     */
     public function testAddObject()
     {
         $store = new \sspmod_oauth2server_Store_SQLStore($this->config);
@@ -94,6 +112,9 @@ $config = array(
         $this->assertEquals('x', $object2['test']);
     }
 
+    /**
+     * @group integration
+     */
     public function testUpdateObject()
     {
         $store = new \sspmod_oauth2server_Store_SQLStore($this->config);
@@ -119,6 +140,9 @@ $config = array(
         $this->assertEquals('y', $object4['tset']);
     }
 
+    /**
+     * @group integration
+     */
     public function testRemoveObject()
     {
         $store = new \sspmod_oauth2server_Store_SQLStore($this->config);
