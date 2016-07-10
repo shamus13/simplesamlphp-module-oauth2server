@@ -12,5 +12,5 @@ olcAttributeTypes: ( 1.1.1.2
 olcObjectClasses: ( 1.1.2.1
  NAME 'jsonObject'
  DESC 'a stringified JSON object'
- SUP top STRUCTURAL
+ SUP top
  MUST ( cn $ jsonString $ expireTime ) )
