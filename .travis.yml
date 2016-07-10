@@ -18,6 +18,7 @@ matrix:
   - php: hhvm
 before_install:
 install:
+- sudo -E apt-get install -y --force-yes slapd
 - pecl install pdo_pgsql
 - pecl install pdo_mysql
 - composer update --dev
