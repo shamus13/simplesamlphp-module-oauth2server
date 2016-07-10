@@ -19,6 +19,9 @@ matrix:
 before_install:
 install:
 - sudo -E apt-get install -y --force-yes slapd
+- sudo cp docs/ldapstore.schema /etc/ldap/schema/
+- sudo echo "include /etc/ldap/schema/ldapstore.schema" >>/etc/ldap/slapd.conf
+- sudo cat /etc/ldap/slapd.conf
 - pecl install pdo_pgsql
 - pecl install pdo_mysql
 - composer update --dev
