@@ -178,7 +178,7 @@ $config = array(
         $pdo = new \PDO($dsn, $username, $password);
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-        $driver = $pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
+        $pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
 
         $insertStatement = "insert into OAuth2 values(:id, :value, :expire)";
 
