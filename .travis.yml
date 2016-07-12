@@ -21,7 +21,7 @@ install:
 - sudo -E apt-get install -y --force-yes slapd ldap-utils
 - sudo slapadd -F /etc/ldap/slapd.d -b "cn=config" -l docs/ldapstore.ldif
 - export LDAP_ROOT=$(sudo bash tools/script/ldap_root.sh)
-- sudo sed "s/LDAP_ROOT/${LDAP_ROOT}/g" tests/setup_store.ldif| ldapadd -Y EXTERNAL -H ldapi:///
+- sudo sed "s/LDAP_ROOT/${LDAP_ROOT}/g" tests/setup_store.ldif| sudo ldapadd -Y EXTERNAL -H ldapi:///
 - pecl install pdo_pgsql
 - pecl install pdo_mysql
 - composer update --dev
