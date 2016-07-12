@@ -1,0 +1,10 @@
+dn: cn=Manager,LDAP_ROOT
+cn: Manager
+sn: Manager
+objectclass: top
+objectclass: person
+userPassword: secret
+
+dn: dc=store,LDAP_ROOT
+dc: store
+objectclass: dcObject
