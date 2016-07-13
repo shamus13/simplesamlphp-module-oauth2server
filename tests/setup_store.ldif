@@ -1,3 +1,7 @@
+dn: dc=example,dc=com
+dc: example
+objectClass: dcObject
+
 dn: ou=store,dc=example,dc=com
 ou: store
 objectClass: organizationalUnit
