@@ -15,7 +15,6 @@ php:
 sudo: required
 before_install:
 install:
-- phpenv config-add tests/travis/enable-ldap.ini
 - mkdir /tmp/slapd
 - slapd -f tests/slapd.conf -h ldap://localhost:1234 &
 - pecl install pdo_mysql
@@ -36,5 +35,6 @@ addons:
     packages:
     - ldap-utils
     - slapd
+    - php5-ldap
   code_climate:
     repo_token: b7d516a1ddf338de68ccee9895de17e7d362a0b2923f61111ac4c446a0fab6b8
