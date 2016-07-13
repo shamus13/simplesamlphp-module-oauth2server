@@ -19,7 +19,7 @@ install:
 - slapd -f tests/slapd.conf -h ldap://localhost:1234 &
 - pecl install pdo_mysql
 - composer update --dev
-- ldapadd -h localhost:1234 -D cn=admin,dc=example,dc=com -w secret -f tests/setup_store.ldif
+- ldapadd -x -h localhost:1234 -D cn=admin,dc=example,dc=com -w secret -f tests/setup_store.ldif
 before_script:
 - psql -c 'create database oauth2server_test;' -U postgres
 - psql -U postgres -d oauth2server_test <docs/store.sql
