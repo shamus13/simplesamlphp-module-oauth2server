@@ -13,20 +13,14 @@ php:
 - 5.5
 - 5.6
 sudo: required
-matrix:
-  allow_failures:
-  - php: hhvm
 before_install:
 install:
-- sudo -E apt-get install -y --force-yes slapd ldap-utils
-- sudo slapadd -F /etc/ldap/slapd.d -b "cn=config" -l docs/ldapstore.ldif
-- export LDAP_ROOT=$(sudo bash tools/script/ldap_root.sh)
-- sudo ldappasswd -D cn=admin,${LDAP_ROOT} -Y EXTERNAL -H ldapi:/// -s secret
-- sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b "cn=config"
-- sudo sed "s/LDAP_ROOT/${LDAP_ROOT}/g" tests/setup_store.ldif| sudo ldapadd -D cn=admin,${LDAP_ROOT} -Y EXTERNAL -H ldapi:///
-- pecl install pdo_pgsql
+- phpenv config-add tests/travis/enable-ldap.ini
+- mkdir /tmp/slapd
+- slapd -f tests/slapd.conf -h ldap://localhost:1234 &
 - pecl install pdo_mysql
 - composer update --dev
+- ldapadd -h localhost:1234 -D cn=admin,dc=example,dc=com -w secret -f tests/setup_store.ldif
 before_script:
 - psql -c 'create database oauth2server_test;' -U postgres
 - psql -U postgres -d oauth2server_test <docs/store.sql
@@ -38,5 +32,9 @@ script:
 after_success:
 - vendor/bin/test-reporter
 addons:
-    code_climate:
-        repo_token: b7d516a1ddf338de68ccee9895de17e7d362a0b2923f61111ac4c446a0fab6b8
+  apt:
+    packages:
+    - ldap-utils
+    - slapd
+  code_climate:
+    repo_token: b7d516a1ddf338de68ccee9895de17e7d362a0b2923f61111ac4c446a0fab6b8
