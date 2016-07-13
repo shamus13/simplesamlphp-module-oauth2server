@@ -16,6 +16,7 @@ sudo: required
 before_install:
 install:
 - mkdir /tmp/slapd
+- cp docs/ldapstore.ldif /tmp/slapd/
 - slapd -d 511 -f tests/slapd.conf -h ldap://localhost:1234 2>&1
 - pecl install pdo_mysql
 - composer update --dev
