@@ -1,5 +1,7 @@
 dn: dc=example,dc=com
 dc: example
+o: organization
+objectClass: organization
 objectClass: dcObject
 
 dn: ou=store,dc=example,dc=com
