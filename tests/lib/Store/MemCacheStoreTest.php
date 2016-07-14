@@ -33,6 +33,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group memcached
      */
     public function testConstructor()
     {
@@ -41,6 +42,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group memcached
      */
     public function testRemoveExpiredObjects()
     {
@@ -51,6 +53,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group memcached
      */
     public function testGetNonExistingObject()
     {
@@ -63,6 +66,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group memcached
      */
     public function testGetExpiredObject()
     {
@@ -79,6 +83,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group memcached
      */
     public function testGetObjectMissingExpire()
     {
@@ -97,6 +102,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group memcached
      */
     public function testGetNonObject()
     {
@@ -113,6 +119,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group memcached
      */
     public function testAddObject()
     {
@@ -131,6 +138,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group memcached
      */
     public function testUpdateObject()
     {
@@ -159,6 +167,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group memcached
      */
     public function testRemoveObject()
     {

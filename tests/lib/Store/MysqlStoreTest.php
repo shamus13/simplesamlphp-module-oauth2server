@@ -34,6 +34,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group mysql
      */
     public function testConstructor()
     {
@@ -42,6 +43,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group mysql
      */
     public function testRemoveExpiredObjects()
     {
@@ -52,6 +54,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group mysql
      */
     public function testGetNonExistingObject()
     {
@@ -64,6 +67,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group mysql
      */
     public function testGetExpiredObject()
     {
@@ -80,6 +84,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group mysql
      */
     public function testGetNonObject()
     {
@@ -96,6 +101,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group mysql
      */
     public function testAddObject()
     {
@@ -114,6 +120,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group mysql
      */
     public function testUpdateObject()
     {
@@ -142,6 +149,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group mysql
      */
     public function testRemoveObject()
     {
