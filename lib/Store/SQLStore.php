@@ -106,12 +106,12 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         return $object['id'];
     }
 
-    public function removeObject($id)
+    public function removeObject($identity)
     {
         $delete = "delete from OAuth2 where id = :id";
 
         $prepared = $this->pdo->prepare($delete);
 
-        $prepared->execute(array(':id' => $id));
+        $prepared->execute(array(':id' => $identity));
     }
 }

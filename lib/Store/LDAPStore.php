@@ -155,11 +155,11 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
         }
     }
 
-    public function removeObject($id)
+    public function removeObject($identity)
     {
         $connection = $this->bindToLdap();
 
-        if (!ldap_delete($connection, "cn={$id},{$this->searchBase}")) {
+        if (!ldap_delete($connection, "cn={$identity},{$this->searchBase}")) {
             $error = 'failed to delete object';
         }
 

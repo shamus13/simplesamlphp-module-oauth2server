@@ -31,5 +31,5 @@ abstract class sspmod_oauth2server_Store_Store
 
     public abstract function updateObject($object);
 
-    public abstract function removeObject($id);
+    public abstract function removeObject($identity);
 }
