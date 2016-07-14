@@ -23,8 +23,8 @@
 
 class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
 {
-    public $pdo;
-    public $driver;
+    private $pdo;
+    private $driver;
 
     public function __construct($config)
     {
@@ -44,11 +44,11 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
 
     public function removeExpiredObjects()
     {
-        $cleanUpStatement = "delete from OAuth2 where expire < :expire";
+        $delete = "delete from OAuth2 where expire < :expire";
 
-        $preparedCleanUpStatement = $this->pdo->prepare($cleanUpStatement);
+        $prepared = $this->pdo->prepare($delete);
 
-        $preparedCleanUpStatement->execute(array(':expire' => time() + 60));
+        $prepared->execute(array(':expire' => time() + 60));
     }
 
     public function getObject($identity)
@@ -78,11 +78,11 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
 
     public function addObject($object)
     {
-        $insertStatement = "insert into OAuth2 values(:id, :value, :expire)";
+        $insert = "insert into OAuth2 values(:id, :value, :expire)";
 
-        $preparedInsertStatement = $this->pdo->prepare($insertStatement);
+        $prepared = $this->pdo->prepare($insert);
 
-        $preparedInsertStatement->execute(array(
+        $prepared->execute(array(
             ':id' => $object['id'],
             ':value' => rawurlencode(serialize($object)),
             ':expire' => $object['expire']
@@ -93,11 +93,11 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
 
     public function updateObject($object)
     {
-        $updateStatement = "update OAuth2 set value = :value, expire = :expire where id = :id";
+        $update = "update OAuth2 set value = :value, expire = :expire where id = :id";
 
-        $preparedUpdateStatement = $this->pdo->prepare($updateStatement);
+        $prepared = $this->pdo->prepare($update);
 
-        $preparedUpdateStatement->execute(array(
+        $prepared->execute(array(
             ':id' => $object['id'],
             ':value' => rawurlencode(serialize($object)),
             ':expire' => $object['expire']
@@ -108,10 +108,10 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
 
     public function removeObject($id)
     {
-        $deleteStatement = "delete from OAuth2 where id = :id";
+        $delete = "delete from OAuth2 where id = :id";
 
-        $preparedDeleteStatement = $this->pdo->prepare($deleteStatement);
+        $prepared = $this->pdo->prepare($delete);
 
-        $preparedDeleteStatement->execute(array(':id' => $id));
+        $prepared->execute(array(':id' => $id));
     }
 }
