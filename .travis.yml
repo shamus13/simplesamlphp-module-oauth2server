@@ -27,6 +27,7 @@ before_script:
 - mysql -e 'create database oauth2server_test;' -u travis
 - mysql -u travis oauth2server_test <docs/store.sql
 - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+- echo "extension = ldap.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 script:
 - php vendor/phpunit/phpunit/phpunit.php --configuration tools/phpunit
 after_success:

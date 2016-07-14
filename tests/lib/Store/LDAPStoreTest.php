@@ -11,7 +11,7 @@ class sspmod_oauth2server_Store_LDAPStoreTest extends \PHPUnit_Framework_TestCas
         'username' => 'cn=admin,dc=example,dc=com',
         'password' => 'secret',
         'base' => 'dc=store,dc=example,dc=com',
-        'deref' => LDAP_DEREF_NEVER, // or one of LDAP_DEREF_SEARCHING, LDAP_DEREF_FINDING, LDAP_DEREF_ALWAYS
+        'deref' => \LDAP_DEREF_NEVER, // or one of LDAP_DEREF_SEARCHING, LDAP_DEREF_FINDING, LDAP_DEREF_ALWAYS
     );
 
     public static function setUpBeforeClass()
