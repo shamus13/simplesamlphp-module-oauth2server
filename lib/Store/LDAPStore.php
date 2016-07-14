@@ -85,10 +85,13 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
         if ($resultSet = ldap_search($connection, $this->searchBase, "(&(cn=$identity)(objectClass=jsonObject))")) {
             if ($results = ldap_get_entries($connection, $resultSet)) {
                 if ($results['count'] > 0) {
-                    $value = json_decode($results[0]['jsonstring'][0], true);
+                    $tmp = json_decode($results[0]['jsonstring'][0], true);
 
-                    $value['id'] = $results[0]['cn'][0];
-                    $value['expire'] = intval($results[0]['expiretime'][0]);
+                    if(is_array($tmp)) {
+                        $value = $tmp;
+                        $value['id'] = $results[0]['cn'][0];
+                        $value['expire'] = intval($results[0]['expiretime'][0]);
+                    }
                 }
             } else {
                 $error = 'failed to retrieve search result';

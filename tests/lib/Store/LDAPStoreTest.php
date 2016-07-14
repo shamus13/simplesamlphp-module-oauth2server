@@ -10,7 +10,7 @@ class sspmod_oauth2server_Store_LDAPStoreTest extends \PHPUnit_Framework_TestCas
         'tls' => false,
         'username' => 'cn=admin,dc=example,dc=com',
         'password' => 'secret',
-        'base' => 'dc=store,dc=example,dc=com',
+        'base' => 'ou=store,dc=example,dc=com',
         'deref' => \LDAP_DEREF_NEVER, // or one of LDAP_DEREF_SEARCHING, LDAP_DEREF_FINDING, LDAP_DEREF_ALWAYS
     );
 
@@ -37,6 +37,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group ldap
      */
     public function testConstructor()
     {
@@ -45,6 +46,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group ldap
      */
     public function testRemoveExpiredObjects()
     {
@@ -55,6 +57,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group ldap
      */
     public function testGetNonExistingObject()
     {
@@ -67,6 +70,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group ldap
      */
     public function testGetExpiredObject()
     {
@@ -83,6 +87,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group ldap
      */
     public function testGetNonObject()
     {
@@ -99,6 +104,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group ldap
      */
     public function testAddObject()
     {
@@ -117,6 +123,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group ldap
      */
     public function testUpdateObject()
     {
@@ -145,6 +152,7 @@ $config = array(
 
     /**
      * @group integration
+     * @group ldap
      */
     public function testRemoveObject()
     {
