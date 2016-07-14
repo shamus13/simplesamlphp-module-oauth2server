@@ -50,6 +50,8 @@ $config = array(
      */
     public function testRemoveExpiredObjects()
     {
+        $this->evilObjectCreator('dummy', time() -1000);
+
         $store = new \sspmod_oauth2server_Store_LDAPStore($this->config);
 
         $store->removeExpiredObjects();
@@ -95,7 +97,7 @@ $config = array(
 
         $object = 'blah';
 
-        $this->evilObjectCreator($object);
+        $this->evilObjectCreator($object, time() + 1000);
 
         $object2 = $store->getObject($object);
 
@@ -182,7 +184,7 @@ $config = array(
         return \SimpleSAML\Utils\Random::generateID();
     }
 
-    private function evilObjectCreator($id)
+    private function evilObjectCreator($id, $expire)
     {
         $connection = ldap_connect($this->config['url']);
 
@@ -193,7 +195,7 @@ $config = array(
         ldap_add($connection, "cn={$id},{$this->config['base']}",
             array(
                 'jsonString' => array(json_encode('dummy')),
-                'expireTime' => array(strval(time() + 1000)),
+                'expireTime' => array(strval($expire)),
                 'objectClass' => array('jsonObject')
             ));
 
