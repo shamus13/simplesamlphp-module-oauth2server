@@ -50,7 +50,7 @@ $config = array(
      */
     public function testRemoveExpiredObjects()
     {
-        $this->evilObjectCreator('dummy', time() -1000);
+        $this->evilObjectCreator($this->getId(), time() -1000);
 
         $store = new \sspmod_oauth2server_Store_LDAPStore($this->config);
 
@@ -95,7 +95,7 @@ $config = array(
     {
         $store = new \sspmod_oauth2server_Store_LDAPStore($this->config);
 
-        $object = 'blah';
+        $object = $this->getId();
 
         $this->evilObjectCreator($object, time() + 1000);
 
@@ -121,6 +121,24 @@ $config = array(
         $this->assertNotNull($object2);
         $this->assertEquals($object['id'], $object2['id']);
         $this->assertEquals('x', $object2['test']);
+    }
+
+    /**
+     * @group integration
+     * @group ldap
+     * 
+     * @expectedException \Exception
+     * @expectedExceptionCode 2
+     * @expectedExceptionMessage ldap_add(): Add: Already exists
+     */
+    public function testAddDuplicateObject()
+    {
+        $store = new \sspmod_oauth2server_Store_LDAPStore($this->config);
+
+        $object = array('id' => $this->getId(), 'test' => 'x', 'expire' => (time() + 1000));
+
+        $store->addObject($object);
+        $store->addObject($object);
     }
 
     /**
@@ -155,6 +173,23 @@ $config = array(
     /**
      * @group integration
      * @group ldap
+     *
+     * @expectedException \Exception
+     * @expectedExceptionCode 2
+     * @expectedExceptionMessage ldap_modify(): Modify: No such object
+     */
+    public function testUpdateNonExistingObject()
+    {
+        $store = new \sspmod_oauth2server_Store_LDAPStore($this->config);
+
+        $object = array('id' => $this->getId(), 'tset' => 'y', 'expire' => (time() + 1000));
+
+        $store->updateObject($object);
+    }
+
+    /**
+     * @group integration
+     * @group ldap
      */
     public function testRemoveObject()
     {
@@ -177,6 +212,23 @@ $config = array(
         $object4 = $store->getObject($object3['id']);
 
         $this->assertNull($object4);
+    }
+
+    /**
+     * @group integration
+     * @group ldap
+     *
+     * @expectedException \Exception
+     * @expectedExceptionCode 2
+     * @expectedExceptionMessage ldap_delete(): Delete: No such object
+     */
+    public function testRemoveNonExistentObject()
+    {
+        $store = new \sspmod_oauth2server_Store_LDAPStore($this->config);
+
+        $object = array('id' => $this->getId(), 'tset' => 'y', 'expire' => (time() + 1000));
+
+        $store->removeObject($object['id']);
     }
 
     private function getId()
