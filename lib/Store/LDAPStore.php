@@ -55,8 +55,6 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
         ) {
             if ($results = ldap_get_entries($connection, $resultSet)) {
 
-                $value = null;
-
                 if ($results['count'] > 0) {
                     for ($i = 0; $i < $results['count']; ++$i) {
                         if (!ldap_delete($connection, "{$results[$i]['dn']}")) {
