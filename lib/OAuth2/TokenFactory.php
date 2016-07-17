@@ -36,44 +36,41 @@ class sspmod_oauth2server_OAuth2_TokenFactory
 
     public function createAuthorizationCode($clientId, $redirectUri, $scopes, $userId)
     {
-        return array(
-            'id' => $this->generateID('AC'),
-            'type' => 'AuthorizationCode',
-            'clientId' => $clientId,
-            'redirectUri' => $redirectUri,
-            'scopes' => $scopes,
-            'expire' => time() + $this->codeTTL,
-            'authorizationCodeTTL' => $this->codeTTL,
-            'refreshTokenTTL' => $this->refreshTTL,
-            'accessTokenTTL' => $this->accessTTL,
-            'userId' => $userId
-        );
+        $token = $this->createProtoToken($clientId, $scopes, $userId);
+        $token['id'] = $this->generateID('AC');
+        $token['type'] = 'AuthorizationCode';
+        $token['redirectUri'] = $redirectUri;
+        $token['expire'] = time() + $this->codeTTL;
+
+        return $token;
     }
 
     public function createRefreshToken($clientId, $redirectUri, $scopes, $userId)
     {
-        return array(
-            'id' => $this->generateID('RE'),
-            'type' => 'RefreshToken',
-            'clientId' => $clientId,
-            'redirectUri' => $redirectUri,
-            'scopes' => $scopes,
-            'expire' => time() + $this->refreshTTL,
-            'authorizationCodeTTL' => $this->codeTTL,
-            'refreshTokenTTL' => $this->refreshTTL,
-            'accessTokenTTL' => $this->accessTTL,
-            'userId' => $userId
-        );
+        $token = $this->createProtoToken($clientId, $scopes, $userId);
+        $token['id'] = $this->generateID('RE');
+        $token['type'] = 'RefreshToken';
+        $token['redirectUri'] = $redirectUri;
+        $token['expire'] = time() + $this->refreshTTL;
+
+        return $token;
     }
 
     public function createBearerAccessToken($clientId, $scopes, $userId)
     {
+        $token = $this->createProtoToken($clientId, $scopes, $userId);
+        $token['id'] = $this->generateID('BA');
+        $token['type'] = 'Bearer';
+        $token['expire'] = time() + $this->accessTTL;
+
+        return $token;
+    }
+
+    private function createProtoToken($clientId, $scopes, $userId)
+    {
         return array(
-            'id' => $this->generateID('BA'),
-            'type' => 'Bearer',
             'clientId' => $clientId,
             'scopes' => $scopes,
-            'expire' => time() + $this->accessTTL,
             'authorizationCodeTTL' => $this->codeTTL,
             'refreshTokenTTL' => $this->refreshTTL,
             'accessTokenTTL' => $this->accessTTL,
