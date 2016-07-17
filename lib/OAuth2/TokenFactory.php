@@ -23,15 +23,15 @@
 
 class sspmod_oauth2server_OAuth2_TokenFactory
 {
-    private $authorizationCodeTimeToLive;
-    private $accessTokenTimeToLive;
-    private $refreshTokenTimeToLive;
+    private $codeTTL;
+    private $accessTTL;
+    private $refreshTTL;
 
-    public function __construct($authorizationCodeTimeToLive, $accessTokenTimeToLive, $refreshTokenTimeToLive)
+    public function __construct($codeTTL, $accessTTL, $refreshTTL)
     {
-        $this->authorizationCodeTimeToLive = $authorizationCodeTimeToLive;
-        $this->accessTokenTimeToLive = $accessTokenTimeToLive;
-        $this->refreshTokenTimeToLive = $refreshTokenTimeToLive;
+        $this->codeTTL = $codeTTL;
+        $this->accessTTL = $accessTTL;
+        $this->refreshTTL = $refreshTTL;
     }
 
     public function createAuthorizationCode($clientId, $redirectUri, $scopes, $userId)
@@ -42,10 +42,10 @@ class sspmod_oauth2server_OAuth2_TokenFactory
             'clientId' => $clientId,
             'redirectUri' => $redirectUri,
             'scopes' => $scopes,
-            'expire' => time() + $this->authorizationCodeTimeToLive,
-            'authorizationCodeTTL' => $this->authorizationCodeTimeToLive,
-            'refreshTokenTTL' => $this->refreshTokenTimeToLive,
-            'accessTokenTTL' => $this->accessTokenTimeToLive,
+            'expire' => time() + $this->codeTTL,
+            'authorizationCodeTTL' => $this->codeTTL,
+            'refreshTokenTTL' => $this->refreshTTL,
+            'accessTokenTTL' => $this->accessTTL,
             'userId' => $userId
         );
     }
@@ -58,10 +58,10 @@ class sspmod_oauth2server_OAuth2_TokenFactory
             'clientId' => $clientId,
             'redirectUri' => $redirectUri,
             'scopes' => $scopes,
-            'expire' => time() + $this->refreshTokenTimeToLive,
-            'authorizationCodeTTL' => $this->authorizationCodeTimeToLive,
-            'refreshTokenTTL' => $this->refreshTokenTimeToLive,
-            'accessTokenTTL' => $this->accessTokenTimeToLive,
+            'expire' => time() + $this->refreshTTL,
+            'authorizationCodeTTL' => $this->codeTTL,
+            'refreshTokenTTL' => $this->refreshTTL,
+            'accessTokenTTL' => $this->accessTTL,
             'userId' => $userId
         );
     }
@@ -73,10 +73,10 @@ class sspmod_oauth2server_OAuth2_TokenFactory
             'type' => 'Bearer',
             'clientId' => $clientId,
             'scopes' => $scopes,
-            'expire' => time() + $this->accessTokenTimeToLive,
-            'authorizationCodeTTL' => $this->authorizationCodeTimeToLive,
-            'refreshTokenTTL' => $this->refreshTokenTimeToLive,
-            'accessTokenTTL' => $this->accessTokenTimeToLive,
+            'expire' => time() + $this->accessTTL,
+            'authorizationCodeTTL' => $this->codeTTL,
+            'refreshTokenTTL' => $this->refreshTTL,
+            'accessTokenTTL' => $this->accessTTL,
             'userId' => $userId
         );
     }
