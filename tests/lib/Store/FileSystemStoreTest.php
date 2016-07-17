@@ -79,6 +79,20 @@ class sspmod_oauth2server_Store_FileSystemStoreTest extends \PHPUnit_Framework_T
      *
      * @expectedException \Exception
      * @expectedExceptionCode 0
+     * @expectedExceptionMessage Invalid directory option in config.
+     */
+    public function testInvalidStoreDirectoryOption()
+    {
+        new \sspmod_oauth2server_Store_FileSystemStore(array('class' => $this->config['class'],
+            'directory' => 117));
+    }
+
+    /**
+     * @group integration
+     * @group filesystem
+     *
+     * @expectedException \Exception
+     * @expectedExceptionCode 0
      */
     public function testNonExistentStoreDirectory()
     {
