@@ -37,9 +37,7 @@ class sspmod_oauth2server_OAuth2_TokenFactory
     public function createAuthorizationCode($clientId, $redirectUri, $scopes, $userId)
     {
         $token = $this->createProtoToken($clientId, $scopes, $userId, 'AC', 'AuthorizationCode',
-            $this->codeTTL);
-
-        $token['redirectUri'] = $redirectUri;
+            $this->codeTTL, $redirectUri);
 
         return $token;
     }
@@ -47,9 +45,7 @@ class sspmod_oauth2server_OAuth2_TokenFactory
     public function createRefreshToken($clientId, $redirectUri, $scopes, $userId)
     {
         $token = $this->createProtoToken($clientId, $scopes, $userId, 'RE', 'RefreshToken',
-            $this->refreshTTL);
-
-        $token['redirectUri'] = $redirectUri;
+            $this->refreshTTL, $redirectUri);
 
         return $token;
     }
@@ -57,18 +53,28 @@ class sspmod_oauth2server_OAuth2_TokenFactory
     public function createBearerAccessToken($clientId, $scopes, $userId)
     {
         $token = $this->createProtoToken($clientId, $scopes, $userId, 'BA', 'Bearer',
-            $this->accessTTL);
+            $this->accessTTL, '');
+
+        unset($token['redirectUri']);
 
         return $token;
     }
 
-    private function createProtoToken($clientId, $scopes, $userId, $idPrefix, $type, $ttl)
-    {
+    private function createProtoToken(
+        $clientId,
+        $scopes,
+        $userId,
+        $idPrefix,
+        $type,
+        $ttl,
+        $redirectUri
+    ) {
         return array(
             'id' => $this->generateID($idPrefix),
             'type' => $type,
             'clientId' => $clientId,
             'scopes' => $scopes,
+            'redirectUri' => $redirectUri,
             'expire' => time() + $ttl,
             'authorizationCodeTTL' => $this->codeTTL,
             'refreshTokenTTL' => $this->refreshTTL,
