@@ -50,10 +50,10 @@ class sspmod_oauth2server_Store_FileSystemStore extends sspmod_oauth2server_Stor
         $now = time();
 
         foreach (scandir($this->directory) as $file) {
-            if (($prefix = strstr($file, '-')) !== false) {
-                if (($expire = intval($prefix)) != false) {
+            if (count($subs = preg_split('/-/', $file)) > 1) {
+                if (($expire = intval($subs[0])) != false) {
                     if ($expire < $now) {
-                        unlink($file);
+                        unlink($this->directory . '/' . $file);
                     }
                 }
             }
@@ -65,7 +65,7 @@ class sspmod_oauth2server_Store_FileSystemStore extends sspmod_oauth2server_Stor
         $filename = $this->resolveFileName($identity);
 
         if (is_string($filename)) {
-            $content = file_get_contents($filename);
+            $content = file_get_contents($this->directory . '/' . $filename);
 
             $object = unserialize($content);
 
@@ -86,26 +86,25 @@ class sspmod_oauth2server_Store_FileSystemStore extends sspmod_oauth2server_Stor
     public function updateObject($object)
     {
         $filename = $this->directory . $object['expire'] . '-' . $object['id'];
-
-        if (file_exists($filename)) {
-            file_put_contents($filename, serialize($object));
-        } else {
-            throw new Exception('No such object: ' . var_export($object['id'], true));
-        }
+        file_put_contents($filename, serialize($object));
     }
 
     public function removeObject($identity)
     {
         $filename = $this->resolveFileName($identity);
 
-        if (is_string($filename) && file_exists($filename)) {
-            unlink($filename);
+        if (is_string($filename)) {
+            $fullPath = $this->directory . '/' . $filename;
+
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+            }
         }
     }
 
     public function isValid($object)
     {
-        return is_array($object) && (!array_key_exists('expire', $object) || $object['expire'] >= time());
+        return is_array($object) && array_key_exists('expire', $object) && $object['expire'] >= time();
     }
 
     private function resolveFileName($identity)
@@ -116,8 +115,9 @@ class sspmod_oauth2server_Store_FileSystemStore extends sspmod_oauth2server_Stor
 
         if ($files !== false) {
             foreach ($files as $file) {
-                if (($prefix = strstr($file, '-')) !== false) {
-                    if ($prefix . '-' . $identity === $file) {
+                if (count($subs = preg_split('/-/', $file)) > 1) {
+
+                    if (intval($subs[0]) !== 0 && strcmp($subs[1], $identity) === 0) {
                         $fileName = $file;
                     }
                 }
