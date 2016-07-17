@@ -21,7 +21,7 @@
 *
 */
 
-namespace SimpleSAML\Oauth2Server;
+namespace SimpleSAML\Oauth2Server\Store;
 
 class sspmod_oauth2server_Store_LDAPStoreTest extends \PHPUnit_Framework_TestCase
 {
@@ -71,7 +71,7 @@ $config = array(
      */
     public function testRemoveExpiredObjects()
     {
-        $this->evilObjectCreator($this->getId(), time() -1000);
+        $this->evilObjectCreator($this->getId(), time() - 1000);
 
         $store = new \sspmod_oauth2server_Store_LDAPStore($this->config);
 
@@ -147,7 +147,7 @@ $config = array(
     /**
      * @group integration
      * @group ldap
-     * 
+     *
      * @expectedException \Exception
      * @expectedExceptionCode 2
      * @expectedExceptionMessage ldap_add(): Add: Already exists

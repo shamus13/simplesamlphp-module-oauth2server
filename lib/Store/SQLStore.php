@@ -64,7 +64,7 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
                 $value = urldecode($value);
                 $value = unserialize($value);
 
-                if(is_array($value)) {
+                if (is_array($value)) {
                     $value['id'] = $row['id'];
                     $value['expire'] = $row['expire'];
 

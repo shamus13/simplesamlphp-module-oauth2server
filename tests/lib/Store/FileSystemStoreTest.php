@@ -21,7 +21,7 @@
 *
 */
 
-namespace SimpleSAML\Oauth2Server;
+namespace SimpleSAML\Oauth2Server\Store;
 
 class sspmod_oauth2server_Store_FileSystemStoreTest extends \PHPUnit_Framework_TestCase
 {
@@ -83,8 +83,10 @@ class sspmod_oauth2server_Store_FileSystemStoreTest extends \PHPUnit_Framework_T
      */
     public function testInvalidStoreDirectoryOption()
     {
-        new \sspmod_oauth2server_Store_FileSystemStore(array('class' => $this->config['class'],
-            'directory' => 117));
+        new \sspmod_oauth2server_Store_FileSystemStore(array(
+            'class' => $this->config['class'],
+            'directory' => 117
+        ));
     }
 
     /**
@@ -123,7 +125,7 @@ class sspmod_oauth2server_Store_FileSystemStoreTest extends \PHPUnit_Framework_T
      */
     public function testRemoveExpiredObjects()
     {
-        $this->evilObjectCreator($this->getId(), time() -1000);
+        $this->evilObjectCreator($this->getId(), time() - 1000);
 
         $store = new \sspmod_oauth2server_Store_FileSystemStore($this->config);
 

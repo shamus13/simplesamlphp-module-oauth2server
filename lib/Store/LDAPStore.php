@@ -85,7 +85,7 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
                 if ($results['count'] > 0) {
                     $tmp = json_decode($results[0]['jsonstring'][0], true);
 
-                    if(is_array($tmp)) {
+                    if (is_array($tmp)) {
                         $value = $tmp;
                         $value['id'] = $results[0]['cn'][0];
                         $value['expire'] = intval($results[0]['expiretime'][0]);

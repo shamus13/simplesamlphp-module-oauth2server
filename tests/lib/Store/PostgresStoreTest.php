@@ -20,7 +20,7 @@
 *
 */
 
-namespace SimpleSAML\Oauth2Server;
+namespace SimpleSAML\Oauth2Server\Store;
 
 class sspmod_oauth2server_Store_PostgresStoreTest extends \PHPUnit_Framework_TestCase
 {

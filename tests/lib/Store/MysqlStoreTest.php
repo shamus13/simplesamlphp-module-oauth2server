@@ -19,8 +19,8 @@
 *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 *
 */
- 
-namespace SimpleSAML\Oauth2Server;
+
+namespace SimpleSAML\Oauth2Server\Store;
 
 class sspmod_oauth2server_Store_MysqlStoreTest extends \PHPUnit_Framework_TestCase
 {
@@ -194,11 +194,13 @@ $config = array(
         $this->assertNull($object4);
     }
 
-    public function getId() {
+    public function getId()
+    {
         return \SimpleSAML\Utils\Random::generateID();
     }
 
-    public function evilObjectCreator($id) {
+    public function evilObjectCreator($id)
+    {
         $dsn = $this->config['dsn'];
         $username = $this->config['username'];
         $password = $this->config['password'];

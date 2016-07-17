@@ -14,7 +14,9 @@
     "simplesamlphp/composer-module-installer": "~1.0"
   },
   "autoload": {
-      "classmap": ["lib/"]
+    "classmap": [
+      "lib/"
+    ]
   },
   "require-dev": {
     "simplesamlphp/simplesamlphp": "~1.14",
@@ -24,7 +26,7 @@
     "satooshi/php-coveralls": "^1.0"
   },
   "support": {
-      "issues": "https://github.com/shamus13/simplesamlphp-module-oauth2server/issues",
-      "source": "https://github.com/shamus13/simplesamlphp-module-oauth2server"
+    "issues": "https://github.com/shamus13/simplesamlphp-module-oauth2server/issues",
+    "source": "https://github.com/shamus13/simplesamlphp-module-oauth2server"
   }
 }

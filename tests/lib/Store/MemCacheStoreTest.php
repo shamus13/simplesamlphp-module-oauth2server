@@ -19,8 +19,8 @@
 *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 *
 */
- 
-namespace SimpleSAML\Oauth2Server;
+
+namespace SimpleSAML\Oauth2Server\Store;
 
 class sspmod_oauth2server_Store_MemCacheStoreTest extends \PHPUnit_Framework_TestCase
 {
