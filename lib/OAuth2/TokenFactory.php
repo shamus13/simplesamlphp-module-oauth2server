@@ -36,41 +36,40 @@ class sspmod_oauth2server_OAuth2_TokenFactory
 
     public function createAuthorizationCode($clientId, $redirectUri, $scopes, $userId)
     {
-        $token = $this->createProtoToken($clientId, $scopes, $userId);
-        $token['id'] = $this->generateID('AC');
-        $token['type'] = 'AuthorizationCode';
+        $token = $this->createProtoToken($clientId, $scopes, $userId, 'AC', 'AuthorizationCode',
+            $this->codeTTL);
+
         $token['redirectUri'] = $redirectUri;
-        $token['expire'] = time() + $this->codeTTL;
 
         return $token;
     }
 
     public function createRefreshToken($clientId, $redirectUri, $scopes, $userId)
     {
-        $token = $this->createProtoToken($clientId, $scopes, $userId);
-        $token['id'] = $this->generateID('RE');
-        $token['type'] = 'RefreshToken';
+        $token = $this->createProtoToken($clientId, $scopes, $userId, 'RE', 'RefreshToken',
+            $this->refreshTTL);
+
         $token['redirectUri'] = $redirectUri;
-        $token['expire'] = time() + $this->refreshTTL;
 
         return $token;
     }
 
     public function createBearerAccessToken($clientId, $scopes, $userId)
     {
-        $token = $this->createProtoToken($clientId, $scopes, $userId);
-        $token['id'] = $this->generateID('BA');
-        $token['type'] = 'Bearer';
-        $token['expire'] = time() + $this->accessTTL;
+        $token = $this->createProtoToken($clientId, $scopes, $userId, 'BA', 'Bearer',
+            $this->accessTTL);
 
         return $token;
     }
 
-    private function createProtoToken($clientId, $scopes, $userId)
+    private function createProtoToken($clientId, $scopes, $userId, $idPrefix, $type, $ttl)
     {
         return array(
+            'id' => $this->generateID($idPrefix),
+            'type' => $type,
             'clientId' => $clientId,
             'scopes' => $scopes,
+            'expire' => time() + $ttl,
             'authorizationCodeTTL' => $this->codeTTL,
             'refreshTokenTTL' => $this->refreshTTL,
             'accessTokenTTL' => $this->accessTTL,
