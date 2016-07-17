@@ -26,7 +26,7 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
     private $pdo;
     private $driver;
 
-    public function __construct($config)
+    public function __construct(array $config)
     {
         $dsn = $config['dsn'];
         $username = $config['username'];
@@ -76,7 +76,7 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         return null;
     }
 
-    public function addObject($object)
+    public function addObject(array $object)
     {
         $insert = "insert into OAuth2 values(:id, :value, :expire)";
 
@@ -91,7 +91,7 @@ class sspmod_oauth2server_Store_SQLStore extends sspmod_oauth2server_Store_Store
         return $object['id'];
     }
 
-    public function updateObject($object)
+    public function updateObject(array $object)
     {
         $update = "update OAuth2 set value = :value, expire = :expire where id = :id";
 

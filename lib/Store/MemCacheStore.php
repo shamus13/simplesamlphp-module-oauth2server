@@ -25,7 +25,7 @@ class sspmod_oauth2server_Store_MemCacheStore extends sspmod_oauth2server_Store_
 {
     private $prefix = '';
 
-    public function __construct($config)
+    public function __construct(array $config)
     {
         if (array_key_exists('prefix', $config)) {
             $this->prefix = $config['prefix'];
@@ -49,14 +49,14 @@ class sspmod_oauth2server_Store_MemCacheStore extends sspmod_oauth2server_Store_
         }
     }
 
-    public function addObject($object)
+    public function addObject(array $object)
     {
         $scopedId = $this->scopeId($object['id']);
 
         SimpleSAML_Memcache::set($scopedId, $object, $object['expire']);
     }
 
-    public function updateObject($object)
+    public function updateObject(array $object)
     {
         $scopedId = $this->scopeId($object['id']);
 

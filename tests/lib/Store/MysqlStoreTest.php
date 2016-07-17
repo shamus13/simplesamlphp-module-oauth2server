@@ -194,12 +194,12 @@ $config = array(
         $this->assertNull($object4);
     }
 
-    public function getId()
+    private function getId()
     {
         return \SimpleSAML\Utils\Random::generateID();
     }
 
-    public function evilObjectCreator($id)
+    private function evilObjectCreator($id)
     {
         $dsn = $this->config['dsn'];
         $username = $this->config['username'];

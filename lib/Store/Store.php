@@ -27,9 +27,9 @@ abstract class sspmod_oauth2server_Store_Store
 
     public abstract function getObject($identity);
 
-    public abstract function addObject($object);
+    public abstract function addObject(array $object);
 
-    public abstract function updateObject($object);
+    public abstract function updateObject(array $object);
 
     public abstract function removeObject($identity);
 }

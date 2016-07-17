@@ -25,7 +25,7 @@ class sspmod_oauth2server_Store_FileSystemStore extends sspmod_oauth2server_Stor
 {
     private $directory;
 
-    public function __construct($config)
+    public function __construct(array $config)
     {
         if (!is_string($config['directory'])) {
             throw new Exception('Invalid directory option in config.');
@@ -77,13 +77,13 @@ class sspmod_oauth2server_Store_FileSystemStore extends sspmod_oauth2server_Stor
         return null;
     }
 
-    public function addObject($object)
+    public function addObject(array $object)
     {
         $filename = $this->directory . $object['expire'] . '-' . $object['id'];
         file_put_contents($filename, serialize($object));
     }
 
-    public function updateObject($object)
+    public function updateObject(array $object)
     {
         $filename = $this->directory . $object['expire'] . '-' . $object['id'];
         file_put_contents($filename, serialize($object));
@@ -102,7 +102,7 @@ class sspmod_oauth2server_Store_FileSystemStore extends sspmod_oauth2server_Stor
         }
     }
 
-    public function isValid($object)
+    public function isValid(array $object)
     {
         return is_array($object) && array_key_exists('expire', $object) && $object['expire'] >= time();
     }

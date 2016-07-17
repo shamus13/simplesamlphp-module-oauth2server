@@ -30,7 +30,7 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
     private $searchBase;
     private $deref;
 
-    public function __construct($config)
+    public function __construct(array $config)
     {
         $this->ldapUrl = $config['url'];
         $this->enableTLS = $config['tls'];
@@ -111,7 +111,7 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
         }
     }
 
-    public function addObject($object)
+    public function addObject(array $object)
     {
         $connection = $this->bindToLdap();
 
@@ -132,7 +132,7 @@ class sspmod_oauth2server_Store_LDAPStore extends sspmod_oauth2server_Store_Stor
         }
     }
 
-    public function updateObject($object)
+    public function updateObject(array $object)
     {
         $connection = $this->bindToLdap();
 
