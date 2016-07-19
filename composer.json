@@ -18,6 +18,11 @@
       "lib/"
     ]
   },
+  "autoload-dev": {
+    "classmap": [
+      "tests/mock/"
+    ]
+  },
   "require-dev": {
     "simplesamlphp/simplesamlphp": "~1.14",
     "phpunit/phpunit": "~3.7",

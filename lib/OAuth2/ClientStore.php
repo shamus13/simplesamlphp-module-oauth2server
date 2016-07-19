@@ -23,12 +23,15 @@
 
 class sspmod_oauth2server_OAuth2_ClientStore
 {
+    /**
+     * @var sspmod_oauth2server_Store_Store
+     */
     private $store;
     private $configuredClients;
     private $validScopes;
     private $registrationEnabled;
 
-    public function __construct($config)
+    public function __construct(\SimpleSAML_Configuration $config)
     {
         $this->configuredClients = array();
 
