@@ -124,7 +124,7 @@ class sspmod_oauth2server_OAuth2_ClientTest extends \PHPUnit_Framework_TestCase
                 ),
             ),
 
-            'enable_client_registration' => false,
+            'enable_client_registration' => true,
         ), 'test');
 
         return $config;
