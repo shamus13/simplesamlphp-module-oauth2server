@@ -41,10 +41,12 @@ class sspmod_oauth2server_Store_MockStore extends sspmod_oauth2server_Store_Stor
 
     public function getObject($identity)
     {
-        $object = $this->store[$identity];
+        if(array_key_exists($identity, $this->store)) {
+            $object = $this->store[$identity];
 
-        if($this->isValid($object)) {
-            return $object;
+            if ($this->isValid($object)) {
+                return $object;
+            }
         }
 
         return null;
