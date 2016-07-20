@@ -31,16 +31,73 @@ class sspmod_oauth2server_OAuth2_ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor()
     {
+        new \sspmod_oauth2server_OAuth2_ClientStore($this->getDefaultConfiguration());
+    }
+
+    /**
+     * @group unit
+     * @group oauth2
+     */
+    public function testGetRegisteredClient()
+    {
+        $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getDefaultConfiguration());
+
+        $client = $store->getClient('client_id');
+
+        $this->assertNotNull($client);
+        $this->assertEquals(array('uri1', 'uri2'), $client['redirect_uri']);
+        $this->assertEquals(array('scope1' => true, 'scope2' => false), $client['scope']);
+        $this->assertEquals('password', $client['password']);
+        $this->assertEquals('new_password', $client['alternative_password']);
+        $this->assertEquals(array('en' => 'OAuth2 Test Client'), $client['description']);
+        $this->assertEquals(array('entityID1', 'entityID2'), $client['IDPList']);
+    }
+
+    /**
+     * @group unit
+     * @group oauth2
+     */
+    public function testGetMinimalRegisteredClient()
+    {
+        $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getDefaultConfiguration());
+
+        $client = $store->getClient('minimal');
+
+        $this->assertNotNull($client);
+        $this->assertEquals(array('uri'), $client['redirect_uri']);
+        $this->assertEquals(array(), $client['scope']);
+        $this->assertEquals('password', $client['password']);
+        $this->assertEquals(array('en' => 'OAuth2 Test Client'), $client['description']);
+    }
+
+    /**
+     * @group unit
+     * @group oauth2
+     */
+    public function testGetMinimalNonexistentClient()
+    {
+        $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getDefaultConfiguration());
+
+        $client = $store->getClient('unknown');
+
+        $this->assertNull($client);
+    }
+
+    /**
+     * @return \SimpleSAML_Configuration
+     */
+    private function getDefaultConfiguration()
+    {
         $config = new \SimpleSAML_Configuration(array(
             'store' => array(
                 'class' => 'oauth2server:MockStore',
             ),
             'scopes' => array(
-                'USER_ID' => array(
-                    'en' => 'Can read the user id',
+                'scope1' => array(
+                    'en' => 'magic scope one',
                 ),
-                'FULL_ACCESS' => array(
-                    'en' => 'Can read all attributes',
+                'scope2' => array(
+                    'en' => 'magic scope two',
                 ),
             ),
             'clients' => array(
@@ -58,11 +115,18 @@ class sspmod_oauth2server_OAuth2_ClientTest extends \PHPUnit_Framework_TestCase
                         'entityID2',
                     ),
                 ),
+                'minimal' => array(
+                    'redirect_uri' => array('uri'),
+                    'password' => 'password',
+                    'description' => array(
+                        'en' => 'OAuth2 Test Client',
+                    ),
+                ),
             ),
 
             'enable_client_registration' => false,
         ), 'test');
 
-        new \sspmod_oauth2server_OAuth2_ClientStore($config);
+        return $config;
     }
 }

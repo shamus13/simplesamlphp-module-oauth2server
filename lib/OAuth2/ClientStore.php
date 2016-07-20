@@ -62,6 +62,10 @@ class sspmod_oauth2server_OAuth2_ClientStore
         $this->registrationEnabled = $config->getValue('enable_client_registration', false);
     }
 
+    /**
+     * @param $clientId
+     * @return array|null
+     */
     public function getClient($clientId)
     {
         $client = null;
