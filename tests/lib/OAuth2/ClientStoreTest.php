@@ -74,13 +74,77 @@ class sspmod_oauth2server_OAuth2_ClientTest extends \PHPUnit_Framework_TestCase
      * @group unit
      * @group oauth2
      */
-    public function testGetMinimalNonexistentClient()
+    public function testGetNonexistentClient()
     {
         $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getDefaultConfiguration());
 
         $client = $store->getClient('unknown');
 
         $this->assertNull($client);
+    }
+
+    /**
+     * @group unit
+     * @group oauth2
+     */
+    public function testAddClient()
+    {
+        $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getDefaultConfiguration());
+
+        $client1 = array('id' => 'dummy', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
+
+        $store->addClient($client1);
+
+        $client2 = $store->getClient($client1['id']);
+
+        $this->assertNotNull($client2);
+        $this->assertEquals($client1['id'], $client2['id']);
+    }
+
+    /**
+     * @group unit
+     * @group oauth2
+     * @expectedException \SimpleSAML_Error_Error
+     * @expectedExceptionCode -1
+     */
+    public function testAddAlreadyConfiguredClient()
+    {
+        $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getDefaultConfiguration());
+
+        $client1 = array('id' => 'minimal', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
+
+        $store->addClient($client1);
+    }
+
+    /**
+     * @group unit
+     * @group oauth2
+     * @expectedException \SimpleSAML_Error_Error
+     * @expectedExceptionCode -1
+     */
+    public function testAddClientWithRegistrationDisabled()
+    {
+        $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getNoRegistrationConfiguration());
+
+        $client1 = array('id' => 'minimal', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
+
+        $store->addClient($client1);
+    }
+
+    /**
+     * @group unit
+     * @group oauth2
+     * @expectedException \SimpleSAML_Error_Error
+     * @expectedExceptionCode -1
+     */
+    public function testAddAlreadyAddedClient()
+    {
+        $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getDefaultConfiguration());
+
+        $client1 = array('id' => 'minimal', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
+
+        $store->addClient($client1);
+        $store->addClient($client1);
     }
 
     /**
@@ -125,6 +189,53 @@ class sspmod_oauth2server_OAuth2_ClientTest extends \PHPUnit_Framework_TestCase
             ),
 
             'enable_client_registration' => true,
+        ), 'test');
+
+        return $config;
+    }
+
+    /**
+     * @return \SimpleSAML_Configuration
+     */
+    private function getNoRegistrationConfiguration()
+    {
+        $config = new \SimpleSAML_Configuration(array(
+            'store' => array(
+                'class' => 'oauth2server:MockStore',
+            ),
+            'scopes' => array(
+                'scope1' => array(
+                    'en' => 'magic scope one',
+                ),
+                'scope2' => array(
+                    'en' => 'magic scope two',
+                ),
+            ),
+            'clients' => array(
+                'client_id' => array(
+                    'redirect_uri' => array('uri1', 'uri2'),
+                    'scope' => array('scope1', 'scope2'),
+                    'scopeRequired' => array('scope1'),
+                    'password' => 'password',
+                    'alternative_password' => 'new_password',
+                    'description' => array(
+                        'en' => 'OAuth2 Test Client',
+                    ),
+                    'IDPList' => array(
+                        'entityID1',
+                        'entityID2',
+                    ),
+                ),
+                'minimal' => array(
+                    'redirect_uri' => array('uri'),
+                    'password' => 'password',
+                    'description' => array(
+                        'en' => 'OAuth2 Test Client',
+                    ),
+                ),
+            ),
+
+            'enable_client_registration' => false,
         ), 'test');
 
         return $config;

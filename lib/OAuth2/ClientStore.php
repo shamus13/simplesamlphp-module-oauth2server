@@ -94,7 +94,7 @@ class sspmod_oauth2server_OAuth2_ClientStore
         return $client;
     }
 
-    public function addClient($client)
+    public function addClient(array $client)
     {
         if (!array_key_exists($client['id'], $this->configuredClients)) {
             $this->store->removeExpiredObjects();
