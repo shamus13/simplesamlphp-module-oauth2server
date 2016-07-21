@@ -111,9 +111,9 @@ class sspmod_oauth2server_OAuth2_ClientTest extends \PHPUnit_Framework_TestCase
     {
         $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getDefaultConfiguration());
 
-        $client1 = array('id' => 'minimal', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
+        $client = array('id' => 'minimal', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
 
-        $store->addClient($client1);
+        $store->addClient($client);
     }
 
     /**
@@ -126,9 +126,9 @@ class sspmod_oauth2server_OAuth2_ClientTest extends \PHPUnit_Framework_TestCase
     {
         $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getNoRegistrationConfiguration());
 
-        $client1 = array('id' => 'minimal', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
+        $client = array('id' => 'minimal', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
 
-        $store->addClient($client1);
+        $store->addClient($client);
     }
 
     /**
@@ -141,10 +141,100 @@ class sspmod_oauth2server_OAuth2_ClientTest extends \PHPUnit_Framework_TestCase
     {
         $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getDefaultConfiguration());
 
-        $client1 = array('id' => 'minimal', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
+        $client = array('id' => 'minimal', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
+
+        $store->addClient($client);
+        $store->addClient($client);
+    }
+
+    /**
+     * @group unit
+     * @group oauth2
+     * @expectedException \SimpleSAML_Error_Error
+     * @expectedExceptionCode -1
+     */
+    public function testUpdateConfiguredClient()
+    {
+        $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getDefaultConfiguration());
+
+        $client = array('id' => 'minimal', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
+
+        $store->updateClient($client);
+    }
+
+    /**
+     * @group unit
+     * @group oauth2
+     * @expectedException \SimpleSAML_Error_Error
+     * @expectedExceptionCode -1
+     */
+    public function testUpdateClientWithRegistrationDisabled()
+    {
+        $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getNoRegistrationConfiguration());
+
+        $client = array('id' => 'dummy', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
+
+        $store->updateClient($client);
+    }
+
+    /**
+     * @group unit
+     * @group oauth2
+     */
+    public function testUpdateClient()
+    {
+        $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getDefaultConfiguration());
+
+        $client1 = array('id' => 'dummy', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
 
         $store->addClient($client1);
+
+        $client2 = array('id' => 'dummy', 'expire' => time() + 1000, 'scope' => array('scope2' => true));
+
+        $store->updateClient($client2);
+
+        $client3 = $store->getClient($client2['id']);
+
+        $this->assertNotNull($client3);
+        $this->assertEquals($client2['id'], $client3['id']);
+        $this->assertEquals($client2['scope'], $client3['scope']);
+    }
+
+    /**
+     * @group unit
+     * @group oauth2
+     * @expectedException \SimpleSAML_Error_Error
+     * @expectedExceptionCode -1
+     */
+    public function testRemoveConfiguredClient()
+    {
+        $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getNoRegistrationConfiguration());
+
+        $store->removeClient('client_id');
+    }
+
+    /**
+     * @group unit
+     * @group oauth2
+     */
+    public function testRemoveClient()
+    {
+        $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getDefaultConfiguration());
+
+        $client1 = array('id' => 'dummy', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
+
         $store->addClient($client1);
+
+        $client2 = $store->getClient($client1['id']);
+
+        $this->assertNotNull($client2);
+        $this->assertEquals($client1['id'], $client2['id']);
+
+        $store->removeClient($client2['id']);
+
+        $client3 = $store->getClient($client2['id']);
+
+        $this->assertNull($client3);
     }
 
     /**
