@@ -114,7 +114,7 @@ class sspmod_oauth2server_OAuth2_ClientStore
         }
     }
 
-    public function updateClient($client)
+    public function updateClient(array $client)
     {
         if (!array_key_exists($client['id'], $this->configuredClients)) {
             if ($this->registrationEnabled) {
@@ -127,6 +127,10 @@ class sspmod_oauth2server_OAuth2_ClientStore
         }
     }
 
+    /**
+     * @param $clientId
+     * @throws \SimpleSAML_Error_Error
+     */
     public function removeClient($clientId)
     {
         if (!array_key_exists($clientId, $this->configuredClients)) {
