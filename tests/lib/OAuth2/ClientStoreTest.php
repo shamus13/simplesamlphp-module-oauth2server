@@ -126,7 +126,7 @@ class sspmod_oauth2server_OAuth2_ClientTest extends \PHPUnit_Framework_TestCase
     {
         $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getNoRegistrationConfiguration());
 
-        $client = array('id' => 'minimal', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
+        $client = array('id' => 'dummy', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
 
         $store->addClient($client);
     }
@@ -141,7 +141,7 @@ class sspmod_oauth2server_OAuth2_ClientTest extends \PHPUnit_Framework_TestCase
     {
         $store = new \sspmod_oauth2server_OAuth2_ClientStore($this->getDefaultConfiguration());
 
-        $client = array('id' => 'minimal', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
+        $client = array('id' => 'dummy', 'expire' => time() + 1000, 'scope' => array('scope1' => false));
 
         $store->addClient($client);
         $store->addClient($client);
