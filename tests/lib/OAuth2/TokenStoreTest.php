@@ -109,6 +109,22 @@ class sspmod_oauth2server_OAuth2_TokenStoreTest extends \PHPUnit_Framework_TestC
      * @group unit
      * @group oauth2
      */
+    public function testAuthorizationCodeIsolation()
+    {
+        $store = new \sspmod_oauth2server_OAuth2_TokenStore($this->getDefaultConfiguration());
+
+        $token1 = array('id' => 'dummy', 'expire' => time() + 1000);
+
+        $store->addAuthorizationCode($token1);
+
+        $this->assertNull($store->getRefreshToken($token1['id']));
+        $this->assertNull($store->getAccessToken($token1['id']));
+    }
+
+    /**
+     * @group unit
+     * @group oauth2
+     */
     public function testAddRefreshToken()
     {
         $store = new \sspmod_oauth2server_OAuth2_TokenStore($this->getDefaultConfiguration());
@@ -180,6 +196,22 @@ class sspmod_oauth2server_OAuth2_TokenStoreTest extends \PHPUnit_Framework_TestC
      * @group unit
      * @group oauth2
      */
+    public function testRefreshTokenIsolation()
+    {
+        $store = new \sspmod_oauth2server_OAuth2_TokenStore($this->getDefaultConfiguration());
+
+        $token1 = array('id' => 'dummy', 'expire' => time() + 1000);
+
+        $store->addRefreshToken($token1);
+
+        $this->assertNull($store->getAuthorizationCode($token1['id']));
+        $this->assertNull($store->getAccessToken($token1['id']));
+    }
+
+    /**
+     * @group unit
+     * @group oauth2
+     */
     public function testAddAccessToken()
     {
         $store = new \sspmod_oauth2server_OAuth2_TokenStore($this->getDefaultConfiguration());
@@ -245,6 +277,22 @@ class sspmod_oauth2server_OAuth2_TokenStoreTest extends \PHPUnit_Framework_TestC
         $token3 = $store->getAccessToken($token2['id']);
 
         $this->assertNull($token3);
+    }
+
+    /**
+     * @group unit
+     * @group oauth2
+     */
+    public function testAccessTokenIsolation()
+    {
+        $store = new \sspmod_oauth2server_OAuth2_TokenStore($this->getDefaultConfiguration());
+
+        $token1 = array('id' => 'dummy', 'expire' => time() + 1000);
+
+        $store->addAccessToken($token1);
+
+        $this->assertNull($store->getAuthorizationCode($token1['id']));
+        $this->assertNull($store->getRefreshToken($token1['id']));
     }
 
     /**

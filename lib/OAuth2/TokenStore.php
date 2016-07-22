@@ -42,14 +42,21 @@ class sspmod_oauth2server_OAuth2_TokenStore
      */
     public function getAuthorizationCode($codeId)
     {
-        return $this->store->getObject($codeId);
+        $code = $this->store->getObject($this->scopeIdentity('c', $codeId));
+
+        if (is_array($code)) {
+            $code['id'] = $codeId;
+        }
+
+        return $code;
     }
 
     public function addAuthorizationCode(array $code)
     {
         $this->store->removeExpiredObjects();
 
-        if ($this->store->getObject($code['id']) === null) {
+        if ($this->store->getObject($this->scopeIdentity('c', $code['id'])) === null) {
+            $code['id'] = $this->scopeIdentity('c', $code['id']);
             return $this->store->addObject($code);
         } else {
             throw new SimpleSAML_Error_Error('oauth2server:DUPLICATE');
@@ -61,7 +68,7 @@ class sspmod_oauth2server_OAuth2_TokenStore
      */
     public function removeAuthorizationCode($codeId)
     {
-        $this->store->removeObject($codeId);
+        $this->store->removeObject($this->scopeIdentity('c', $codeId));
     }
 
     /**
@@ -70,12 +77,21 @@ class sspmod_oauth2server_OAuth2_TokenStore
      */
     public function getRefreshToken($tokenId)
     {
-        return $this->store->getObject($tokenId);
+        $token = $this->store->getObject($this->scopeIdentity('r', $tokenId));
+
+        if (is_array($token)) {
+            $token['id'] = $tokenId;
+        }
+
+        return $token;
     }
 
     public function addRefreshToken(array $token)
     {
-        if ($this->store->getObject($token['id']) === null) {
+        $this->store->removeExpiredObjects();
+
+        if ($this->store->getObject($this->scopeIdentity('r', $token['id'])) === null) {
+            $token['id'] = $this->scopeIdentity('r', $token['id']);
             return $this->store->addObject($token);
         } else {
             throw new SimpleSAML_Error_Error('oauth2server:DUPLICATE');
@@ -87,7 +103,7 @@ class sspmod_oauth2server_OAuth2_TokenStore
      */
     public function removeRefreshToken($tokenId)
     {
-        $this->store->removeObject($tokenId);
+        $this->store->removeObject($this->scopeIdentity('r', $tokenId));
     }
 
     /**
@@ -96,12 +112,21 @@ class sspmod_oauth2server_OAuth2_TokenStore
      */
     public function getAccessToken($tokenId)
     {
-        return $this->store->getObject($tokenId);
+        $token = $this->store->getObject($this->scopeIdentity('a', $tokenId));
+
+        if (is_array($token)) {
+            $token['id'] = $tokenId;
+        }
+
+        return $token;
     }
 
     public function addAccessToken(array $token)
     {
-        if ($this->store->getObject($token['id']) === null) {
+        $this->store->removeExpiredObjects();
+
+        if ($this->store->getObject($this->scopeIdentity('a', $token['id'])) === null) {
+            $token['id'] = $this->scopeIdentity('a', $token['id']);
             return $this->store->addObject($token);
         } else {
             throw new SimpleSAML_Error_Error('oauth2server:DUPLICATE');
@@ -113,6 +138,16 @@ class sspmod_oauth2server_OAuth2_TokenStore
      */
     public function removeAccessToken($tokenId)
     {
-        $this->store->removeObject($tokenId);
+        $this->store->removeObject($this->scopeIdentity('a', $tokenId));
+    }
+
+    /**
+     * @param $type string
+     * @param $identity string
+     * @return string
+     */
+    private function scopeIdentity($type, $identity)
+    {
+        return $type . $identity;
     }
 }
