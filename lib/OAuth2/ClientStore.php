@@ -63,7 +63,7 @@ class sspmod_oauth2server_OAuth2_ClientStore
     }
 
     /**
-     * @param $clientId
+     * @param $clientId string
      * @return array|null
      */
     public function getClient($clientId)
@@ -128,7 +128,7 @@ class sspmod_oauth2server_OAuth2_ClientStore
     }
 
     /**
-     * @param $clientId
+     * @param $clientId string
      * @throws \SimpleSAML_Error_Error
      */
     public function removeClient($clientId)

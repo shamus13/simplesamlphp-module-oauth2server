@@ -23,9 +23,12 @@
 
 class sspmod_oauth2server_OAuth2_TokenStore
 {
+    /**
+     * @var sspmod_oauth2server_Store_Store
+     */
     private $store;
 
-    public function __construct($config)
+    public function __construct(\SimpleSAML_Configuration $config)
     {
         $storeConfig = $config->getValue('store');
         $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
@@ -33,52 +36,73 @@ class sspmod_oauth2server_OAuth2_TokenStore
         $this->store = new $storeClass($storeConfig);
     }
 
+    /**
+     * @param $codeId string
+     * @return array|null
+     */
     public function getAuthorizationCode($codeId)
     {
         return $this->store->getObject($codeId);
     }
 
-    public function addAuthorizationCode($code)
+    public function addAuthorizationCode(array $code)
     {
         $this->store->removeExpiredObjects();
 
         return $this->store->addObject($code);
     }
 
+    /**
+     * @param $codeId string
+     */
     public function removeAuthorizationCode($codeId)
     {
         $this->store->removeObject($codeId);
     }
 
+    /**
+     * @param $tokenId string
+     * @return array|null
+     */
     public function getRefreshToken($tokenId)
     {
         return $this->store->getObject($tokenId);
     }
 
-    public function addRefreshToken($token)
+    public function addRefreshToken(array $token)
     {
         $this->store->removeExpiredObjects();
 
         return $this->store->addObject($token);
     }
 
+    /**
+     * @param $tokenId string
+     */
     public function removeRefreshToken($tokenId)
     {
         $this->store->removeObject($tokenId);
     }
 
+    /**
+     * @param $tokenId string
+     * @return array|null
+     */
     public function getAccessToken($tokenId)
     {
         return $this->store->getObject($tokenId);
     }
 
-    public function addAccessToken($token)
+    public function addAccessToken(array $token)
     {
         $this->store->removeExpiredObjects();
 
         return $this->store->addObject($token);
     }
 
+    /**
+     * @param $tokenId string
+     */
     public function removeAccessToken($tokenId)
     {
         $this->store->removeObject($tokenId);
