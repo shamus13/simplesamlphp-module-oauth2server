@@ -49,7 +49,11 @@ class sspmod_oauth2server_OAuth2_TokenStore
     {
         $this->store->removeExpiredObjects();
 
-        return $this->store->addObject($code);
+        if ($this->store->getObject($code['id']) === null) {
+            return $this->store->addObject($code);
+        } else {
+            throw new SimpleSAML_Error_Error('oauth2server:DUPLICATE');
+        }
     }
 
     /**
@@ -71,9 +75,11 @@ class sspmod_oauth2server_OAuth2_TokenStore
 
     public function addRefreshToken(array $token)
     {
-        $this->store->removeExpiredObjects();
-
-        return $this->store->addObject($token);
+        if ($this->store->getObject($token['id']) === null) {
+            return $this->store->addObject($token);
+        } else {
+            throw new SimpleSAML_Error_Error('oauth2server:DUPLICATE');
+        }
     }
 
     /**
@@ -95,9 +101,11 @@ class sspmod_oauth2server_OAuth2_TokenStore
 
     public function addAccessToken(array $token)
     {
-        $this->store->removeExpiredObjects();
-
-        return $this->store->addObject($token);
+        if ($this->store->getObject($token['id']) === null) {
+            return $this->store->addObject($token);
+        } else {
+            throw new SimpleSAML_Error_Error('oauth2server:DUPLICATE');
+        }
     }
 
     /**

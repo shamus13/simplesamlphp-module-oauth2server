@@ -23,7 +23,7 @@
 
 namespace SimpleSAML\Oauth2Server\OAuth2;
 
-class sspmod_oauth2server_OAuth2_ClientTest extends \PHPUnit_Framework_TestCase
+class sspmod_oauth2server_OAuth2_ClientStoreTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @group unit
