@@ -38,7 +38,7 @@ class sspmod_oauth2server_Utility_Uri
         $queryStart = strpos($url, '?');
 
         if ($queryStart !== false) { //strip query if any
-            $query = SimpleSAML_Utilities::parseQueryString(substr($url, $queryStart + 1));
+            $query = \SimpleSAML\Utils\HTTP::parseQueryString(substr($url, $queryStart + 1));
             $url = substr($url, 0, $queryStart);
         } else {
             $query = array();
