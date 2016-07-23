@@ -42,18 +42,30 @@ class sspmod_oauth2server_OAuth2_UserStore
      */
     public function getUser($userId)
     {
-        return $this->store->getObject($userId);
+        $user = $this->store->getObject($this->scopeIdentity('u', $userId));
+
+        if (is_array($user)) {
+            $user['id'] = $userId;
+        }
+
+        return $user;
     }
 
     public function addUser(array $user)
     {
         $this->store->removeExpiredObjects();
 
-        $this->store->addObject($user);
+        if ($this->store->getObject($this->scopeIdentity('u', $user['id'])) === null) {
+            $user['id'] = $this->scopeIdentity('u', $user['id']);
+            return $this->store->addObject($user);
+        } else {
+            throw new SimpleSAML_Error_Error('oauth2server:DUPLICATE');
+        }
     }
 
     public function updateUser(array $user)
     {
+        $user['id'] = $this->scopeIdentity('u', $user['id']);
         $this->store->updateObject($user);
     }
 
@@ -62,6 +74,16 @@ class sspmod_oauth2server_OAuth2_UserStore
      */
     public function removeUser($userId)
     {
-        $this->store->removeObject($userId);
+        $this->store->removeObject($this->scopeIdentity('u', $userId));
+    }
+
+    /**
+     * @param $type string
+     * @param $identity string
+     * @return string
+     */
+    private function scopeIdentity($type, $identity)
+    {
+        return $type . $identity;
     }
 }
