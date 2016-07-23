@@ -74,7 +74,7 @@ class sspmod_oauth2server_OAuth2_ClientStore
             $client = $this->configuredClients[$clientId];
         } else {
             if ($this->registrationEnabled) {
-                $client = $this->store->getObject($clientId);
+                $client = $this->store->getObject($this->scopeIdentity('s', $clientId));
             }
         }
 
@@ -100,7 +100,8 @@ class sspmod_oauth2server_OAuth2_ClientStore
             $this->store->removeExpiredObjects();
 
             if ($this->registrationEnabled) {
-                if (is_null($this->store->getObject($client['id']))) {
+                if (is_null($this->store->getObject($this->scopeIdentity('s', $client['id'])))) {
+                    $client['id'] = $this->scopeIdentity('s', $client['id']);
 
                     return $this->store->addObject($client);
                 } else {
@@ -118,6 +119,8 @@ class sspmod_oauth2server_OAuth2_ClientStore
     {
         if (!array_key_exists($client['id'], $this->configuredClients)) {
             if ($this->registrationEnabled) {
+                $client['id'] = $this->scopeIdentity('s', $client['id']);
+
                 return $this->store->updateObject($client);
             } else {
                 throw new SimpleSAML_Error_Error('oauth2server:REGISTRATION_DISABLED');
@@ -134,9 +137,19 @@ class sspmod_oauth2server_OAuth2_ClientStore
     public function removeClient($clientId)
     {
         if (!array_key_exists($clientId, $this->configuredClients)) {
-            return $this->store->removeObject($clientId);
+            return $this->store->removeObject($this->scopeIdentity('s', $clientId));
         } else {
             throw new SimpleSAML_Error_Error('oauth2server:READONLY');
         }
+    }
+
+    /**
+     * @param $type string
+     * @param $identity string
+     * @return string
+     */
+    private function scopeIdentity($type, $identity)
+    {
+        return $type . $identity;
     }
 }
