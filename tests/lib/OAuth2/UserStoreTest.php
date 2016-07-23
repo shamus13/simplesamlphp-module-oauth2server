@@ -101,7 +101,6 @@ class sspmod_oauth2server_OAuth2_UserStoreTest extends \PHPUnit_Framework_TestCa
 
         $this->assertNotNull($user3);
         $this->assertEquals($user2['id'], $user3['id']);
-        $this->assertEquals($user2['scope'], $user3['scope']);
     }
 
     /**
