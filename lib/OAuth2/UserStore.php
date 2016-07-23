@@ -23,9 +23,12 @@
 
 class sspmod_oauth2server_OAuth2_UserStore
 {
+    /**
+     * @var sspmod_oauth2server_Store_Store
+     */
     private $store;
 
-    public function __construct($config)
+    public function __construct(\SimpleSAML_Configuration $config)
     {
         $storeConfig = $config->getValue('store');
         $storeClass = SimpleSAML_Module::resolveClass($storeConfig['class'], 'Store');
@@ -33,23 +36,30 @@ class sspmod_oauth2server_OAuth2_UserStore
         $this->store = new $storeClass($storeConfig);
     }
 
+    /**
+     * @param $userId string
+     * @return array|null
+     */
     public function getUser($userId)
     {
         return $this->store->getObject($userId);
     }
 
-    public function addUser($user)
+    public function addUser(array $user)
     {
         $this->store->removeExpiredObjects();
 
-        return $this->store->addObject($user);
+        $this->store->addObject($user);
     }
 
-    public function updateUser($user)
+    public function updateUser(array $user)
     {
         $this->store->updateObject($user);
     }
 
+    /**
+     * @param $userId string
+     */
     public function removeUser($userId)
     {
         $this->store->removeObject($userId);
