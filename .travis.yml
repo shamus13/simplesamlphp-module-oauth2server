@@ -21,6 +21,12 @@ install:
 - pecl install pdo_mysql
 - composer update --dev
 - ldapadd -x -h localhost:1234 -D cn=admin,dc=example,dc=com -w secret -f tests/setup_store.ldif
+- pushd $PWD
+- cd vendor/simplesamlphp/simplesamlphp/modules
+- ln -s ~/ oauth2server
+- popd
+- touch enable
+- touch vendor/simplesamlphp/simplesamlphp/modules/exampleauth/enable
 before_script:
 - psql -c 'create database oauth2server_test;' -U postgres
 - psql -U postgres -d oauth2server_test <docs/store.sql
