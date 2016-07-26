@@ -32,7 +32,7 @@ install:
 - ln -s ~/ oauth2server
 - popd
 - touch enable
-- touch /tmp/simplesamlphp/simplesamlphp/modules/exampleauth/enable
+- touch /tmp/simplesamlphp/modules/exampleauth/enable
 before_script:
 - psql -c 'create database oauth2server_test;' -U postgres
 - psql -U postgres -d oauth2server_test <docs/store.sql
