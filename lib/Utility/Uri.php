@@ -124,4 +124,27 @@ class sspmod_oauth2server_Utility_Uri
 
         return $params;
     }
+
+    /**
+     * @param $returnUri
+     * @param $client
+     * @return bool
+     */
+    public static function validateRedirectUri($returnUri, $client)
+    {
+        $legalRedirectUri = false;
+
+        $parsedUri = parse_url($returnUri);
+
+        if (is_array($parsedUri) && ($parsedUri['scheme'] == 'intent' ||
+                (($parsedUri['scheme'] == 'http' || $parsedUri['scheme'] == 'https') &&
+                    !array_key_exists('fragment', $parsedUri)))
+        ) {
+            foreach ($client['redirect_uri'] as $uri) {
+                $legalRedirectUri |= ($returnUri === $uri);
+            }
+            return $legalRedirectUri;
+        }
+        return $legalRedirectUri;
+    }
 }

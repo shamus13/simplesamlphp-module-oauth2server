@@ -54,18 +54,7 @@ if (isset($client)) {
     ) {
         $returnUri = (isset($_REQUEST['redirect_uri'])) ? $_REQUEST['redirect_uri'] : $client['redirect_uri'][0];
 
-        $legalRedirectUri = false;
-
-        $parsedUri = parse_url($returnUri);
-
-        if (is_array($parsedUri) && ($parsedUri['scheme'] == 'intent' ||
-                (($parsedUri['scheme'] == 'http' || $parsedUri['scheme'] == 'https') &&
-                    !array_key_exists('fragment', $parsedUri)))
-        ) {
-            foreach ($client['redirect_uri'] as $uri) {
-                $legalRedirectUri |= ($returnUri === $uri);
-            }
-        }
+        $legalRedirectUri = sspmod_oauth2server_Utility_Uri::validateRedirectUri($returnUri, $client);
 
         if ($legalRedirectUri) {
             $requestedScopes = (isset($_REQUEST['scope'])) ? explode(' ', $_REQUEST['scope']) : array();
