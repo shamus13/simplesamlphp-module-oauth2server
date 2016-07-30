@@ -34,17 +34,7 @@ $client = $clientStore->getClient($state['clientId']);
 
 $as = new SimpleSAML_Auth_Simple($config->getValue('authsource'));
 
-$params = array();
-
-if (array_key_exists('IDPList', $client)) {
-    if (sizeof($client['IDPList']) > 1) {
-        $params['saml:IDPList'] = $client['IDPList'];
-    } else {
-        if (sizeof($client['IDPList']) === 1) {
-            $params['saml:idp'] = $client['IDPList'][0];
-        }
-    }
-}
+$params = sspmod_oauth2server_Utility_Uri::calculateScopingParameters($client);
 
 $as->requireAuth($params);
 

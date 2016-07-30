@@ -97,4 +97,31 @@ class sspmod_oauth2server_Utility_Uri
         /* End script execution. */
         exit;
     }
+
+    /**
+     * @param $client
+     * @return array
+     */
+    public static function calculateScopingParameters(array $client)
+    {
+        $params = array();
+
+        if (array_key_exists('IDPList', $client)) {
+            if (sizeof($client['IDPList']) > 1) {
+                $params['saml:IDPList'] = $client['IDPList'];
+
+                return $params;
+            } else {
+                if (sizeof($client['IDPList']) === 1) {
+                    $params['saml:idp'] = $client['IDPList'][0];
+
+                    return $params;
+                }
+
+                return $params;
+            }
+        }
+
+        return $params;
+    }
 }
