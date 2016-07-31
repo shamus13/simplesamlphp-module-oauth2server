@@ -341,4 +341,19 @@ class sspmod_oauth2server_Utility_UriTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(1 => 'SCOPE3'), $result);
     }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testBuildErrorResponse()
+    {
+        $this->assertEquals(array(
+            'error' => 'ERROR',
+            'error_description' => 'ERROR_DESCRIPTION',
+            'error_code_internal' => 'ERROR_CODE_INTERNAL',
+            'error_parameters_internal' => array('A' => '1', 'B' => '2')
+        ), \sspmod_oauth2server_Utility_Uri::buildErrorResponse('ERROR', 'ERROR_DESCRIPTION',
+            'ERROR_CODE_INTERNAL', array('A' => '1', 'B' => '2')));
+    }
 }

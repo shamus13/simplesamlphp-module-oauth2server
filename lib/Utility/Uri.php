@@ -192,4 +192,13 @@ class sspmod_oauth2server_Utility_Uri
         return $invalidScopes;
     }
 
+    public static function buildErrorResponse($error, $description, $codeInternal, array $parameters)
+    {
+        return array(
+            'error' => $error,
+            'error_description' => $description,
+            'error_code_internal' => $codeInternal,
+            'error_parameters_internal' => $parameters
+        );
+    }
 }

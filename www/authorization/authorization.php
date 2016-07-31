@@ -32,12 +32,6 @@ $config = SimpleSAML_Configuration::getConfig('module_oauth2server.php');
 
 $clientStore = new sspmod_oauth2server_OAuth2_ClientStore($config);
 
-$responseParameters = array();
-
-if (isset($_REQUEST['state'])) {
-    $responseParameters['state'] = $_REQUEST['state'];
-}
-
 if (isset($_REQUEST['client_id'])) {
     $client = $clientStore->getClient($_REQUEST['client_id']);
 }
@@ -67,7 +61,6 @@ if (isset($client)) {
                 if (isset($_REQUEST['response_type']) &&
                     ($_REQUEST['response_type'] === 'code' || $_REQUEST['response_type'] === 'token')
                 ) {
-
                     $state = array(
                         'clientId' => $_REQUEST['client_id'],
                         'redirectUri' => (isset($_REQUEST['redirect_uri'])) ? $_REQUEST['redirect_uri'] : null,
@@ -91,91 +84,74 @@ if (isset($client)) {
 
                 } else {
                     if (!isset($_REQUEST['response_type'])) {
-                        $error = 'invalid_request';
-                        $error_description = 'missing response type';
-                        $error_code_internal = 'MISSING_RESPONSE_TYPE';
-                        $error_parameters_internal = array();
+                        $errorParameters = \sspmod_oauth2server_Utility_Uri::buildErrorResponse(
+                            'invalid_request', 'missing response type', 'MISSING_RESPONSE_TYPE', array()
+                        );
                     } else {
-                        $error = 'unsupported_response_type';
-                        $error_description = 'unsupported response type: ' . $_REQUEST['response_type'];
-                        $error_code_internal = 'UNSUPPORTED_RESPONSE_TYPE';
-                        $error_parameters_internal = array('RESPONSE_TYPE' => $_REQUEST['response_type']);
-
+                        $errorParameters = \sspmod_oauth2server_Utility_Uri::buildErrorResponse(
+                            'unsupported_response_type', 'unsupported response type: ' . $_REQUEST['response_type'],
+                            'UNSUPPORTED_RESPONSE_TYPE', array('RESPONSE_TYPE' => $_REQUEST['response_type'])
+                        );
                     }
                 }
             } else {
                 $firstOffendingScope = array_pop($invalidScopes);
 
-                $error = 'invalid_scope';
-                $error_description = 'invalid scope: ' . $firstOffendingScope;
-                $error_code_internal = 'INVALID_SCOPE';
-                $error_parameters_internal = array('SCOPE' => $firstOffendingScope);
+                $errorParameters = \sspmod_oauth2server_Utility_Uri::buildErrorResponse(
+                    'invalid_scope', 'invalid scope: ' . $firstOffendingScope, 'INVALID_SCOPE',
+                    array('SCOPE' => $firstOffendingScope)
+                );
             }
 
             //something went wrong, but we do have a valid uri to redirect to.
 
-            $responseParameters['error'] = $error;
-            $responseParameters['error_description'] = $error_description;
-
-            $error_uri =
+            $errorParameters['error_uri'] =
                 SimpleSAML\Utils\HTTP::addURLParameters(
-                    SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'),
-                    array(
-                        'error' => $error,
-                        'error_description' => $error_description,
-                        'error_code_internal' => $error_code_internal,
-                        'error_parameters_internal' => $error_parameters_internal
-                    ));
+                    SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $errorParameters);
 
-            $responseParameters['error_uri'] = $error_uri;
+            if (isset($_REQUEST['state'])) {
+                $errorParameters['state'] = $_REQUEST['state'];
+            }
 
-            sspmod_oauth2server_Utility_Uri::redirectUri(sspmod_oauth2server_Utility_Uri::addQueryParametersToUrl($returnUri,
-                $responseParameters));
+            unset($errorParameters['error_code_internal']);
+            unset($errorParameters['error_parameters_internal']);
+
+            sspmod_oauth2server_Utility_Uri::redirectUri(sspmod_oauth2server_Utility_Uri::
+            addQueryParametersToUrl($returnUri, $errorParameters));
         } else {
             if (is_string(parse_url($returnUri, PHP_URL_FRAGMENT))) {
-                $error = 'invalid_redirect_uri'; // this is not a proper error code used only internally
-                $error_description = 'fragments are not allowed in redirect_uri: ' . $returnUri;
-                $error_code_internal = 'FRAGMENT_REDIRECT_URI';
-                $error_parameters_internal = array(
-                    'REDIRECT_URI' => $returnUri,
-                    'FRAGMENT' => parse_url($returnUri, PHP_URL_FRAGMENT)
+                $errorParameters = \sspmod_oauth2server_Utility_Uri::buildErrorResponse(
+                    'invalid_redirect_uri', 'fragments are not allowed in redirect_uri: ' . $returnUri,
+                    'FRAGMENT_REDIRECT_URI',
+                    array(
+                        'REDIRECT_URI' => $returnUri,
+                        'FRAGMENT' => parse_url($returnUri, PHP_URL_FRAGMENT)
+                    )
                 );
-
             } else {
-                $error = 'invalid_redirect_uri'; // this is not a proper error code used only internally
-                $error_description = 'illegal redirect_uri: ' . $returnUri;
-                $error_code_internal = 'INVALID_REDIRECT_URI';
-                $error_parameters_internal = array('REDIRECT_URI' => $returnUri);
+                // this is not a proper error code used only internally
+                $errorParameters = \sspmod_oauth2server_Utility_Uri::buildErrorResponse(
+                    'invalid_redirect_uri', 'illegal redirect_uri: ' . $returnUri,
+                    'INVALID_REDIRECT_URI', array('REDIRECT_URI' => $returnUri));
             }
         }
     } else {
-        $error = 'server_error';
-        $error_description = 'no redirection uri associated with client id';
-        $error_code_internal = 'NO_REDIRECT_URI';
-        $error_parameters_internal = array();
+        $errorParameters = \sspmod_oauth2server_Utility_Uri::buildErrorResponse(
+            'server_error', 'no redirection uri associated with client id', 'NO_REDIRECT_URI', array());
     }
 } else {
     if (isset($_REQUEST['client_id'])) {
-        $error = 'unauthorized_client';
-        $error_description = 'unauthorized_client: ' . $_REQUEST['client_id'];
-        $error_code_internal = 'UNAUTHORIZED_CLIENT';
-        $error_parameters_internal = array('CLIENT_ID' => $_REQUEST['client_id']);
+        $errorParameters = \sspmod_oauth2server_Utility_Uri::buildErrorResponse(
+            'unauthorized_client', 'unauthorized_client: ' . $_REQUEST['client_id'],
+            'UNAUTHORIZED_CLIENT', array('CLIENT_ID' => $_REQUEST['client_id']));
     } else {
-        $error = 'missing_client';
-        $error_description = 'missing client id';
-        $error_code_internal = 'MISSING_CLIENT_ID';
-        $error_parameters_internal = array();
+        $errorParameters = \sspmod_oauth2server_Utility_Uri::buildErrorResponse(
+            'missing_client', 'missing client id', 'MISSING_CLIENT_ID', array());
     }
 }
 
 //something went wrong, and we do not have a valid uri to redirect to.
-
-$responseParameters['error'] = $error;
-$responseParameters['error_description'] = $error_description;
-$responseParameters['error_code_internal'] = $error_code_internal;
-$responseParameters['error_parameters_internal'] = $error_parameters_internal;
-
 $error_uri = SimpleSAML\Utils\HTTP::addURLParameters(
-    SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $responseParameters);
+    SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $errorParameters);
 
 SimpleSAML\Utils\HTTP::redirectTrustedURL($error_uri);
