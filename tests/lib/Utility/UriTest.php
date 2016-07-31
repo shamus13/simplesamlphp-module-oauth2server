@@ -80,4 +80,56 @@ class sspmod_oauth2server_Utility_UriTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('http://example.com?c=3&d=4&a=1&b=2#t=10,20', $result);
     }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testCalculateScopingForClientWithoutAnIdPList()
+    {
+        $client = array();
+
+        $result = \sspmod_oauth2server_Utility_Uri::calculateScopingParameters($client);
+
+        $this->assertEmpty($result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testCalculateScopingForClientWithEmptyIdPList()
+    {
+        $client = array('IDPList' => array());
+
+        $result = \sspmod_oauth2server_Utility_Uri::calculateScopingParameters($client);
+
+        $this->assertEmpty($result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testCalculateScopingForClientWithSingleEntryInIdPList()
+    {
+        $client = array('IDPList' => array('entityId1'));
+
+        $result = \sspmod_oauth2server_Utility_Uri::calculateScopingParameters($client);
+
+        $this->assertSame(array('saml:idp' => 'entityId1'), $result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testCalculateScopingForClientWithSeveralEntriesInIdPList()
+    {
+        $client = array('IDPList' => array('entityId1', 'entityId2', 'entityId3'));
+
+        $result = \sspmod_oauth2server_Utility_Uri::calculateScopingParameters($client);
+
+        $this->assertSame(array('saml:IDPList' => array('entityId1', 'entityId2', 'entityId3')), $result);
+    }
 }

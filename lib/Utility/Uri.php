@@ -107,7 +107,7 @@ class sspmod_oauth2server_Utility_Uri
     }
 
     /**
-     * @param $client
+     * @param array $client
      * @return array
      */
     public static function calculateScopingParameters(array $client)
@@ -134,11 +134,11 @@ class sspmod_oauth2server_Utility_Uri
     }
 
     /**
-     * @param $returnUri
-     * @param $client
+     * @param string $returnUri
+     * @param array $client
      * @return bool
      */
-    public static function validateRedirectUri($returnUri, $client)
+    public static function validateRedirectUri($returnUri, array $client)
     {
         $legalRedirectUri = false;
 
