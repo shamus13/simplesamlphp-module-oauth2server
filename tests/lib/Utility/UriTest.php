@@ -132,4 +132,82 @@ class sspmod_oauth2server_Utility_UriTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(array('saml:IDPList' => array('entityId1', 'entityId2', 'entityId3')), $result);
     }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testValidateNullRedirectUriForClientWithoutDefinedRedirectUri()
+    {
+        $client = array();
+
+        $result = \sspmod_oauth2server_Utility_Uri::validateRedirectUri(null, $client);
+
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testValidateRedirectUriForClientWithoutDefinedRedirectUri()
+    {
+        $client = array();
+
+        $result = \sspmod_oauth2server_Utility_Uri::validateRedirectUri('http://example.com', $client);
+
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testValidateRedirectUriForClientWithEmptyRedirectUriList()
+    {
+        $client = array('redirect_uri' => array());
+
+        $result = \sspmod_oauth2server_Utility_Uri::validateRedirectUri('http://example.com', $client);
+
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testValidateUnregisteredRedirectUriForClientWithRedirectUriList()
+    {
+        $client = array('redirect_uri' => array('intent://example.com'));
+
+        $result = \sspmod_oauth2server_Utility_Uri::validateRedirectUri('http://example.com', $client);
+
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testValidateRegisteredRedirectUriForClientWithRedirectUriList()
+    {
+        $client = array('redirect_uri' => array('http://example.com'));
+
+        $result = \sspmod_oauth2server_Utility_Uri::validateRedirectUri('http://example.com', $client);
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testValidateRegisteredRedirectUriWithFragmentForClientWithRedirectUriList()
+    {
+        $client = array('redirect_uri' => array('http://example.com#test'));
+
+        $result = \sspmod_oauth2server_Utility_Uri::validateRedirectUri('http://example.com#test', $client);
+
+        $this->assertFalse($result);
+    }
 }

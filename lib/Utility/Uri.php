@@ -144,15 +144,16 @@ class sspmod_oauth2server_Utility_Uri
 
         $parsedUri = parse_url($returnUri);
 
-        if (is_array($parsedUri) && ($parsedUri['scheme'] == 'intent' ||
-                (($parsedUri['scheme'] == 'http' || $parsedUri['scheme'] == 'https') &&
-                    !array_key_exists('fragment', $parsedUri)))
-        ) {
+        if (is_array($parsedUri) && array_key_exists('scheme', $parsedUri) && ($parsedUri['scheme'] == 'intent' ||
+                $parsedUri['scheme'] == 'http' || $parsedUri['scheme'] == 'https') &&
+                    !array_key_exists('fragment', $parsedUri) && array_key_exists('redirect_uri', $client)) {
             foreach ($client['redirect_uri'] as $uri) {
-                $legalRedirectUri |= ($returnUri === $uri);
+                $legalRedirectUri = $legalRedirectUri || ($returnUri === $uri);
             }
+
             return $legalRedirectUri;
         }
+
         return $legalRedirectUri;
     }
 }
