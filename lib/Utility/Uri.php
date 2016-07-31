@@ -30,7 +30,7 @@ class sspmod_oauth2server_Utility_Uri
      */
     public static function addQueryParametersToUrl($url, array $parameters)
     {
-        if(count($parameters) > 0) {
+        if (count($parameters) > 0) {
             $fragmentStart = strpos($url, '#');
 
             if ($fragmentStart !== false) { //strip fragment if any
@@ -146,7 +146,8 @@ class sspmod_oauth2server_Utility_Uri
 
         if (is_array($parsedUri) && array_key_exists('scheme', $parsedUri) && ($parsedUri['scheme'] == 'intent' ||
                 $parsedUri['scheme'] == 'http' || $parsedUri['scheme'] == 'https') &&
-                    !array_key_exists('fragment', $parsedUri) && array_key_exists('redirect_uri', $client)) {
+            !array_key_exists('fragment', $parsedUri) && array_key_exists('redirect_uri', $client)
+        ) {
             foreach ($client['redirect_uri'] as $uri) {
                 $legalRedirectUri = $legalRedirectUri || ($returnUri === $uri);
             }
