@@ -210,4 +210,135 @@ class sspmod_oauth2server_Utility_UriTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($result);
     }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testAugmentOAuth2ScopesForClientWithoutScope()
+    {
+        $client = array();
+        $scopes = array('SCOPE1', 'SCOPE2');
+
+        $result = \sspmod_oauth2server_Utility_Uri::
+        augmentRequestedScopesWithRequiredScopes($client, $scopes);
+
+        $this->assertEquals($scopes, $result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testAugmentOAuth2ScopesForClientWithEmptyScopes()
+    {
+        $client = array('scope' => array());
+        $scopes = array('SCOPE1', 'SCOPE2');
+
+        $result = \sspmod_oauth2server_Utility_Uri::
+        augmentRequestedScopesWithRequiredScopes($client, $scopes);
+
+        $this->assertEquals($scopes, $result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testAugmentOAuth2ScopesForClientWithNoRequiredScopes()
+    {
+        $client = array('scope' => array('SCOPE3' => false, 'SCOPE4' => false));
+        $scopes = array('SCOPE1', 'SCOPE2');
+
+        $result = \sspmod_oauth2server_Utility_Uri::
+        augmentRequestedScopesWithRequiredScopes($client, $scopes);
+
+        $this->assertEquals($scopes, $result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testAugmentOAuth2ScopesForClientWithRequiredScopesAlreadyPresent()
+    {
+        $client = array('scope' => array('SCOPE1' => true, 'SCOPE2' => true));
+        $scopes = array('SCOPE1', 'SCOPE2');
+
+        $result = \sspmod_oauth2server_Utility_Uri::
+        augmentRequestedScopesWithRequiredScopes($client, $scopes);
+
+        $this->assertEquals($scopes, $result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testAugmentOAuth2ScopesForClientWithRequiredScopesNotPresent()
+    {
+        $client = array('scope' => array('SCOPE3' => true, 'SCOPE4' => true));
+        $scopes = array('SCOPE1', 'SCOPE2');
+
+        $result = \sspmod_oauth2server_Utility_Uri::
+        augmentRequestedScopesWithRequiredScopes($client, $scopes);
+
+        $this->assertEquals(array('SCOPE1', 'SCOPE2', 'SCOPE3', 'SCOPE4'), $result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testFindInvalidScopesInEmptyScopeListForClientWithoutScope()
+    {
+        $client = array();
+        $scopes = array();
+
+        $result = \sspmod_oauth2server_Utility_Uri::findInvalidScopes($client, $scopes);
+
+        $this->assertEquals(array(), $result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testFindInvalidScopesInEmptyScopeListForClientWithEmptyScope()
+    {
+        $client = array('scope' => array());
+        $scopes = array();
+
+        $result = \sspmod_oauth2server_Utility_Uri::findInvalidScopes($client, $scopes);
+
+        $this->assertEquals(array(), $result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testFindInvalidScopesForClientWithEmptyScope()
+    {
+        $client = array('scope' => array());
+        $scopes = array('SCOPE1');
+
+        $result = \sspmod_oauth2server_Utility_Uri::findInvalidScopes($client, $scopes);
+
+        $this->assertEquals(array('SCOPE1'), $result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testFindInvalidScopeForClientWithScopes()
+    {
+        $client = array('scope' => array('SCOPE1' => false, 'SCOPE2' => false));
+        $scopes = array('SCOPE1', 'SCOPE3');
+
+        $result = \sspmod_oauth2server_Utility_Uri::findInvalidScopes($client, $scopes);
+
+        $this->assertEquals(array(1 => 'SCOPE3'), $result);
+    }
 }

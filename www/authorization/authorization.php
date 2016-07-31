@@ -58,16 +58,10 @@ if (isset($client)) {
         $legalRedirectUri = sspmod_oauth2server_Utility_Uri::validateRedirectUri($returnUri, $client);
 
         if ($legalRedirectUri) {
-            $requestedScopes = (isset($_REQUEST['scope'])) ? explode(' ', $_REQUEST['scope']) : array();
-            $definedScopes = (isset($client['scope'])) ? $client['scope'] : array();
+            $requestedScopes = sspmod_oauth2server_Utility_Uri::augmentRequestedScopesWithRequiredScopes($client,
+                (isset($_REQUEST['scope'])) ? explode(' ', $_REQUEST['scope']) : array());
 
-            foreach ($client['scope'] as $scope => $required) {
-                if ($required) {
-                    array_push($requestedScopes, $scope);
-                }
-            }
-
-            $invalidScopes = array_diff($requestedScopes, array_keys($definedScopes));
+            $invalidScopes = sspmod_oauth2server_Utility_Uri::findInvalidScopes($client, $requestedScopes);
 
             if (count($invalidScopes) == 0) {
                 if (isset($_REQUEST['response_type']) &&

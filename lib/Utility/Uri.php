@@ -157,4 +157,39 @@ class sspmod_oauth2server_Utility_Uri
 
         return $legalRedirectUri;
     }
+
+    /**
+     * @param array $client
+     * @param array $scopes
+     * @return array
+     */
+    public static function augmentRequestedScopesWithRequiredScopes(array $client, array $scopes)
+    {
+        $requestedScopes = $scopes;
+
+        if (isset($client['scope'])) {
+            foreach ($client['scope'] as $scope => $required) {
+                if ($required && array_search($scope, $requestedScopes) === false) {
+                    array_push($requestedScopes, $scope);
+                }
+            }
+        }
+
+        return $requestedScopes;
+    }
+
+    /**
+     * @param array $client
+     * @param array $requestedScopes
+     * @return array
+     */
+    public static function findInvalidScopes(array $client, array $requestedScopes)
+    {
+        $definedScopes = (isset($client['scope'])) ? $client['scope'] : array();
+
+        $invalidScopes = array_diff($requestedScopes, array_keys($definedScopes));
+
+        return $invalidScopes;
+    }
+
 }
