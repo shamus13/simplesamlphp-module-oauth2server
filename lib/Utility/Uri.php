@@ -23,29 +23,37 @@
 
 class sspmod_oauth2server_Utility_Uri
 {
-
-    public static function addQueryParametersToUrl($url, $response)
+    /**
+     * @param string $url
+     * @param array $parameters
+     * @return string
+     */
+    public static function addQueryParametersToUrl($url, array $parameters)
     {
-        $fragmentStart = strpos($url, '#');
+        if(count($parameters) > 0) {
+            $fragmentStart = strpos($url, '#');
 
-        if ($fragmentStart !== false) { //strip fragment if any
-            $fragment = substr($url, $fragmentStart);
-            $url = substr($url, 0, $fragmentStart);
-        } else {
-            $fragment = '';
+            if ($fragmentStart !== false) { //strip fragment if any
+                $fragment = substr($url, $fragmentStart);
+                $url = substr($url, 0, $fragmentStart);
+            } else {
+                $fragment = '';
+            }
+
+            $queryStart = strpos($url, '?');
+
+            if ($queryStart !== false) { //strip query if any
+                $query = \SimpleSAML\Utils\HTTP::parseQueryString(substr($url, $queryStart + 1));
+                $url = substr($url, 0, $queryStart);
+            } else {
+                $query = array();
+            }
+
+            $query = array_merge($query, $parameters);
+
+            $url .= '?' . http_build_query($query, '', '&') . $fragment;
         }
 
-        $queryStart = strpos($url, '?');
-
-        if ($queryStart !== false) { //strip query if any
-            $query = \SimpleSAML\Utils\HTTP::parseQueryString(substr($url, $queryStart + 1));
-            $url = substr($url, 0, $queryStart);
-        } else {
-            $query = array();
-        }
-
-        $query = array_merge($query, $response);
-        $url .= '?' . http_build_query($query, '', '&') . $fragment;
         return $url;
     }
 
