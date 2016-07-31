@@ -18,7 +18,8 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 *
-*    response_type - only 'code' corresponding to the authorization code grant flow is supported
+*    response_type - 'code' corresponding to the authorization code grant flow and
+*                    'token' corresponding to the implicit grant flow is supported.
 *    client_id     - a configured id string agreed upon by any given client and authorization server
 *    redirect_uri  - an optional configured uri to redirect the user agent to after authorization is granted or denied
 *    scope         - optional configured scope strings agreed upon by any given client and authorization server
