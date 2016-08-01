@@ -192,6 +192,19 @@ class sspmod_oauth2server_Utility_Uri
         return $invalidScopes;
     }
 
+    /**
+     * @param array $client
+     * @param array $requestedScopes
+     * @return array
+     */
+    public static function findValidScopes(array $client, array $requestedScopes)
+    {
+        $definedScopes = (isset($client['scope'])) ? $client['scope'] : array();
+
+        $validScopes = array_intersect($requestedScopes, array_keys($definedScopes));
+
+        return $validScopes;
+    }
 
     /**
      * @param string $error

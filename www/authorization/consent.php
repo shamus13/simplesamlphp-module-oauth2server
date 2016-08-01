@@ -68,7 +68,6 @@ if (array_key_exists('grant', $_REQUEST)) {
         }
     }
 
-
     $idAttribute = $config->getValue('user_id_attribute', 'eduPersonScopedAffiliation');
     $attributes = $as->getAttributes();
 
@@ -90,13 +89,9 @@ if (array_key_exists('grant', $_REQUEST)) {
         $scopesTemp = array();
     }
 
-    foreach ($client['scope'] as $scope => $required) {
-        if ($required) {
-            array_push($scopesTemp, $scope);
-        }
-    }
+    \sspmod_oauth2server_Utility_Uri::augmentRequestedScopesWithRequiredScopes($client, $scopesTemp);
 
-    $token['scopes'] = array_intersect($state['requestedScopes'], $scopesTemp);
+    $token['scopes'] = \sspmod_oauth2server_Utility_Uri::findValidScopes($client, $scopesTemp);
 
     $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore($config);
 

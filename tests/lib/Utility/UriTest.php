@@ -346,6 +346,62 @@ class sspmod_oauth2server_Utility_UriTest extends \PHPUnit_Framework_TestCase
      * @group unit
      * @group utility
      */
+    public function testFindValidScopesInEmptyScopeListForClientWithoutScope()
+    {
+        $client = array();
+        $scopes = array();
+
+        $result = \sspmod_oauth2server_Utility_Uri::findValidScopes($client, $scopes);
+
+        $this->assertEquals(array(), $result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testFindValidScopesInEmptyScopeListForClientWithEmptyScope()
+    {
+        $client = array('scope' => array());
+        $scopes = array();
+
+        $result = \sspmod_oauth2server_Utility_Uri::findValidScopes($client, $scopes);
+
+        $this->assertEquals(array(), $result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testFindValidScopesForClientWithEmptyScope()
+    {
+        $client = array('scope' => array());
+        $scopes = array('SCOPE1');
+
+        $result = \sspmod_oauth2server_Utility_Uri::findValidScopes($client, $scopes);
+
+        $this->assertEquals(array(), $result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
+    public function testFindValidScopeForClientWithScopes()
+    {
+        $client = array('scope' => array('SCOPE1' => false, 'SCOPE2' => false));
+        $scopes = array('SCOPE1', 'SCOPE3');
+
+        $result = \sspmod_oauth2server_Utility_Uri::findValidScopes($client, $scopes);
+
+        $this->assertEquals(array(0 => 'SCOPE1'), $result);
+    }
+
+    /**
+     * @group unit
+     * @group utility
+     */
     public function testBuildErrorResponse()
     {
         $this->assertEquals(array(
