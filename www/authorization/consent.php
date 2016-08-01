@@ -169,19 +169,17 @@ if (array_key_exists('grant', $_REQUEST)) {
 
         // build return uri with authorization code and redirect
 
-        sspmod_oauth2server_Utility_Uri::redirectUri(sspmod_oauth2server_Utility_Uri::addQueryParametersToUrl($state['returnUri'],
-            $response));
+        sspmod_oauth2server_Utility_Uri::redirectUri(
+            sspmod_oauth2server_Utility_Uri::addQueryParametersToUrl($state['returnUri'], $response));
     } else {
         $fragment = '#access_token=' . $token['id'] . '&token_type=bearer&expires_in=' . ($token['expire'] - time());
 
         if (count($token['scopes']) > 0) {
-            $fragment .= '&scope=';
-            $fragment .= urlencode(trim(implode(' ', $token['scopes'])));
+            $fragment .= '&scope=' . urlencode(trim(implode(' ', $token['scopes'])));
         }
 
         if (array_key_exists('state', $state)) {
-            $fragment .= '&state=';
-            $fragment .= $state['state'];
+            $fragment .= '&state=' . $state['state'];
         }
 
         sspmod_oauth2server_Utility_Uri::redirectUri($state['returnUri'] . $fragment);
@@ -189,28 +187,21 @@ if (array_key_exists('grant', $_REQUEST)) {
 } else {
     if (array_key_exists('deny', $_REQUEST)) {
 
-        $errorState = array(
-            'error' => 'access_denied',
-            'error_description' => 'request denied by resource owner',
-            'error_code_internal' => 'CONSENT_NOT_GRANTED',
-            'error_parameters_internal' => array(),
-        );
+        $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('access_denied',
+            'request denied by resource owner', 'CONSENT_NOT_GRANTED', array());
 
-        $error_uri = SimpleSAML\Utils\HTTP::addURLParameters(
-            SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $errorState);
-
-        $response = array(
-            'error' => $errorState['error'],
-            'error_description' => $errorState['error_description'],
-            'error_uri' => $error_uri
-        );
+        $response['error_uri'] = SimpleSAML\Utils\HTTP::addURLParameters(
+            SimpleSAML_Module::getModuleURL('oauth2server/authorization/error.php'), $response);
 
         if (array_key_exists('state', $state)) {
             $response['state'] = $state['state'];
         }
 
-        sspmod_oauth2server_Utility_Uri::redirectUri(sspmod_oauth2server_Utility_Uri::addQueryParametersToUrl($state['returnUri'],
-            $response));
+        unset($response['error_code_internal']);
+        unset($response['error_parameters_internal']);
+
+        sspmod_oauth2server_Utility_Uri::redirectUri(
+            sspmod_oauth2server_Utility_Uri::addQueryParametersToUrl($state['returnUri'], $response));
     }
 }
 
