@@ -71,7 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ) {
 
                         $tokenStore = new sspmod_oauth2server_OAuth2_TokenStore($config);
-
                         $userStore = new sspmod_oauth2server_OAuth2_UserStore($config);
 
                         $authorizationTokenId = null;
@@ -304,18 +303,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $errorCode = 400;
     }
-} else {
-    if ($_SERVER['REQUEST_METHOD'] != 'OPTIONS') { //dont freak over the damn ajax options pre-flight requests
+} elseif ($_SERVER['REQUEST_METHOD'] != 'OPTIONS') { //dont freak over the damn ajax options pre-flight requests
+    $response = array(
+        'error' => 'invalid_request',
+        'error_description' => 'http(s) POST required',
+        'error_code_internal' => 'MUST_POST',
+        'error_parameters_internal' => array(),
+    );
 
-        $response = array(
-            'error' => 'invalid_request',
-            'error_description' => 'http(s) POST required',
-            'error_code_internal' => 'MUST_POST',
-            'error_parameters_internal' => array(),
-        );
-
-        $errorCode = 400;
-    }
+    $errorCode = 400;
 }
 
 header('X-PHP-Response-Code: ' . $errorCode, true, $errorCode);
