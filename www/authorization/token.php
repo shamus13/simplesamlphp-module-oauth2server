@@ -184,8 +184,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 } else {
                                     $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_grant',
                                         'mismatching redirection uri, expected: ' .
-                                                                                    $authorizationToken['redirectUri'] . ' got: ' . $redirectUri,
-                                        'MISMATCHING_' . strtoupper($_POST['grant_type']) . '_URI',array('URI_ACTUAL' => $redirectUri));
+                                        $authorizationToken['redirectUri'] . ' got: ' . $redirectUri,
+                                        'MISMATCHING_' . strtoupper($_POST['grant_type']) . '_URI',
+                                        array('URI_ACTUAL' => $redirectUri));
 
                                     $errorCode = 400;
                                 }
@@ -193,7 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 if ($_POST['grant_type'] === 'authorization_code') {
                                     $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_grant',
                                         'authorization code grant was not issued for client id: ' . $clientId,
-                                        'MISMATCHING_AUTHORIZATION_CODE_CLIENT',array('CLIENT_ID' => $clientId));
+                                        'MISMATCHING_AUTHORIZATION_CODE_CLIENT', array('CLIENT_ID' => $clientId));
                                 } else {
                                     $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_grant',
                                         'refresh token was not issued for client id: ' . $clientId,
@@ -209,10 +210,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             if (is_null($authorizationTokenId)) {
                                 if ($_POST['grant_type'] === 'authorization_code') {
                                     $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_request',
-                                        'missing authorization code','MISSING_AUTHORIZATION_CODE',array());
+                                        'missing authorization code', 'MISSING_AUTHORIZATION_CODE', array());
                                 } else {
                                     $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_request',
-                                        'missing refresh token','MISSING_REFRESH_TOKEN',array());
+                                        'missing refresh token', 'MISSING_REFRESH_TOKEN', array());
                                 }
 
                                 $errorCode = 400;
@@ -220,10 +221,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 if ($_POST['grant_type'] === 'authorization_code') {
                                     $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_grant',
                                         'unknown authorization code grant: ' . $authorizationTokenId,
-                                        'INVALID_AUTHORIZATION_CODE',array('CODE' => $authorizationTokenId));
+                                        'INVALID_AUTHORIZATION_CODE', array('CODE' => $authorizationTokenId));
                                 } else {
                                     $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_grant',
-                                        'unknown refresh token: ' . $authorizationTokenId,'INVALID_REFRESH_TOKEN',
+                                        'unknown refresh token: ' . $authorizationTokenId, 'INVALID_REFRESH_TOKEN',
                                         array('TOKEN_ID' => $authorizationTokenId));
                                 }
 
@@ -238,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 } else {
                     $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_client',
-                        'unknown client id: ' . $clientId,'UNAUTHORIZED_CLIENT_ID',array('CLIENT_ID' => $clientId));
+                        'unknown client id: ' . $clientId, 'UNAUTHORIZED_CLIENT_ID', array('CLIENT_ID' => $clientId));
 
                     $errorCode = 400;
                 }
