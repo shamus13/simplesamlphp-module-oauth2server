@@ -182,31 +182,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         'scope' => trim(implode(' ', $accessToken['scopes']))
                                     );
                                 } else {
-                                    $response = array(
-                                        'error' => 'invalid_grant',
-                                        'error_description' => 'mismatching redirection uri, expected: ' .
-                                            $authorizationToken['redirectUri'] . ' got: ' . $redirectUri,
-                                        'error_code_internal' => 'MISMATCHING_' . strtoupper($_POST['grant_type']) . '_URI',
-                                        'error_parameters_internal' => array('URI_ACTUAL' => $redirectUri),
-                                    );
+                                    $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_grant',
+                                        'mismatching redirection uri, expected: ' .
+                                                                                    $authorizationToken['redirectUri'] . ' got: ' . $redirectUri,
+                                        'MISMATCHING_' . strtoupper($_POST['grant_type']) . '_URI',array('URI_ACTUAL' => $redirectUri));
 
                                     $errorCode = 400;
                                 }
                             } else {
                                 if ($_POST['grant_type'] === 'authorization_code') {
-                                    $response = array(
-                                        'error' => 'invalid_grant',
-                                        'error_description' => 'authorization code grant was not issued for client id: ' . $clientId,
-                                        'error_code_internal' => 'MISMATCHING_AUTHORIZATION_CODE_CLIENT',
-                                        'error_parameters_internal' => array('CLIENT_ID' => $clientId),
-                                    );
+                                    $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_grant',
+                                        'authorization code grant was not issued for client id: ' . $clientId,
+                                        'MISMATCHING_AUTHORIZATION_CODE_CLIENT',array('CLIENT_ID' => $clientId));
                                 } else {
-                                    $response = array(
-                                        'error' => 'invalid_grant',
-                                        'error_description' => 'refresh token was not issued for client id: ' . $clientId,
-                                        'error_code_internal' => 'MISMATCHING_REFRESH_TOKEN_CLIENT',
-                                        'error_parameters_internal' => array('CLIENT_ID' => $clientId),
-                                    );
+                                    $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_grant',
+                                        'refresh token was not issued for client id: ' . $clientId,
+                                        'MISMATCHING_REFRESH_TOKEN_CLIENT', array('CLIENT_ID' => $clientId));
                                 }
 
                                 $errorCode = 400;
@@ -217,99 +208,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         } else {
                             if (is_null($authorizationTokenId)) {
                                 if ($_POST['grant_type'] === 'authorization_code') {
-                                    $response = array(
-                                        'error' => 'invalid_request',
-                                        'error_description' => 'missing authorization code',
-                                        'error_code_internal' => 'MISSING_AUTHORIZATION_CODE',
-                                        'error_parameters_internal' => array(),
-                                    );
+                                    $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_request',
+                                        'missing authorization code','MISSING_AUTHORIZATION_CODE',array());
                                 } else {
-                                    $response = array(
-                                        'error' => 'invalid_request',
-                                        'error_description' => 'missing refresh token',
-                                        'error_code_internal' => 'MISSING_REFRESH_TOKEN',
-                                        'error_parameters_internal' => array(),
-                                    );
+                                    $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_request',
+                                        'missing refresh token','MISSING_REFRESH_TOKEN',array());
                                 }
 
                                 $errorCode = 400;
                             } else {
                                 if ($_POST['grant_type'] === 'authorization_code') {
-                                    $response = array(
-                                        'error' => 'invalid_grant',
-                                        'error_description' => 'unknown authorization code grant: ' . $authorizationTokenId,
-                                        'error_code_internal' => 'INVALID_AUTHORIZATION_CODE',
-                                        'error_parameters_internal' => array('CODE' => $authorizationTokenId),
-                                    );
+                                    $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_grant',
+                                        'unknown authorization code grant: ' . $authorizationTokenId,
+                                        'INVALID_AUTHORIZATION_CODE',array('CODE' => $authorizationTokenId));
                                 } else {
-                                    $response = array(
-                                        'error' => 'invalid_grant',
-                                        'error_description' => 'unknown refresh token: ' . $authorizationTokenId,
-                                        'error_code_internal' => 'INVALID_REFRESH_TOKEN',
-                                        'error_parameters_internal' => array('TOKEN_ID' => $authorizationTokenId),
-                                    );
+                                    $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_grant',
+                                        'unknown refresh token: ' . $authorizationTokenId,'INVALID_REFRESH_TOKEN',
+                                        array('TOKEN_ID' => $authorizationTokenId));
                                 }
 
                                 $errorCode = 400;
                             }
                         }
                     } else {
-                        $response = array(
-                            'error' => 'invalid_client',
-                            'error_description' => 'invalid client credentials: ' . $clientId,
-                            'error_code_internal' => 'INVALID_CLIENT_CREDENTIALS',
-                            'error_parameters_internal' => array(),
-                        );
+                        $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_client',
+                            'invalid client credentials: ' . $clientId, 'INVALID_CLIENT_CREDENTIALS', array());
 
                         $errorCode = 401;
                     }
                 } else {
-                    $response = array(
-                        'error' => 'invalid_client',
-                        'error_description' => 'unknown client id: ' . $clientId,
-                        'error_code_internal' => 'UNAUTHORIZED_CLIENT_ID',
-                        'error_parameters_internal' => array('CLIENT_ID' => $clientId),
-                    );
+                    $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_client',
+                        'unknown client id: ' . $clientId,'UNAUTHORIZED_CLIENT_ID',array('CLIENT_ID' => $clientId));
 
                     $errorCode = 400;
                 }
             } else {
-                $response = array(
-                    'error' => 'invalid_request',
-                    'error_description' => 'missing client id',
-                    'error_code_internal' => 'MISSING_CLIENT_ID',
-                    'error_parameters_internal' => array(),
-                );
+                $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_request',
+                    'missing client id', 'MISSING_CLIENT_ID', array());
 
                 $errorCode = 400;
             }
         } else {
-            $response = array(
-                'error' => 'unsupported_grant_type',
-                'error_description' => 'unsupported grant type: ' . $_POST['grant_type'],
-                'error_code_internal' => 'UNSUPPORTED_GRANT_TYPE',
-                'error_parameters_internal' => array('GRANT_TYPE' => $_POST['grant_type']),
-            );
+            $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('unsupported_grant_type',
+                'unsupported grant type: ' . $_POST['grant_type'], 'UNSUPPORTED_GRANT_TYPE',
+                array('GRANT_TYPE' => $_POST['grant_type']));
 
             $errorCode = 400;
         }
     } else {
-        $response = array(
-            'error' => 'invalid_request',
-            'error_description' => 'missing grant type',
-            'error_code_internal' => 'MISSING_GRANT_TYPE',
-            'error_parameters_internal' => array(),
-        );
+        $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_request',
+            'missing grant type', 'MISSING_GRANT_TYPE', array());
 
         $errorCode = 400;
     }
 } elseif ($_SERVER['REQUEST_METHOD'] != 'OPTIONS') { //dont freak over the damn ajax options pre-flight requests
-    $response = array(
-        'error' => 'invalid_request',
-        'error_description' => 'http(s) POST required',
-        'error_code_internal' => 'MUST_POST',
-        'error_parameters_internal' => array(),
-    );
+    $response = \sspmod_oauth2server_Utility_Uri::buildErrorResponse('invalid_request',
+        'http(s) POST required', 'MUST_POST', array());
 
     $errorCode = 400;
 }
