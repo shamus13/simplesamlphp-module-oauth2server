@@ -82,8 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $authorizationToken = $tokenStore->getAuthorizationCode($authorizationTokenId);
                             $tokenStore->removeAuthorizationCode($_POST['code']);
                         } elseif ($_POST['grant_type'] === 'refresh_token' && array_key_exists('refresh_token',
-                                $_POST)
-                        ) {
+                                $_POST)) {
                             $authorizationTokenId = $_POST['refresh_token'];
                             $authorizationToken = $tokenStore->getRefreshToken($authorizationTokenId);
                         }
